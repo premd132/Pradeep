@@ -3,52 +3,47 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kalyan Pro AI – Advanced Pattern System</title>
+<title>Kalyan AI Pattern - Final Logic</title>
 <style>
-    :root { --gold: #ffd700; --blue: #007bff; --red: #ff3e3e; --bg: #0f0f0f; --panel: #1a1a1a; }
-    body { font-family: 'Segoe UI', Arial; background: var(--bg); color: #fff; margin: 0; padding: 10px; }
+    :root { --gold: #ffd700; --red: #ff0000; --bg: #121212; --panel: #1e1e1e; }
+    body { font-family: sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 10px; }
     
-    .header-box { text-align: center; border-bottom: 2px solid var(--gold); margin-bottom: 15px; padding-bottom: 10px; }
-    h2 { color: var(--gold); text-transform: uppercase; margin: 5px 0; letter-spacing: 2px; }
+    .header { text-align: center; color: var(--gold); border-bottom: 2px solid #333; margin-bottom: 10px; }
+    .toolbar { display: flex; gap: 8px; justify-content: center; margin-bottom: 10px; }
+    
+    .table-container { position: relative; background: #fff; display: inline-block; border: 2px solid #555; }
+    table { border-collapse: collapse; color: #000; font-size: 14px; }
+    td, th { border: 1px solid #999; width: 40px; height: 40px; text-align: center; font-weight: bold; position: relative; }
+    th { background: #600; color: #fff; font-size: 11px; }
+    
+    /* स्पेशल क्लास: जब पैटर्न मैच हो */
+    .circle { background: var(--red) !important; color: #fff !important; border-radius: 50%; z-index: 5; }
+    .highlight-blue { background: #007bff !important; color: #fff !important; border-radius: 50%; }
+    .blank { background: #ddd !important; cursor: crosshair; }
 
-    .toolbar { background: var(--panel); padding: 10px; border-radius: 8px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 15px; }
+    .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-top: 15px; }
+    .card { background: var(--panel); padding: 12px; border-radius: 8px; border-left: 4px solid var(--gold); }
     
-    .table-container { position: relative; background: #fff; border-radius: 8px; overflow: hidden; display: inline-block; box-shadow: 0 0 25px rgba(0,0,0,0.5); }
-    table { border-collapse: collapse; font-size: 14px; position: relative; z-index: 2; color: #000; }
-    td, th { border: 1px solid #bbb; padding: 10px; text-align: center; font-weight: bold; width: 45px; height: 45px; }
-    th { background: #4a0000; color: white; font-size: 12px; }
-    
-    .blank { background: #f9f9f9 !important; color: #ccc; cursor: cell; }
-    .circle { position: relative; z-index: 5; color: #fff !important; background: var(--red) !important; border-radius: 50%; animation: pulse 1.5s infinite; }
-    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 62, 62, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(255, 62, 62, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 62, 62, 0); } }
-
-    .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-top: 20px; }
-    .card { background: var(--panel); padding: 15px; border-radius: 10px; border-left: 5px solid var(--gold); box-shadow: 5px 5px 15px rgba(0,0,0,0.3); }
-    .card h3 { margin: 0 0 12px 0; color: var(--gold); border-bottom: 1px solid #333; padding-bottom: 5px; font-size: 16px; }
-    
-    .stat-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; }
-    .highlight-ank { color: var(--gold); font-size: 18px; font-weight: bold; }
+    #checks div { background: #2c3e50; margin: 4px 0; padding: 8px; border-radius: 4px; cursor: pointer; transition: 0.3s; }
+    #checks div:hover { background: #34495e; color: var(--gold); }
 
     canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 4; }
-    button { background: var(--gold); color: #000; border: none; padding: 10px 18px; font-weight: bold; border-radius: 5px; cursor: pointer; transition: 0.3s; }
-    button:hover { transform: scale(1.05); background: #fff; }
-
-    #popup { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border: 5px solid var(--gold); display: none; z-index: 100; padding: 20px; border-radius: 15px; color: #000; width: 95%; max-width: 500px; }
-    .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; z-index: 90; }
+    button { background: var(--gold); color: #000; border: none; padding: 8px 12px; font-weight: bold; border-radius: 4px; cursor: pointer; }
+    
+    #popup { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border: 4px solid var(--gold); display: none; z-index: 100; padding: 10px; color: #000; }
+    .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; z-index: 95; }
 </style>
 </head>
 <body>
 
-<div class="header-box">
-    <h2>🏆 KALYAN AI PATTERN PRO 2026</h2>
-</div>
+<div class="header"><h3>🏆 KALYAN AI PATTERN (V6-PRO)</h3></div>
 
 <div class="toolbar">
-    <button onclick="addRow()">➕ नई रो जोड़ें</button>
-    <button onclick="saveData()" style="background:#28a745; color:white;">💾 डेटा सेव करें</button>
-    <button onclick="clearData()" style="background:#dc3545; color:white;">🗑️ सब साफ़ करें</button>
-    <input type="file" id="csv" style="display:none">
-    <button onclick="document.getElementById('csv').click()">📂 CSV लोड</button>
+    <button onclick="addRow()">➕ रो जोड़ें</button>
+    <button onclick="saveData()" style="background:#28a745; color:#fff;">💾 सेव</button>
+    <button onclick="clearData()" style="background:#d9534f; color:#fff;">🗑️ डिलीट</button>
+    <input type="file" id="csv" style="display:none" onchange="loadCSV(this)">
+    <button onclick="document.getElementById('csv').click()">📂 लोड</button>
 </div>
 
 <center>
@@ -60,39 +55,27 @@
 
 <div class="dashboard">
     <div class="card">
-        <h3>🎯 मिले हुए मैच (Patterns)</h3>
-        <div id="checks">किसी खाली सेल (**) पर क्लिक करें...</div>
+        <h3>📍 मैच लिस्ट (Historical)</h3>
+        <div id="checks">खाली जगह पर क्लिक करें...</div>
     </div>
-    
     <div class="card">
-        <h3>🔢 AI Ank Analysis (Single)</h3>
-        <div id="ankStat">
-            <div class="stat-row">पसंदीदा ओपन: <span id="favOpen" class="highlight-ank">-</span></div>
-            <div class="stat-row">पसंदीदा क्लोज: <span id="favClose" class="highlight-ank">-</span></div>
-            <div class="stat-row">मजबूत अंक: <span id="strongAnk" class="highlight-ank">-</span></div>
-        </div>
+        <h3>🤖 AI पैटर्न लॉजिक</h3>
+        <div id="logicInfo">पैटर्न की गहराई यहाँ दिखेगी...</div>
     </div>
-    
     <div class="card">
-        <h3>🔮 भविष्य की भविष्यवाणी</h3>
-        <div id="future" style="font-size: 20px; color: var(--gold); text-align: center; margin-top: 10px;">
-            डेटा का इंतज़ार...
-        </div>
+        <h3>🔮 भविष्यवाणी (Future)</h3>
+        <div id="future" style="font-size: 28px; color: var(--gold); font-weight: bold; text-align: center;">--</div>
     </div>
 </div>
 
 <div class="overlay" id="overlay" onclick="closePopup()"></div>
 <div id="popup">
-    <button onclick="closePopup()" style="float:right; background:#800000; color:white; border:none; border-radius:50%; width:30px; height:30px; cursor:pointer;">X</button>
-    <h3 style="margin-top:0;">Pattern Logic View</h3>
-    <div class="table-container" style="width:100%; border:1px solid #ddd;">
-        <canvas id="popCanvas"></canvas>
-        <div id="popData"></div>
-    </div>
+    <button onclick="closePopup()" style="float:right; background:red; color:#fff; border:none;">X</button>
+    <div id="popContent"></div>
 </div>
 
 <script>
-const STORAGE_KEY = "kalyan_v3_adv";
+const STORAGE_KEY = "kalyan_v6_final";
 let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [
     ["51","91","41","57","19","95"],
     ["05","90","74","06","19","63"],
@@ -105,29 +88,12 @@ const families = {"12":["12","17","21","26","62","67","71","76"],"13":["13","18"
 let activePattern = null;
 let currentTargetCol = null;
 
-function norm(v) { 
-    v = String(v).trim();
-    if(v === "" || v === "**") return "**";
-    return v.length === 1 ? "0"+v : v;
-}
+function norm(v) { v = String(v).trim(); return (v === "" || v === "**") ? "**" : (v.length === 1 ? "0"+v : v); }
 
-// Logic 1: Family Match
-function getFamily(v) {
-    for(let k in families) if(families[k].includes(v)) return k;
-    return null;
-}
-
-// Logic 2: Total Sum Match (e.g. 51 => 5+1=6)
-function getTotal(v) {
-    if(v === "**") return -1;
-    return (parseInt(v[0]) + parseInt(v[1])) % 10;
-}
-
-function isSmartMatch(a, b) {
+function isMatch(a, b) {
     if(a === "**" || b === "**") return false;
-    if(a === b || a === b.split('').reverse().join('')) return true; // Direct or Palti
-    if(getFamily(a) === getFamily(b)) return true; // Family
-    if(getTotal(a) === getTotal(b)) return true; // Total/Sum
+    if(a === b || a === b.split('').reverse().join('')) return true;
+    for(let k in families) { if(families[k].includes(a) && families[k].includes(b)) return true; }
     return false;
 }
 
@@ -136,151 +102,114 @@ function draw() {
     data.forEach((r, ri) => {
         h += "<tr>";
         r.forEach((c, ci) => {
-            let isTarget = (activePattern && isCellInPattern(ri, ci)) ? "circle" : "";
-            let isBlank = (c === "**") ? "blank" : "";
-            h += `<td class="${isTarget} ${isBlank}" contenteditable="true" 
-                  oninput="edit(${ri},${ci},this)" 
-                  onclick="${c === '**' ? `startAnalysis(${ri},${ci})` : ''}">${c}</td>`;
+            let cls = "";
+            if (activePattern && isPartOfPattern(ri, ci)) cls = "circle";
+            if (c === "**") cls += " blank";
+            h += `<td class="${cls}" contenteditable="true" oninput="edit(${ri},${ci},this)" 
+                  onclick="${c === '**' ? `startAI(${ri},${ci})` : ''}">${c}</td>`;
         });
         h += "</tr>";
     });
     document.getElementById("tbl").innerHTML = h;
-    if(activePattern) setTimeout(() => drawPatternLines("mainCanvas", "tbl"), 100);
+    if(activePattern) setTimeout(() => drawConnections("mainCanvas", "tbl"), 60);
 }
 
-function isCellInPattern(ri, ci) {
+function isPartOfPattern(ri, ci) {
     if(!activePattern) return false;
-    let offset = ri - activePattern.startRow;
-    return (offset >= 0 && offset < activePattern.shape.length && activePattern.shape[offset][ci]);
+    return activePattern.points.some(p => p.r === ri && p.c === ci);
 }
 
-function startAnalysis(r, c) {
+function startAI(r, c) {
     currentTargetCol = c;
-    let baseJodi = "**";
-    for(let i = r-1; i >= 0; i--) { if(data[i][c] !== "**") { baseJodi = data[i][c]; break; } }
-    
-    if(baseJodi === "**") return;
-
-    let shape = [];
-    let startLook = Math.max(0, r - 4); // Scan up to 5 rows back
-    for(let i = startLook; i <= r; i++) {
-        let rowShape = [];
-        for(let j = 0; j < 6; j++) {
-            rowShape.push(data[i][j] !== "**" && isSmartMatch(data[i][j], baseJodi) ? 1 : 0);
+    let points = [];
+    // 1. पिछले 4 हफ़्तों के डेटा से "रिलेशन" निकालें
+    for (let i = 1; i <= 4; i++) {
+        let checkRow = r - i;
+        if (checkRow < 0) break;
+        for (let j = 0; j < 6; j++) {
+            if (data[checkRow][j] !== "**") {
+                points.push({ r: checkRow, c: j, val: data[checkRow][j], dr: i, dc: j - c });
+            }
         }
-        shape.push(rowShape);
     }
-    findMatches(shape, baseJodi);
+    searchSystem(points, r, c);
 }
 
-function findMatches(shape, base) {
+function searchSystem(points, originalR, originalC) {
     let matches = [];
-    for(let i = 0; i <= data.length - shape.length; i++) {
-        let score = 0, totalDots = 0;
-        shape.forEach((row, ri) => {
-            row.forEach((cell, ci) => {
-                if(cell) {
-                    totalDots++;
-                    if(isSmartMatch(data[i+ri][ci], base)) score++;
-                }
-            });
+    // पूरे चार्ट में इस 'DNA' को खोजें
+    for (let i = 0; i < data.length; i++) {
+        let currentPoints = [];
+        let score = 0;
+        
+        points.forEach(p => {
+            let targetR = i - p.dr;
+            let targetC = originalC + p.dc;
+            if (data[targetR] && data[targetR][targetC] && isMatch(data[targetR][targetC], p.val)) {
+                score++;
+                currentPoints.push({ r: targetR, c: targetC });
+            }
         });
-        if(score > 0 && score === totalDots) matches.push(i);
+
+        if (score >= 2) { // कम से कम 2 पॉइंट मैच होने चाहिए
+            matches.push({ startRow: i, points: currentPoints, score: score });
+        }
     }
-    processAI(shape, matches);
+    updateDashboard(matches, points);
 }
 
-function processAI(shape, matches) {
-    let container = document.getElementById("checks");
-    container.innerHTML = "";
-    
-    let nextJodis = [], opens = [], closes = [], anks = [];
+function updateDashboard(matches, originalPoints) {
+    let list = document.getElementById("checks");
+    list.innerHTML = "";
+    let predictions = [];
 
-    matches.forEach((startRow) => {
+    matches.sort((a,b) => b.score - a.score).forEach(m => {
         let div = document.createElement("div");
-        div.style.cssText = "background:#333; margin:5px; padding:8px; cursor:pointer; border-radius:5px;";
-        div.innerHTML = `📍 पैटर्न मिला: रो नंबर ${startRow + 1}`;
+        div.innerText = `🔥 मैच स्कोर: ${m.score} (रो: ${m.startRow + 1})`;
         div.onclick = () => {
-            activePattern = {startRow, shape};
+            activePattern = { points: m.points };
             draw();
-            showPopupPattern(startRow, shape);
+            // भविष्य की जोड़ी निकालें
+            if(data[m.startRow] && data[m.startRow][currentTargetCol] !== "**") {
+                document.getElementById("future").innerText = data[m.startRow][currentTargetCol];
+            }
         };
-        container.appendChild(div);
-
-        // Collect Future Data
-        let nextRowIdx = startRow + shape.length;
-        if(data[nextRowIdx] && data[nextRowIdx][currentTargetCol] !== "**") {
-            let jodi = data[nextRowIdx][currentTargetCol];
-            nextJodis.push(jodi);
-            opens.push(jodi[0]);
-            closes.push(jodi[1]);
-            anks.push(jodi[0], jodi[1]);
-        }
+        list.appendChild(div);
     });
 
-    // Update Stats
-    const top = (arr) => arr.length ? arr.sort((a,b) => arr.filter(v => v===a).length - arr.filter(v => v===b).length).pop() : "-";
-    
-    document.getElementById("favOpen").innerText = top(opens);
-    document.getElementById("favClose").innerText = top(closes);
-    document.getElementById("strongAnk").innerText = top(anks);
-    document.getElementById("future").innerText = nextJodis.length ? nextJodis.join(" , ") : "डेटा कम है";
+    document.getElementById("logicInfo").innerHTML = `सिस्टम ने ${matches.length} संभावित पैटर्न पकड़े हैं। सबसे ऊपर वाला सबसे सटीक है।`;
 }
 
-function drawPatternLines(canvasId, tableId) {
-    const canvas = document.getElementById(canvasId);
-    const table = document.getElementById(tableId);
-    const ctx = canvas.getContext("2d");
-    canvas.width = table.offsetWidth;
-    canvas.height = table.offsetHeight;
-    ctx.clearRect(0,0, canvas.width, canvas.height);
+function drawConnections(canvasId, tableId) {
+    const cvs = document.getElementById(canvasId);
+    const tbl = document.getElementById(tableId);
+    const ctx = cvs.getContext("2d");
+    cvs.width = tbl.offsetWidth; cvs.height = tbl.offsetHeight;
+    ctx.clearRect(0,0, cvs.width, cvs.height);
 
-    const circles = table.querySelectorAll(".circle");
+    const circles = tbl.querySelectorAll(".circle");
     if(circles.length < 2) return;
 
-    ctx.strokeStyle = "gold";
+    ctx.strokeStyle = "rgba(0,150,255,0.8)";
     ctx.lineWidth = 2;
-    let tableRect = table.getBoundingClientRect();
+    let rect = tbl.getBoundingClientRect();
 
-    for(let i=0; i<circles.length-1; i++) {
-        let r1 = circles[i].getBoundingClientRect();
-        let r2 = circles[i+1].getBoundingClientRect();
+    circles.forEach((c, i) => {
+        if(i === 0) return;
+        let r1 = circles[0].getBoundingClientRect();
+        let r2 = c.getBoundingClientRect();
         ctx.beginPath();
-        ctx.moveTo(r1.left - tableRect.left + r1.width/2, r1.top - tableRect.top + r1.height/2);
-        ctx.lineTo(r2.left - tableRect.left + r2.width/2, r2.top - tableRect.top + r2.height/2);
+        ctx.moveTo(r1.left - rect.left + r1.width/2, r1.top - rect.top + r1.height/2);
+        ctx.lineTo(r2.left - rect.left + r2.width/2, r2.top - rect.top + r2.height/2);
         ctx.stroke();
-    }
-}
-
-function showPopupPattern(rowIdx, shape) {
-    let html = "<table>";
-    for(let i=0; i < shape.length; i++) {
-        html += "<tr>";
-        data[rowIdx + i].forEach((val, j) => {
-            html += `<td class="${shape[i][j] ? 'circle' : ''}">${val}</td>`;
-        });
-        html += "</tr>";
-    }
-    document.getElementById("popData").innerHTML = html + "</table>";
-    document.getElementById("popup").style.display = "block";
-    document.getElementById("overlay").style.display = "block";
-    setTimeout(() => drawPatternLines("popCanvas", "popData table"), 100);
+    });
 }
 
 function edit(r,c,el) { data[r][c] = norm(el.innerText); }
 function addRow() { data.push(["**","**","**","**","**","**"]); draw(); }
-function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); alert("डेटा सुरक्षित कर दिया गया है!"); }
-function clearData() { if(confirm("क्या आप सारा डेटा डिलीट करना चाहते हैं?")) { localStorage.clear(); location.reload(); } }
-function closePopup() { document.getElementById("popup").style.display = "none"; document.getElementById("overlay").style.display = "none"; }
-
-document.getElementById("csv").onchange = e => {
-    let fr = new FileReader();
-    fr.onload = () => {
-        data = fr.result.split('\n').filter(l=>l.trim()).map(l => l.split(',').map(v => norm(v)));
-        draw();
-    };
-    fr.readAsText(e.target.files[0]);
-};
+function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); alert("डेटा सेव हो गया!"); }
+function clearData() { if(confirm("सब मिटा दें?")) { localStorage.clear(); location.reload(); }}
+function closePopup() { document.getElementById("popup").style.display="none"; document.getElementById("overlay").style.display="none"; }
 
 draw();
 </script>
