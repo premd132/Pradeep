@@ -1,81 +1,66 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kalyan AI Pattern - Final Logic</title>
+<title>Kalyan AI Pattern - Final Correct Version</title>
 <style>
-    :root { --gold: #ffd700; --red: #ff0000; --bg: #121212; --panel: #1e1e1e; }
-    body { font-family: sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 10px; }
+    :root { --gold: #ffd700; --red: #ff0000; --bg: #000; --panel: #1a1a1a; }
+    body { font-family: 'Courier New', Courier, monospace; background: var(--bg); color: #fff; margin: 0; padding: 10px; }
     
-    .header { text-align: center; color: var(--gold); border-bottom: 2px solid #333; margin-bottom: 10px; }
-    .toolbar { display: flex; gap: 8px; justify-content: center; margin-bottom: 10px; }
+    .header { text-align: center; color: var(--gold); border-bottom: 2px solid #333; margin-bottom: 10px; padding: 10px; }
+    .toolbar { display: flex; gap: 10px; justify-content: center; margin-bottom: 15px; }
     
-    .table-container { position: relative; background: #fff; display: inline-block; border: 2px solid #555; }
-    table { border-collapse: collapse; color: #000; font-size: 14px; }
-    td, th { border: 1px solid #999; width: 40px; height: 40px; text-align: center; font-weight: bold; position: relative; }
-    th { background: #600; color: #fff; font-size: 11px; }
+    /* Chart Styles - Exactly like a Paper Chart */
+    .table-container { position: relative; background: #fff; display: inline-block; border: 3px solid #555; }
+    table { border-collapse: collapse; color: #000; font-size: 16px; }
+    td, th { border: 1px solid #000; width: 45px; height: 45px; text-align: center; font-weight: bold; position: relative; }
+    th { background: #b22222; color: #fff; font-size: 12px; }
     
-    /* स्पेशल क्लास: जब पैटर्न मैच हो */
-    .circle { background: var(--red) !important; color: #fff !important; border-radius: 50%; z-index: 5; }
-    .highlight-blue { background: #007bff !important; color: #fff !important; border-radius: 50%; }
-    .blank { background: #ddd !important; cursor: crosshair; }
+    .circle { background: var(--red) !important; color: #fff !important; border-radius: 50%; z-index: 10; width: 35px; height: 35px; line-height: 35px; display: inline-block; }
+    .blank { background: #ffffcc !important; cursor: pointer; border: 2px dashed #f00; }
 
-    .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-top: 15px; }
-    .card { background: var(--panel); padding: 12px; border-radius: 8px; border-left: 4px solid var(--gold); }
-    
-    #checks div { background: #2c3e50; margin: 4px 0; padding: 8px; border-radius: 4px; cursor: pointer; transition: 0.3s; }
-    #checks div:hover { background: #34495e; color: var(--gold); }
+    .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin-top: 20px; }
+    .card { background: var(--panel); padding: 15px; border-radius: 10px; border: 1px solid var(--gold); }
+    .card h3 { margin: 0 0 10px 0; color: var(--gold); text-align: center; border-bottom: 1px solid #444; }
 
-    canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 4; }
-    button { background: var(--gold); color: #000; border: none; padding: 8px 12px; font-weight: bold; border-radius: 4px; cursor: pointer; }
-    
-    #popup { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border: 4px solid var(--gold); display: none; z-index: 100; padding: 10px; color: #000; }
-    .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; z-index: 95; }
+    #matchList div { background: #333; margin: 5px 0; padding: 10px; cursor: pointer; border-radius: 5px; font-weight: bold; }
+    #matchList div:hover { background: #444; color: var(--gold); }
+
+    canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 5; }
+    button { background: var(--gold); color: #000; border: none; padding: 10px 15px; font-weight: bold; cursor: pointer; border-radius: 4px; }
 </style>
 </head>
 <body>
 
-<div class="header"><h3>🏆 KALYAN AI PATTERN (V6-PRO)</h3></div>
+<div class="header"><h1>KALYAN AI: REAL PATTERN SENSOR</h1></div>
 
 <div class="toolbar">
-    <button onclick="addRow()">➕ रो जोड़ें</button>
-    <button onclick="saveData()" style="background:#28a745; color:#fff;">💾 सेव</button>
-    <button onclick="clearData()" style="background:#d9534f; color:#fff;">🗑️ डिलीट</button>
-    <input type="file" id="csv" style="display:none" onchange="loadCSV(this)">
-    <button onclick="document.getElementById('csv').click()">📂 लोड</button>
+    <button onclick="addRow()">➕ Add Week</button>
+    <button onclick="saveData()" style="background:#28a745; color:#fff;">💾 Save Data</button>
+    <button onclick="clearData()" style="background:#d32f2f; color:#fff;">🗑️ Reset All</button>
 </div>
 
 <center>
-    <div class="table-container">
-        <canvas id="mainCanvas"></canvas>
+    <div class="table-container" id="mainChart">
+        <canvas id="lineCanvas"></canvas>
         <table id="tbl"></table>
     </div>
 </center>
 
 <div class="dashboard">
     <div class="card">
-        <h3>📍 मैच लिस्ट (Historical)</h3>
-        <div id="checks">खाली जगह पर क्लिक करें...</div>
+        <h3>📍 Patterns Found</h3>
+        <div id="matchList">Click on a yellow box to analyze...</div>
     </div>
     <div class="card">
-        <h3>🤖 AI पैटर्न लॉजिक</h3>
-        <div id="logicInfo">पैटर्न की गहराई यहाँ दिखेगी...</div>
+        <h3>🔮 Prediction (Jodi)</h3>
+        <div id="predictBox" style="font-size: 40px; color: var(--gold); text-align: center; margin-top: 10px;">--</div>
     </div>
-    <div class="card">
-        <h3>🔮 भविष्यवाणी (Future)</h3>
-        <div id="future" style="font-size: 28px; color: var(--gold); font-weight: bold; text-align: center;">--</div>
-    </div>
-</div>
-
-<div class="overlay" id="overlay" onclick="closePopup()"></div>
-<div id="popup">
-    <button onclick="closePopup()" style="float:right; background:red; color:#fff; border:none;">X</button>
-    <div id="popContent"></div>
 </div>
 
 <script>
-const STORAGE_KEY = "kalyan_v6_final";
+const STORAGE_KEY = "kalyan_final_v7";
 let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [
     ["51","91","41","57","19","95"],
     ["05","90","74","06","19","63"],
@@ -83,133 +68,113 @@ let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [
     ["**","**","**","**","**","**"]
 ];
 
-const families = {"12":["12","17","21","26","62","67","71","76"],"13":["13","18","31","36","63","68","81","86"],"14":["14","19","41","46","64","69","91","96"],"15":["01","06","10","15","51","56","60","65"],"23":["23","28","32","37","73","78","82","87"],"24":["24","29","42","47","74","79","92","97"],"25":["02","07","20","25","52","57","70","75"],"34":["34","39","43","48","84","89","93","98"],"35":["03","08","30","35","53","58","80","85"],"45":["04","09","40","45","54","59","90","95"],"HR":["05","16","27","38","49","50","61","72","83","94"],"FR":["00","11","22","33","44","55","66","77","88","99"]};
+let activeMatches = [];
 
-let activePattern = null;
-let currentTargetCol = null;
+function norm(v) { 
+    v = String(v).trim(); 
+    if(v === "" || v === "**") return "**";
+    return v.length === 1 ? "0"+v : v;
+}
 
-function norm(v) { v = String(v).trim(); return (v === "" || v === "**") ? "**" : (v.length === 1 ? "0"+v : v); }
-
-function isMatch(a, b) {
-    if(a === "**" || b === "**") return false;
-    if(a === b || a === b.split('').reverse().join('')) return true;
-    for(let k in families) { if(families[k].includes(a) && families[k].includes(b)) return true; }
-    return false;
+function isLogicMatch(v1, v2) {
+    if(v1 === "**" || v2 === "**") return false;
+    // Direct, Palti, or Same Family
+    if(v1 === v2 || v1 === v2.split('').reverse().join('')) return true;
+    return false; // For accuracy, focusing on Direct/Palti
 }
 
 function draw() {
-    let h = "<tr><th>सोम</th><th>मंगल</th><th>बुध</th><th>गुरु</th><th>शुक्र</th><th>शनि</th></tr>";
+    let h = "<tr><th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th><th>SAT</th></tr>";
     data.forEach((r, ri) => {
         h += "<tr>";
         r.forEach((c, ci) => {
-            let cls = "";
-            if (activePattern && isPartOfPattern(ri, ci)) cls = "circle";
-            if (c === "**") cls += " blank";
-            h += `<td class="${cls}" contenteditable="true" oninput="edit(${ri},${ci},this)" 
-                  onclick="${c === '**' ? `startAI(${ri},${ci})` : ''}">${c}</td>`;
+            let cellContent = c;
+            let cls = (c === "**") ? "blank" : "";
+            // If part of active pattern, wrap in circle
+            if(activeMatches.some(p => p.r === ri && p.c === ci)) {
+                cellContent = `<span class="circle">${c}</span>`;
+            }
+            h += `<td class="${cls}" contenteditable="${c!=='**'}" oninput="edit(${ri},${ci},this)" 
+                  onclick="${c === '**' ? `findRealPattern(${ri},${ci})` : ''}">${cellContent}</td>`;
         });
         h += "</tr>";
     });
     document.getElementById("tbl").innerHTML = h;
-    if(activePattern) setTimeout(() => drawConnections("mainCanvas", "tbl"), 60);
+    if(activeMatches.length > 0) setTimeout(drawCanvasLines, 100);
 }
 
-function isPartOfPattern(ri, ci) {
-    if(!activePattern) return false;
-    return activePattern.points.some(p => p.r === ri && p.c === ci);
-}
-
-function startAI(r, c) {
-    currentTargetCol = c;
-    let points = [];
-    // 1. पिछले 4 हफ़्तों के डेटा से "रिलेशन" निकालें
-    for (let i = 1; i <= 4; i++) {
-        let checkRow = r - i;
-        if (checkRow < 0) break;
-        for (let j = 0; j < 6; j++) {
-            if (data[checkRow][j] !== "**") {
-                points.push({ r: checkRow, c: j, val: data[checkRow][j], dr: i, dc: j - c });
-            }
-        }
-    }
-    searchSystem(points, r, c);
-}
-
-function searchSystem(points, originalR, originalC) {
-    let matches = [];
-    // पूरे चार्ट में इस 'DNA' को खोजें
-    for (let i = 0; i < data.length; i++) {
-        let currentPoints = [];
+function findRealPattern(r, c) {
+    let matchesFound = [];
+    // Video Logic: Look for repeating "gaps" in history
+    for(let i = 0; i < r - 1; i++) {
+        // Assume row 'i' was a previous target
+        let potentialPoints = [];
         let score = 0;
         
-        points.forEach(p => {
-            let targetR = i - p.dr;
-            let targetC = originalC + p.dc;
-            if (data[targetR] && data[targetR][targetC] && isMatch(data[targetR][targetC], p.val)) {
-                score++;
-                currentPoints.push({ r: targetR, c: targetC });
+        // Check 2 weeks above the historical point and current point
+        for(let gap = 1; gap <= 3; gap++) {
+            if(r-gap >= 0 && i-gap >= 0) {
+                // Cross matching logic
+                for(let col = 0; col < 6; col++) {
+                    if(isLogicMatch(data[r-gap][col], data[i-gap][col])) {
+                        potentialPoints.push({r: i-gap, c: col});
+                        score++;
+                    }
+                }
             }
-        });
+        }
 
-        if (score >= 2) { // कम से कम 2 पॉइंट मैच होने चाहिए
-            matches.push({ startRow: i, points: currentPoints, score: score });
+        if(score >= 2) {
+            matchesFound.push({targetRow: i, points: potentialPoints, score: score});
         }
     }
-    updateDashboard(matches, points);
+    updateUI(matchesFound, c);
 }
 
-function updateDashboard(matches, originalPoints) {
-    let list = document.getElementById("checks");
+function updateUI(matches, col) {
+    let list = document.getElementById("matchList");
     list.innerHTML = "";
-    let predictions = [];
-
+    
     matches.sort((a,b) => b.score - a.score).forEach(m => {
-        let div = document.createElement("div");
-        div.innerText = `🔥 मैच स्कोर: ${m.score} (रो: ${m.startRow + 1})`;
-        div.onclick = () => {
-            activePattern = { points: m.points };
+        let d = document.createElement("div");
+        d.innerHTML = `Pattern Score: ${m.score} (Found at Week ${m.targetRow + 1})`;
+        d.onclick = () => {
+            activeMatches = m.points;
             draw();
-            // भविष्य की जोड़ी निकालें
-            if(data[m.startRow] && data[m.startRow][currentTargetCol] !== "**") {
-                document.getElementById("future").innerText = data[m.startRow][currentTargetCol];
-            }
+            document.getElementById("predictBox").innerText = data[m.targetRow][col];
         };
-        list.appendChild(div);
+        list.appendChild(d);
     });
-
-    document.getElementById("logicInfo").innerHTML = `सिस्टम ने ${matches.length} संभावित पैटर्न पकड़े हैं। सबसे ऊपर वाला सबसे सटीक है।`;
 }
 
-function drawConnections(canvasId, tableId) {
-    const cvs = document.getElementById(canvasId);
-    const tbl = document.getElementById(tableId);
+function drawCanvasLines() {
+    const cvs = document.getElementById("lineCanvas");
+    const tbl = document.getElementById("tbl");
     const ctx = cvs.getContext("2d");
     cvs.width = tbl.offsetWidth; cvs.height = tbl.offsetHeight;
     ctx.clearRect(0,0, cvs.width, cvs.height);
 
-    const circles = tbl.querySelectorAll(".circle");
-    if(circles.length < 2) return;
-
-    ctx.strokeStyle = "rgba(0,150,255,0.8)";
+    ctx.strokeStyle = "red";
     ctx.lineWidth = 2;
     let rect = tbl.getBoundingClientRect();
 
-    circles.forEach((c, i) => {
-        if(i === 0) return;
-        let r1 = circles[0].getBoundingClientRect();
-        let r2 = c.getBoundingClientRect();
+    let circles = document.querySelectorAll(".circle");
+    if(circles.length < 2) return;
+
+    let first = circles[0].getBoundingClientRect();
+    circles.forEach(c => {
+        let r = c.getBoundingClientRect();
         ctx.beginPath();
-        ctx.moveTo(r1.left - rect.left + r1.width/2, r1.top - rect.top + r1.height/2);
-        ctx.lineTo(r2.left - rect.left + r2.width/2, r2.top - rect.top + r2.height/2);
+        ctx.moveTo(first.left - rect.left + first.width/2, first.top - rect.top + first.height/2);
+        ctx.lineTo(r.left - rect.left + r.width/2, r.top - rect.top + r.height/2);
         ctx.stroke();
     });
 }
 
 function edit(r,c,el) { data[r][c] = norm(el.innerText); }
 function addRow() { data.push(["**","**","**","**","**","**"]); draw(); }
-function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); alert("डेटा सेव हो गया!"); }
-function clearData() { if(confirm("सब मिटा दें?")) { localStorage.clear(); location.reload(); }}
-function closePopup() { document.getElementById("popup").style.display="none"; document.getElementById("overlay").style.display="none"; }
+function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); alert("Chart Saved!"); }
+function clearData() { if(confirm("Reset entire chart?")) { localStorage.clear(); location.reload(); }}
 
 draw();
 </script>
