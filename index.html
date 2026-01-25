@@ -1,182 +1,186 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kalyan AI Pattern - Final Correct Version</title>
-<style>
-    :root { --gold: #ffd700; --red: #ff0000; --bg: #000; --panel: #1a1a1a; }
-    body { font-family: 'Courier New', Courier, monospace; background: var(--bg); color: #fff; margin: 0; padding: 10px; }
-    
-    .header { text-align: center; color: var(--gold); border-bottom: 2px solid #333; margin-bottom: 10px; padding: 10px; }
-    .toolbar { display: flex; gap: 10px; justify-content: center; margin-bottom: 15px; }
-    
-    /* Chart Styles - Exactly like a Paper Chart */
-    .table-container { position: relative; background: #fff; display: inline-block; border: 3px solid #555; }
-    table { border-collapse: collapse; color: #000; font-size: 16px; }
-    td, th { border: 1px solid #000; width: 45px; height: 45px; text-align: center; font-weight: bold; position: relative; }
-    th { background: #b22222; color: #fff; font-size: 12px; }
-    
-    .circle { background: var(--red) !important; color: #fff !important; border-radius: 50%; z-index: 10; width: 35px; height: 35px; line-height: 35px; display: inline-block; }
-    .blank { background: #ffffcc !important; cursor: pointer; border: 2px dashed #f00; }
+    <meta charset="UTF-8">
+    <title>Kalyan AI Pattern Master V8 - Table Trick & CSV</title>
+    <style>
+        :root { --gold: #ffd700; --red: #ff3e3e; --bg: #0d0d0d; --card: #1a1a1a; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 10px; }
+        
+        .header { text-align: center; padding: 10px; border-bottom: 2px solid var(--gold); margin-bottom: 20px; }
+        .controls { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; background: var(--card); padding: 15px; border-radius: 10px; }
+        
+        /* Chart Design */
+        .table-container { position: relative; background: #fff; display: inline-block; border: 3px solid #444; box-shadow: 0 0 30px rgba(255,215,0,0.2); }
+        table { border-collapse: collapse; color: #000; font-size: 16px; }
+        td, th { border: 1px solid #999; width: 45px; height: 45px; text-align: center; font-weight: bold; position: relative; }
+        th { background: #800000; color: #fff; font-size: 11px; text-transform: uppercase; }
+        
+        .blank { background: #fffde6 !important; cursor: pointer; border: 2px dashed #f00 !important; }
+        .circle { background: var(--red) !important; color: #fff !important; border-radius: 50%; width: 35px; height: 35px; line-height: 35px; display: inline-block; z-index: 10; position: relative; }
+        
+        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin-top: 20px; }
+        .card { background: var(--card); padding: 15px; border-radius: 10px; border-left: 5px solid var(--gold); }
+        .card h3 { color: var(--gold); margin-top: 0; border-bottom: 1px solid #333; padding-bottom: 5px; }
 
-    .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 15px; margin-top: 20px; }
-    .card { background: var(--panel); padding: 15px; border-radius: 10px; border: 1px solid var(--gold); }
-    .card h3 { margin: 0 0 10px 0; color: var(--gold); text-align: center; border-bottom: 1px solid #444; }
-
-    #matchList div { background: #333; margin: 5px 0; padding: 10px; cursor: pointer; border-radius: 5px; font-weight: bold; }
-    #matchList div:hover { background: #444; color: var(--gold); }
-
-    canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 5; }
-    button { background: var(--gold); color: #000; border: none; padding: 10px 15px; font-weight: bold; cursor: pointer; border-radius: 4px; }
-</style>
+        canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 5; }
+        button { background: var(--gold); color: #000; border: none; padding: 10px 15px; font-weight: bold; border-radius: 5px; cursor: pointer; }
+        input[type="file"] { background: #333; color: white; padding: 8px; border-radius: 5px; border: 1px solid #444; }
+    </style>
 </head>
 <body>
 
-<div class="header"><h1>KALYAN AI: REAL PATTERN SENSOR</h1></div>
+<div class="header">
+    <h1>🏆 KALYAN AI PATTERN MASTER <span style="font-size: 14px; color: #fff;">(V8 - TABLE TRICK)</span></h1>
+</div>
 
-<div class="toolbar">
-    <button onclick="addRow()">➕ Add Week</button>
-    <button onclick="saveData()" style="background:#28a745; color:#fff;">💾 Save Data</button>
-    <button onclick="clearData()" style="background:#d32f2f; color:#fff;">🗑️ Reset All</button>
+<div class="controls">
+    <input type="file" id="csvFile" accept=".csv">
+    <button onclick="addRow()">➕ रो जोड़ें</button>
+    <button onclick="saveData()" style="background: #28a745; color: white;">💾 सेव करें</button>
+    <button onclick="clearAll()" style="background: #d32f2f; color: white;">🗑️ रिसेट</button>
 </div>
 
 <center>
-    <div class="table-container" id="mainChart">
-        <canvas id="lineCanvas"></canvas>
-        <table id="tbl"></table>
+    <div class="table-container" id="chartArea">
+        <canvas id="canvasLayer"></canvas>
+        <table id="mainTable"></table>
     </div>
 </center>
 
 <div class="dashboard">
     <div class="card">
-        <h3>📍 Patterns Found</h3>
-        <div id="matchList">Click on a yellow box to analyze...</div>
+        <h3>📍 पकड़े गए पैटर्न (Table Matches)</h3>
+        <div id="matchList">CSV फाइल लोड करें और खाली बॉक्स (**) पर क्लिक करें...</div>
     </div>
     <div class="card">
-        <h3>🔮 Prediction (Jodi)</h3>
-        <div id="predictBox" style="font-size: 40px; color: var(--gold); text-align: center; margin-top: 10px;">--</div>
+        <h3>🔮 AI भविष्यवाणी (Next Jodi)</h3>
+        <div id="predictionDisplay" style="font-size: 50px; color: var(--gold); text-align: center; margin-top: 10px; font-weight: bold;">--</div>
     </div>
 </div>
 
 <script>
-const STORAGE_KEY = "kalyan_final_v7";
-let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [
+let chartData = JSON.parse(localStorage.getItem('kalyan_v8_data')) || [
     ["51","91","41","57","19","95"],
     ["05","90","74","06","19","63"],
     ["90","34","82","09","28","19"],
     ["**","**","**","**","**","**"]
 ];
 
-let activeMatches = [];
+let activePoints = [];
 
-function norm(v) { 
-    v = String(v).trim(); 
-    if(v === "" || v === "**") return "**";
-    return v.length === 1 ? "0"+v : v;
-}
+// CSV Loader
+document.getElementById('csvFile').onchange = function(e) {
+    let reader = new FileReader();
+    reader.onload = function() {
+        chartData = reader.result.split('\n')
+                          .filter(r => r.trim() !== "")
+                          .map(r => r.split(',').map(v => v.trim().length === 1 ? "0"+v.trim() : v.trim()));
+        render();
+    };
+    reader.readAsText(e.target.files[0]);
+};
 
-function isLogicMatch(v1, v2) {
-    if(v1 === "**" || v2 === "**") return false;
-    // Direct, Palti, or Same Family
-    if(v1 === v2 || v1 === v2.split('').reverse().join('')) return true;
-    return false; // For accuracy, focusing on Direct/Palti
-}
-
-function draw() {
-    let h = "<tr><th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th><th>SAT</th></tr>";
-    data.forEach((r, ri) => {
-        h += "<tr>";
-        r.forEach((c, ci) => {
-            let cellContent = c;
-            let cls = (c === "**") ? "blank" : "";
-            // If part of active pattern, wrap in circle
-            if(activeMatches.some(p => p.r === ri && p.c === ci)) {
-                cellContent = `<span class="circle">${c}</span>`;
-            }
-            h += `<td class="${cls}" contenteditable="${c!=='**'}" oninput="edit(${ri},${ci},this)" 
-                  onclick="${c === '**' ? `findRealPattern(${ri},${ci})` : ''}">${cellContent}</td>`;
+function render() {
+    let html = "<tr><th>सोम</th><th>मंगल</th><th>बुध</th><th>गुरु</th><th>शुक्र</th><th>शनि</th></tr>";
+    chartData.forEach((row, rIdx) => {
+        html += "<tr>";
+        row.forEach((val, cIdx) => {
+            let isBlank = (val === "**");
+            let displayVal = activePoints.some(p => p.r === rIdx && p.c === cIdx) 
+                             ? `<span class="circle">${val}</span>` : val;
+            
+            html += `<td class="${isBlank ? 'blank' : ''}" 
+                        contenteditable="${!isBlank}" 
+                        oninput="updateData(${rIdx}, ${cIdx}, this)"
+                        onclick="${isBlank ? `analyzeTableTrick(${rIdx}, ${cIdx})` : ''}">
+                        ${displayVal}
+                    </td>`;
         });
-        h += "</tr>";
+        html += "</tr>";
     });
-    document.getElementById("tbl").innerHTML = h;
-    if(activeMatches.length > 0) setTimeout(drawCanvasLines, 100);
+    document.getElementById('mainTable').innerHTML = html;
+    if(activePoints.length > 0) setTimeout(drawLines, 100);
 }
 
-function findRealPattern(r, c) {
-    let matchesFound = [];
-    // Video Logic: Look for repeating "gaps" in history
-    for(let i = 0; i < r - 1; i++) {
-        // Assume row 'i' was a previous target
-        let potentialPoints = [];
+// Table Trick Logic: अंकों का जोड़ और पोजीशन स्कैन करना
+function analyzeTableTrick(rowIdx, colIdx) {
+    let matches = [];
+    activePoints = [];
+    
+    // इतिहास में पिछले हफ़्तों को स्कैन करें
+    for (let i = 2; i < rowIdx; i++) {
         let score = 0;
-        
-        // Check 2 weeks above the historical point and current point
-        for(let gap = 1; gap <= 3; gap++) {
-            if(r-gap >= 0 && i-gap >= 0) {
-                // Cross matching logic
-                for(let col = 0; col < 6; col++) {
-                    if(isLogicMatch(data[r-gap][col], data[i-gap][col])) {
-                        potentialPoints.push({r: i-gap, c: col});
-                        score++;
-                    }
-                }
+        let tempPoints = [];
+
+        // लॉजिक: अगर 2 हफ्ते पहले का सोमवार और पिछले हफ्ते का बुधवार एक जैसा 'टोटल' बना रहे हैं
+        if (chartData[i-1] && chartData[rowIdx-1]) {
+            let totalOld = (parseInt(chartData[i-1][colIdx][0]) + parseInt(chartData[i-1][colIdx][1])) % 10;
+            let totalNew = (parseInt(chartData[rowIdx-1][colIdx][0]) + parseInt(chartData[rowIdx-1][colIdx][1])) % 10;
+            
+            if (totalOld === totalNew) {
+                score++;
+                tempPoints.push({r: i-1, c: colIdx});
             }
         }
 
-        if(score >= 2) {
-            matchesFound.push({targetRow: i, points: potentialPoints, score: score});
+        if (score > 0) {
+            matches.push({targetRow: i, points: tempPoints, score: score});
         }
     }
-    updateUI(matchesFound, c);
+
+    displayMatches(matches, colIdx);
 }
 
-function updateUI(matches, col) {
-    let list = document.getElementById("matchList");
+function displayMatches(matches, col) {
+    let list = document.getElementById('matchList');
     list.innerHTML = "";
     
-    matches.sort((a,b) => b.score - a.score).forEach(m => {
-        let d = document.createElement("div");
-        d.innerHTML = `Pattern Score: ${m.score} (Found at Week ${m.targetRow + 1})`;
-        d.onclick = () => {
-            activeMatches = m.points;
-            draw();
-            document.getElementById("predictBox").innerText = data[m.targetRow][col];
+    matches.forEach(m => {
+        let div = document.createElement('div');
+        div.style.cssText = "background:#333; padding:10px; margin-bottom:5px; cursor:pointer; border-radius:5px;";
+        div.innerHTML = `🔥 टेबल मैच मिला (Row: ${m.targetRow + 1})`;
+        div.onclick = () => {
+            activePoints = m.points;
+            render();
+            document.getElementById('predictionDisplay').innerText = chartData[m.targetRow][col];
         };
-        list.appendChild(d);
+        list.appendChild(div);
     });
 }
 
-function drawCanvasLines() {
-    const cvs = document.getElementById("lineCanvas");
-    const tbl = document.getElementById("tbl");
-    const ctx = cvs.getContext("2d");
-    cvs.width = tbl.offsetWidth; cvs.height = tbl.offsetHeight;
-    ctx.clearRect(0,0, cvs.width, cvs.height);
+function drawLines() {
+    const canvas = document.getElementById('canvasLayer');
+    const table = document.getElementById('mainTable');
+    const ctx = canvas.getContext('2d');
+    canvas.width = table.offsetWidth;
+    canvas.height = table.offsetHeight;
+    ctx.clearRect(0,0, canvas.width, canvas.height);
 
     ctx.strokeStyle = "red";
     ctx.lineWidth = 2;
-    let rect = tbl.getBoundingClientRect();
+    let tableRect = table.getBoundingClientRect();
 
-    let circles = document.querySelectorAll(".circle");
-    if(circles.length < 2) return;
+    let circles = document.querySelectorAll('.circle');
+    if (circles.length < 1) return;
 
-    let first = circles[0].getBoundingClientRect();
+    let targetCell = document.querySelector('.blank').getBoundingClientRect();
+
     circles.forEach(c => {
         let r = c.getBoundingClientRect();
         ctx.beginPath();
-        ctx.moveTo(first.left - rect.left + first.width/2, first.top - rect.top + first.height/2);
-        ctx.lineTo(r.left - rect.left + r.width/2, r.top - rect.top + r.height/2);
+        ctx.moveTo(targetCell.left - tableRect.left + targetCell.width/2, targetCell.top - tableRect.top + targetCell.height/2);
+        ctx.lineTo(r.left - tableRect.left + r.width/2, r.top - tableRect.top + r.height/2);
         ctx.stroke();
     });
 }
 
-function edit(r,c,el) { data[r][c] = norm(el.innerText); }
-function addRow() { data.push(["**","**","**","**","**","**"]); draw(); }
-function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); alert("Chart Saved!"); }
-function clearData() { if(confirm("Reset entire chart?")) { localStorage.clear(); location.reload(); }}
+function updateData(r, c, el) { chartData[r][c] = el.innerText; }
+function addRow() { chartData.push(["**","**","**","**","**","**"]); render(); }
+function saveData() { localStorage.setItem('kalyan_v8_data', JSON.stringify(chartData)); alert("Data Saved!"); }
+function clearAll() { if(confirm("सब डिलीट करें?")) { localStorage.clear(); location.reload(); } }
 
-draw();
+render();
 </script>
 </body>
 </html>
