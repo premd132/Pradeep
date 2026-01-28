@@ -1,133 +1,113 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSV Row Manager</title>
+    <title>Matka Result Dashboard</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f9; }
-        .container { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #333; }
-        .controls { display: flex; gap: 10px; margin-bottom: 20px; }
-        input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; flex: 1; }
-        button { padding: 8px 15px; cursor: pointer; border: none; border-radius: 4px; background: #28a745; color: white; }
-        button.edit-btn { background: #ffc107; color: black; margin-right: 5px; }
-        button.delete-btn { background: #dc3545; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-        th { background-color: #f8f9fa; }
-        .export-btn { background: #007bff; margin-top: 15px; }
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; text-align: center; }
+        .container { max-width: 600px; margin: 20px auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h2 { color: #d32f2f; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+        th { background-color: #512da8; color: white; }
+        input, button { padding: 10px; margin: 5px; border-radius: 5px; border: 1px solid #ccc; }
+        .btn-add { background: #4caf50; color: white; cursor: pointer; }
+        .btn-csv { background: #2196f3; color: white; cursor: pointer; }
+        .btn-edit { background: #ff9800; color: white; cursor: pointer; }
+        .btn-delete { background: #f44336; color: white; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Data Manager (CSV Logic)</h2>
+    <h2>DpbossKing Result Admin</h2>
     
-    <div class="controls">
-        <input type="hidden" id="editIndex">
-        <input type="text" id="nameInput" placeholder="Name">
-        <input type="text" id="emailInput" placeholder="Email">
-        <button id="saveBtn" onclick="saveData()">Add Row</button>
-    </div>
+    <input type="text" id="marketName" placeholder="Market Name (e.g. KALYAN)">
+    <input type="text" id="resultValue" placeholder="Result (e.g. 147-2)">
+    <br>
+    <button class="btn-add" onclick="addData()">Add Result</button>
+    <button class="btn-csv" onclick="downloadCSV()">Download CSV</button>
 
-    <table id="dataTable">
+    <table id="resultTable">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Actions</th>
+                <th>Market</th>
+                <th>Result</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody id="tableBody">
             </tbody>
     </table>
-
-    <button class="export-btn" onclick="exportToCSV()">Download CSV</button>
 </div>
 
 <script>
-    let dataList = JSON.parse(localStorage.getItem('csvData')) || [];
+    // Local Storage se data load karna
+    let matkaData = JSON.parse(localStorage.getItem('matkaResults')) || [];
 
-    // Initialize Table
-    function renderTable() {
-        const tbody = document.getElementById('tableBody');
-        tbody.innerHTML = '';
-        
-        dataList.forEach((item, index) => {
-            const row = `<tr>
-                <td>${item.name}</td>
-                <td>${item.email}</td>
-                <td>
-                    <button class="edit-btn" onclick="editRow(${index})">Edit</button>
-                    <button class="delete-btn" onclick="deleteRow(${index})">Delete</button>
-                </td>
-            </tr>`;
-            tbody.innerHTML += row;
+    function displayData() {
+        const tableBody = document.getElementById('tableBody');
+        tableBody.innerHTML = '';
+        matkaData.forEach((item, index) => {
+            tableBody.innerHTML += `
+                <tr>
+                    <td contenteditable="true" onblur="editData(${index}, 'market', this.innerText)">${item.market}</td>
+                    <td contenteditable="true" onblur="editData(${index}, 'result', this.innerText)">${item.result}</td>
+                    <td>
+                        <button class="btn-delete" onclick="deleteData(${index})">Delete</button>
+                    </td>
+                </tr>
+            `;
         });
-        localStorage.setItem('csvData', JSON.stringify(dataList));
     }
 
-    // Add or Update Data
-    function saveData() {
-        const name = document.getElementById('nameInput').value;
-        const email = document.getElementById('emailInput').value;
-        const editIndex = document.getElementById('editIndex').value;
-
-        if(!name || !email) return alert("Fields fill kijiye!");
-
-        if (editIndex === "") {
-            // Add New
-            dataList.push({ name, email });
+    // Naya data add karna
+    function addData() {
+        const market = document.getElementById('marketName').value;
+        const result = document.getElementById('resultValue').value;
+        if(market && result) {
+            matkaData.push({ market, result });
+            saveAndRefresh();
         } else {
-            // Update Existing
-            dataList[editIndex] = { name, email };
-            document.getElementById('editIndex').value = "";
-            document.getElementById('saveBtn').innerText = "Add Row";
-        }
-
-        clearInputs();
-        renderTable();
-    }
-
-    // Edit Row
-    function editRow(index) {
-        document.getElementById('nameInput').value = dataList[index].name;
-        document.getElementById('emailInput').value = dataList[index].email;
-        document.getElementById('editIndex').value = index;
-        document.getElementById('saveBtn').innerText = "Update Row";
-    }
-
-    // Delete Row
-    function deleteRow(index) {
-        if(confirm("Kya aap delete karna chahte hain?")) {
-            dataList.splice(index, 1);
-            renderTable();
+            alert("Please fill all fields");
         }
     }
 
-    function clearInputs() {
-        document.getElementById('nameInput').value = "";
-        document.getElementById('emailInput').value = "";
+    // Data edit karna
+    function editData(index, field, value) {
+        matkaData[index][field] = value;
+        localStorage.setItem('matkaResults', JSON.stringify(matkaData));
     }
 
-    // Export to CSV Logic
-    function exportToCSV() {
-        let csvContent = "data:text/csv;charset=utf-8,Name,Email\n";
-        dataList.forEach(row => {
-            csvContent += `${row.name},${row.email}\n`;
+    // Data delete karna
+    function deleteData(index) {
+        matkaData.splice(index, 1);
+        saveAndRefresh();
+    }
+
+    // Local Storage mein save aur UI refresh
+    function saveAndRefresh() {
+        localStorage.setItem('matkaResults', JSON.stringify(matkaData));
+        displayData();
+    }
+
+    // CSV Download Function
+    function downloadCSV() {
+        let csvContent = "data:text/csv;charset=utf-8,Market,Result\n";
+        matkaData.forEach(row => {
+            csvContent += `${row.market},${row.result}\n`;
         });
-
         const encodedUri = encodeURI(csvContent);
         const link = document.createElement("a");
         link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "my_data.csv");
+        link.setAttribute("download", "matka_results.csv");
         document.body.appendChild(link);
         link.click();
     }
 
-    // Initial Load
-    renderTable();
+    // Initial load
+    displayData();
 </script>
 
 </body>
