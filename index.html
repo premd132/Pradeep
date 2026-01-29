@@ -5,17 +5,32 @@
 <title>Pattern + 3rd Touch Line System</title>
 
 <style>
-body{font-family:Arial;background:#f5f5f5}
-table{border-collapse:collapse;font-size:13px;background:#fff}
-td,th{border:1px solid #999;padding:5px;text-align:center;font-weight:600}
-td[contenteditable]{background:#fffbe6}
-.blank{background:#eee;cursor:pointer}
-.circle{border:3px solid red;border-radius:50%}
-.line{background:#cce5ff}
-#checks div{background:#e8ffe8;margin:4px;padding:6px;cursor:pointer}
-#ai,#future,#touchResult{background:#eef;padding:8px;margin-top:6px;font-weight:600}
-select,input,button{padding:6px;margin:4px;font-weight:600}
-#popup{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:3px solid #000;display:none;max-height:50%;overflow:auto}
+    body{font-family:Arial;background:#f5f5f5; padding: 20px;}
+    table{border-collapse:collapse;font-size:14px;background:#fff; position: relative; z-index: 1;}
+    td,th{border:1px solid #ccc;padding:8px;text-align:center;font-weight:600; width: 45px; height: 40px; position: relative;}
+    td[contenteditable]{background:#fffbe6}
+    
+    /* Search highlighting styles */
+    .base-jodi { border: 3px solid red !important; color: red; background: #fff0f0; }
+    .result-circle { border: 3px solid blue !important; border-radius: 50%; color: blue; }
+    
+    /* Line effect using pseudo-elements */
+    .touch-line::after {
+        content: "";
+        position: absolute;
+        top: 50%; left: 50%;
+        width: 2px; height: 45px;
+        background: blue;
+        z-index: -1;
+        transform: rotate(0deg);
+        transform-origin: top;
+    }
+
+    #checks div{background:#e8ffe8;margin:4px;padding:6px;cursor:pointer}
+    #ai,#future,#touchResult{background:#eef;padding:10px;margin-top:10px;font-weight:600; border-left: 5px solid blue;}
+    select,input,button{padding:8px;margin:4px;font-weight:bold; border-radius: 4px; border: 1px solid #999;}
+    button{background: #007bff; color: white; cursor: pointer;}
+    button:hover{background: #0056b3;}
 </style>
 </head>
 
@@ -23,7 +38,7 @@ select,input,button{padding:6px;margin:4px;font-weight:600}
 
 <h2>🔍 3rd Touch Line Trick (DPBoss Style)</h2>
 
-<div>
+<div style="background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
  Select Day:
  <select id="daySel">
   <option value="0">Mon</option>
@@ -34,159 +49,137 @@ select,input,button{padding:6px;margin:4px;font-weight:600}
   <option value="5">Sat</option>
  </select>
 
- 1st Jodi <input id="j1" size="4">
- 2nd Jodi <input id="j2" size="4">
- 3rd Jodi <input id="j3" size="4">
+ 1st Jodi <input id="j1" size="4" placeholder="eg 37">
+ 2nd Jodi <input id="j2" size="4" placeholder="eg 37">
+ 3rd Jodi <input id="j3" size="4" placeholder="eg 37">
 
- <button onclick="search3rdTouch()">SEARCH</button>
- <button onclick="clearTouch()">CLEAR</button>
+ <button onclick="search3rdTouch()">SEARCH TOUCH</button>
+ <button onclick="clearTouch()" style="background:#6c757d">CLEAR</button>
 </div>
 
-<div id="touchResult"></div>
+<div id="touchResult">Result yahan dikhega...</div>
 
 <hr>
 
 <h2>📊 Pattern System</h2>
-
 <input type="file" id="csv">
 <button onclick="addRow()">Add Row</button>
-<button onclick="saveData()">Save</button>
+<button onclick="saveData()">Save Table</button>
 
 <table id="tbl"></table>
 
-<h3>✔ Check Lines</h3>
 <div id="checks"></div>
-
-<h3>🤖 AI Suggestions</h3>
 <div id="ai"></div>
-
-<h3>🔮 Future AI</h3>
 <div id="future"></div>
 
-<div id="popup">
- <button onclick="popup.style.display='none'">Close</button>
- <div id="popData"></div>
-</div>
-
 <script>
-/* ================= COMMON DATA ================= */
-
 const STORAGE_KEY="pdata_test";
-let targetCol=null,activeMark=null;
+let activeMark=null;
 
 const tbl=document.getElementById("tbl");
-const checks=document.getElementById("checks");
-const ai=document.getElementById("ai");
-const future=document.getElementById("future");
-const popup=document.getElementById("popup");
-const popData=document.getElementById("popData");
-const csv=document.getElementById("csv");
 const touchResult=document.getElementById("touchResult");
 
-/* FAMILY */
+/* FAMILY LOGIC */
 const families={
-"12":["12","17","21","26","62","67","71","76"],
-"13":["13","18","31","36","63","68","81","86"],
-"14":["14","19","41","46","64","69","91","96"],
-"15":["01","06","10","15","51","56","60","65"],
-"23":["23","28","32","37","73","78","82","87"],
-"24":["24","29","42","47","74","79","92","97"],
-"25":["02","07","20","25","52","57","70","75"],
-"34":["34","39","43","48","84","89","93","98"],
-"35":["03","08","30","35","53","58","80","85"],
-"45":["04","09","40","45","54","59","90","95"],
-"HR":["05","16","27","38","49","50","61","72","83","94"],
-"FR":["00","11","22","33","44","55","66","77","88","99"]
+    "12":["12","17","21","26","62","67","71","76"], "13":["13","18","31","36","63","68","81","86"],
+    "14":["14","19","41","46","64","69","91","96"], "15":["01","06","10","15","51","56","60","65"],
+    "23":["23","28","32","37","73","78","82","87"], "24":["24","29","42","47","74","79","92","97"],
+    "25":["02","07","20","25","52","57","70","75"], "34":["34","39","43","48","84","89","93","98"],
+    "35":["03","08","30","35","53","58","80","85"], "45":["04","09","40","45","54","59","90","95"],
+    "HR":["05","16","27","38","49","50","61","72","83","94"], "FR":["00","11","22","33","44","55","66","77","88","99"]
 };
 
 function fam(v){for(let k in families) if(families[k].includes(v)) return k; return "NA";}
 function palti(v){return v[1]+v[0];}
-function norm(v){if(v==""||v=="**")return "**";v=String(v);return v.length==1?"0"+v:v;}
+function norm(v){if(v==""||v=="**")return "**"; v=String(v); return v.length==1?"0"+v:v;}
+
 function smartMatch(a,b){
- if(a=="**"||b=="**") return false;
- if(a===b) return true;
- if(palti(a)===b||palti(b)===a) return true;
- return fam(a)===fam(b);
+    if(a=="**"||b=="**") return false;
+    if(a===b) return true;
+    if(palti(a)===b) return true;
+    return fam(a)===fam(b);
 }
 
-/* DATA */
+/* DATA MANAGEMENT */
 let data=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null");
 if(!data){
- data=[
- ["51","37","41","57","19","95"],
- ["05","37","74","06","19","63"],
- ["90","37","82","09","28","19"],
- ["11","37","12","34","37","67"],
- ["22","37","90","56","12","34"]
- ];
+    data=[
+        ["51","37","41","57","19","95"], ["05","37","74","06","19","63"],
+        ["90","37","82","09","28","19"], ["11","37","12","34","37","67"],
+        ["22","37","90","56","12","34"], ["10","10","10","10","10","10"]
+    ];
 }
 data=data.map(r=>r.map(norm));
 
-/* DRAW TABLE */
 function draw(){
- let h="<tr><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr>";
- data.forEach((r,ri)=>{
-  h+="<tr>";
-  r.forEach((c,ci)=>{
-   let cls="";
-   if(activeMark){
-    let {start,shape}=activeMark;
-    let i=ri-start;
-    if(i>=0&&i<shape.length&&shape[i][ci]) cls="circle";
-   }
-   h+=`<td class="${cls}" contenteditable oninput="edit(${ri},${ci},this)" onclick="makePattern(${ri},${ci})">${c}</td>`;
-  });
-  h+="</tr>";
- });
- tbl.innerHTML=h;
+    let h="<tr><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr>";
+    data.forEach((r,ri)=>{
+        h+="<tr>";
+        r.forEach((c,ci)=>{
+            h+=`<td contenteditable oninput="edit(${ri},${ci},this)">${c}</td>`;
+        });
+        h+="</tr>";
+    });
+    tbl.innerHTML=h;
 }
 draw();
 
-function edit(r,c,el){data[r][c]=norm(el.innerText.trim());}
-function addRow(){data.push(["","","","","",""].map(norm));draw();}
-function saveData(){localStorage.setItem(STORAGE_KEY,JSON.stringify(data));alert("Saved");}
+function edit(r,c,el){ data[r][c]=norm(el.innerText.trim()); }
+function addRow(){ data.push(["**","**","**","**","**","**"]); draw(); }
+function saveData(){ localStorage.setItem(STORAGE_KEY,JSON.stringify(data)); alert("Data Saved!"); }
 
-/* ================= 3RD TOUCH LINE ================= */
+/* ================= IMPROVED SEARCH & TOUCH SYSTEM ================= */
 
 function search3rdTouch(){
- draw();
- let d=+daySel.value;
- let a=j1.value,b=j2.value,c=j3.value;
+    draw(); // Clear old highlights
+    let d = parseInt(document.getElementById("daySel").value);
+    let jodis = [
+        norm(document.getElementById("j1").value),
+        norm(document.getElementById("j2").value),
+        norm(document.getElementById("j3").value)
+    ];
 
- if(!(a&&b&&c) || !(a==b && b==c)){
-  alert("3 jodi same honi chahiye (eg: 37,37,37)");
-  return;
- }
+    if(jodis.some(j => j == "**")) { alert("Teeno Jodi bharna zaroori hai"); return; }
 
- let hits=[];
- for(let i=0;i<data.length;i++){
-  if(smartMatch(data[i][d],a)) hits.push(i);
- }
+    let foundRows = [];
+    // Search for base jodis in the selected column
+    for(let i=0; i<data.length; i++){
+        if(smartMatch(data[i][d], jodis[0])){
+            foundRows.push(i);
+        }
+    }
 
- if(hits.length<3){
-  touchResult.innerHTML="❌ 3rd touch nahi mila";
-  return;
- }
+    if(foundRows.length < 3){
+        touchResult.innerHTML = "❌ Match nahi mila. Table mein jodi check karein.";
+        return;
+    }
 
- let r3=hits[2];
- tbl.rows[r3+1].cells[d].classList.add("circle");
+    // Process all 3 touches
+    foundRows.forEach((rowIndex, index) => {
+        if(index > 2) return; // Only first 3 matches
 
- if(r3+1<data.length){
-  touchResult.innerHTML="✅ 3rd Touch Result: <b>"+data[r3+1][d]+"</b>";
- }else{
-  touchResult.innerHTML="3rd touch mila, future nahi";
- }
+        let cell = tbl.rows[rowIndex+1].cells[d];
+        cell.classList.add("base-jodi"); // Red Box
+
+        // Highlight the Result Jodi (Next Line)
+        if(rowIndex + 1 < data.length){
+            let resCell = tbl.rows[rowIndex+2].cells[d];
+            resCell.classList.add("result-circle"); // Blue Circle
+            cell.classList.add("touch-line"); // Connecting Line
+            
+            if(index === 2){
+                touchResult.innerHTML = "✅ 3rd Touch Found! Base: " + data[rowIndex][d] + " | Result: <span style='color:blue'>" + data[rowIndex+1][d] + "</span>";
+            }
+        }
+    });
 }
 
 function clearTouch(){
- touchResult.innerHTML="";
- activeMark=null;
- draw();
+    document.querySelectorAll('.base-jodi, .result-circle, .touch-line').forEach(el => {
+        el.classList.remove('base-jodi', 'result-circle', 'touch-line');
+    });
+    touchResult.innerHTML = "Result cleared.";
 }
-
-/* ================= PURANA PATTERN SYSTEM ================= */
-/* (tumhara original pattern + AI + future AI yahi rahega – unchanged) */
-/* yahan intentionally short kiya, kyoki wo already tumhare paas hai */
 
 </script>
 </body>
