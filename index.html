@@ -1,114 +1,305 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matka Result Dashboard</title>
-    <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f4; text-align: center; }
-        .container { max-width: 600px; margin: 20px auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        h2 { color: #d32f2f; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
-        th { background-color: #512da8; color: white; }
-        input, button { padding: 10px; margin: 5px; border-radius: 5px; border: 1px solid #ccc; }
-        .btn-add { background: #4caf50; color: white; cursor: pointer; }
-        .btn-csv { background: #2196f3; color: white; cursor: pointer; }
-        .btn-edit { background: #ff9800; color: white; cursor: pointer; }
-        .btn-delete { background: #f44336; color: white; cursor: pointer; }
-    </style>
+<meta charset="UTF-8">
+<title>test – Pattern System</title>
+<style>
+body{font-family:Arial}
+table{border-collapse:collapse;font-size:13px}
+td,th{border:1px solid #999;padding:5px;text-align:center;font-weight:600}
+td[contenteditable]{background:#fffbe6}
+.blank{background:#eee;cursor:pointer}
+.circle{border:3px solid red;border-radius:50%}
+#checks div{background:#e8ffe8;margin:4px;padding:6px;cursor:pointer}
+#ai,#future{background:#eef;padding:8px;margin-top:6px;font-weight:600}
+#popup{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:3px solid #000;display:none;max-height:50%;overflow:auto}
+button{margin:4px}
+</style>
 </head>
 <body>
 
-<div class="container">
-    <h2>DpbossKing Result Admin</h2>
-    
-    <input type="text" id="marketName" placeholder="Market Name (e.g. KALYAN)">
-    <input type="text" id="resultValue" placeholder="Result (e.g. 147-2)">
-    <br>
-    <button class="btn-add" onclick="addData()">Add Result</button>
-    <button class="btn-csv" onclick="downloadCSV()">Download CSV</button>
+<h2>test – Pattern System</h2>
+<input type="file" id="csv">
+<button onclick="addRow()">Add Row</button>
+<button onclick="saveData()">Save</button>
 
-    <table id="resultTable">
-        <thead>
-            <tr>
-                <th>Market</th>
-                <th>Result</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody id="tableBody">
-            </tbody>
-    </table>
+<table id="tbl"></table>
+
+<h3>✔ Check Lines (Top 3)</h3>
+<div id="checks"></div>
+
+<h3>🤖 AI Suggestions</h3>
+<div id="ai"></div>
+/* ===== SEARCH OPTION (Video jaisa Pattern Search) ===== */
+
+function searchPatternInput(val){
+ val = norm(val.trim());
+ if(val=="" || val=="**") return;
+
+ // same column jaha click hua tha, warna last column
+ let col = targetCol!==null ? targetCol : 0;
+
+ // last 5 rows se pattern uthao
+ let r = data.length-1;
+ let base="**";
+ for(let i=r;i>=0;i--){
+  if(data[i][col]!="**"){base=data[i][col];break;}
+ }
+ if(base=="**") return;
+
+ let shape=[];
+ for(let i=Math.max(0,r-4);i<=r;i++){
+  let row=[];
+  for(let j=0;j<6;j++){
+   let v=data[i][j];
+   row.push(
+    v!="**" && smartMatch(v,val) ? 1 : 0
+   );
+  }
+  shape.push(row);
+ }
+
+ targetCol = col;
+ searchPattern(shape,val);
+}
+
+/* Clear search & marks */
+function clearSearch(){
+ activeMark=null;
+ checks.innerHTML="";
+ ai.innerHTML="";
+ future.innerHTML="";
+ draw();
+}
+<h3>🔮 Future AI (Table Trick)</h3>
+<div id="future"></div>
+
+<div id="popup">
+ <button onclick="popup.style.display='none'">Close</button>
+ <div id="popData"></div>
 </div>
 
 <script>
-    // Local Storage se data load karna
-    let matkaData = JSON.parse(localStorage.getItem('matkaResults')) || [];
+const STORAGE_KEY="pdata_test";
 
-    function displayData() {
-        const tableBody = document.getElementById('tableBody');
-        tableBody.innerHTML = '';
-        matkaData.forEach((item, index) => {
-            tableBody.innerHTML += `
-                <tr>
-                    <td contenteditable="true" onblur="editData(${index}, 'market', this.innerText)">${item.market}</td>
-                    <td contenteditable="true" onblur="editData(${index}, 'result', this.innerText)">${item.result}</td>
-                    <td>
-                        <button class="btn-delete" onclick="deleteData(${index})">Delete</button>
-                    </td>
-                </tr>
-            `;
-        });
+let targetCol=null;
+const tbl=document.getElementById("tbl");
+const checks=document.getElementById("checks");
+const ai=document.getElementById("ai");
+const future=document.getElementById("future");
+const popup=document.getElementById("popup");
+const popData=document.getElementById("popData");
+const csv=document.getElementById("csv");
+
+/* FAMILY */
+const families={
+"12":["12","17","21","26","62","67","71","76"],
+"13":["13","18","31","36","63","68","81","86"],
+"14":["14","19","41","46","64","69","91","96"],
+"15":["01","06","10","15","51","56","60","65"],
+"23":["23","28","32","37","73","78","82","87"],
+"24":["24","29","42","47","74","79","92","97"],
+"25":["02","07","20","25","52","57","70","75"],
+"34":["34","39","43","48","84","89","93","98"],
+"35":["03","08","30","35","53","58","80","85"],
+"45":["04","09","40","45","54","59","90","95"],
+"HR":["05","16","27","38","49","50","61","72","83","94"],
+"FR":["00","11","22","33","44","55","66","77","88","99"]
+};
+function fam(v){for(let k in families) if(families[k].includes(v)) return k; return "NA";}
+function famClass(v){let f=fam(v);return f=="NA"?"":"f"+f;}
+function palti(v){return v[1]+v[0];}
+function norm(v){if(v==""||v=="**")return "**";v=String(v);return v.length==1?"0"+v:v;}
+function smartMatch(a,b){
+ if(a=="**"||b=="**") return false;
+ if(a===b) return true;
+ if(palti(a)===b||palti(b)===a) return true;
+ return fam(a)===fam(b);
+}
+
+/* DATA */
+let data=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null");
+if(!data){
+ data=[
+ ["51","91","41","57","19","95"],
+ ["05","90","74","06","19","63"],
+ ["90","34","82","09","28","19"],
+ ["**","**","**","**","**","**"]
+ ];
+}
+data=data.map(r=>r.map(norm));
+
+/* DRAW */
+let activeMark=null;
+function draw(){
+ let h="<tr><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr>";
+ data.forEach((r,ri)=>{
+  h+="<tr>";
+  r.forEach((c,ci)=>{
+   let cls="";
+   if(activeMark){
+    let {start,shape}=activeMark;
+    let i=ri-start;
+    if(i>=0&&i<shape.length&&shape[i][ci]) cls="circle "+famClass(c);
+   }
+   if(c=="**")
+    h+=`<td class="blank" contenteditable oninput="edit(${ri},${ci},this)" onclick="makePattern(${ri},${ci})">**</td>`;
+   else
+    h+=`<td class="${cls}" contenteditable oninput="edit(${ri},${ci},this)">${c}</td>`;
+  });
+  h+="</tr>";
+ });
+ tbl.innerHTML=h;
+}
+draw();
+
+function edit(r,c,el){data[r][c]=norm(el.innerText.trim());}
+function addRow(){data.push(["","","","","",""].map(norm));draw();}
+function saveData(){
+ localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
+ alert("Saved onlpdata_test page");
+}
+<input type="text" id="searchBox" placeholder="Search Jodi / Family (eg: 12, 21, 15)" 
+       onkeyup="searchPatternInput(this.value)"
+       style="padding:6px;width:260px;font-weight:600">
+<button onclick="clearSearch()">Clear</button>
+/* CSV */
+csv.onchange=e=>{
+ let fr=new FileReader();
+ fr.onload=()=>{
+  let rows=fr.result.replace(/\r/g,"").trim().split("\n");
+  if(rows[0].toLowerCase().includes("mon")) rows.shift();
+  data=rows.map(r=>r.split(",").map(v=>{
+    v=v.trim(); if(v==""||v=="*"||v=="**") return "**"; return norm(v);
+  }));
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
+  draw();
+ };
+ fr.readAsText(e.target.files[0]);
+};
+
+/* ===== Tumhara original pattern + AI + future AI code (unchanged) ===== */
+
+/* PATTERN */
+let lastMatches=[],topMatches=[];
+function makePattern(r,c){
+ targetCol=c;
+ let base="**";
+ for(let i=r;i>=0;i--){if(data[i][c]!="**"){base=data[i][c];break;}}
+ if(base=="**") return;
+
+ let shape=[];
+ for(let i=Math.max(0,r-4);i<=r;i++){
+  let row=[];
+  for(let j=0;j<6;j++){
+   let v=data[i][j];
+   row.push(v!="**" && smartMatch(v,base)?1:0);
+  }
+  shape.push(row);
+ }
+ searchPattern(shape,base);
+}
+
+/* SEARCH */
+function searchPattern(shape,base){
+ lastMatches=[];
+ let h=shape.length;
+ for(let i=0;i<=data.length-h;i++){
+  let ok=true;
+  for(let k=0;k<h;k++){
+   for(let j=0;j<6;j++){
+    if(shape[k][j] && !smartMatch(data[i+k][j],base)){ok=false;break;}
+   }
+   if(!ok) break;
+  }
+  if(ok) lastMatches.push({index:i});
+ }
+ showChecks(shape);
+}
+
+/* CHECK LINES */
+function showChecks(shape){
+ checks.innerHTML="";
+ if(lastMatches.length==0){checks.innerHTML="<i>No match</i>";ai.innerHTML="";future.innerHTML="";return;}
+ topMatches=lastMatches.slice(0,4);
+ topMatches.forEach((m,i)=>{
+  let d=document.createElement("div");
+  d.innerText=(i+1)+". Match (click)";
+  d.onclick=()=>showOne(shape,i);
+  checks.appendChild(d);
+ });
+ showAISuggestions(shape);
+}
+
+/* POPUP */
+function showOne(shape,n){
+ let idx=topMatches[n].index;
+ activeMark={start:idx,shape:shape};
+ draw();
+ let h=shape.length,html="<table>";
+ for(let i=0;i<h;i++){
+  html+="<tr>";
+  data[idx+i].forEach((v,j)=>{
+   let cls=shape[i][j]?"circle "+famClass(v):"";
+   html+=`<td class="${cls}">${v}</td>`;
+  });
+  html+="</tr>";
+ }
+ html+="</table>";
+ popData.innerHTML=html;
+ popup.style.display="block";
+}
+
+/* AI + FUTURE AI */
+function showAISuggestions(shape){
+ let digitCount={},jodiCount={};
+
+ topMatches.forEach(m=>{
+  let idx=m.index;
+  for(let i=0;i<shape.length;i++){
+   for(let j=0;j<6;j++){
+    if(shape[i][j]){
+     let v=data[idx+i][j];
+     if(v!="**"){
+      jodiCount[v]=(jodiCount[v]||0)+1;
+      digitCount[v[0]]=(digitCount[v[0]]||0)+1;
+      digitCount[v[1]]=(digitCount[v[1]]||0)+1;
+     }
     }
+   }
+  }
+ });
 
-    // Naya data add karna
-    function addData() {
-        const market = document.getElementById('marketName').value;
-        const result = document.getElementById('resultValue').value;
-        if(market && result) {
-            matkaData.push({ market, result });
-            saveAndRefresh();
-        } else {
-            alert("Please fill all fields");
-        }
-    }
+ let topD=Object.entries(digitCount).sort((a,b)=>b[1]-a[1]).slice(0,2);
+ let topJ=Object.entries(jodiCount).sort((a,b)=>b[1]-a[1]).slice(0,2);
 
-    // Data edit karna
-    function editData(index, field, value) {
-        matkaData[index][field] = value;
-        localStorage.setItem('matkaResults', JSON.stringify(matkaData));
-    }
+ ai.innerHTML="Top 2 Single Ank:<br>"+topD.map(d=>d[0]).join(",")+
+              "<br><br>Top 2 Jodi:<br>"+topJ.map(j=>j[0]).join(",");
 
-    // Data delete karna
-    function deleteData(index) {
-        matkaData.splice(index, 1);
-        saveAndRefresh();
-    }
+ let pool=[],h=shape.length;
+ topMatches.forEach(m=>{
+  let nr=m.index+h;
+  if(nr<data.length){
+   let v=data[nr][targetCol];
+   if(v!="**") pool.push(v);
+  }
+ });
 
-    // Local Storage mein save aur UI refresh
-    function saveAndRefresh() {
-        localStorage.setItem('matkaResults', JSON.stringify(matkaData));
-        displayData();
-    }
+ if(!pool.length){future.innerHTML="No future data";return;}
 
-    // CSV Download Function
-    function downloadCSV() {
-        let csvContent = "data:text/csv;charset=utf-8,Market,Result\n";
-        matkaData.forEach(row => {
-            csvContent += `${row.market},${row.result}\n`;
-        });
-        const encodedUri = encodeURI(csvContent);
-        const link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", "matka_results.csv");
-        document.body.appendChild(link);
-        link.click();
-    }
+ let jc={},dc={};
+ pool.forEach(v=>{
+  jc[v]=(jc[v]||0)+1;
+  dc[v[0]]=(dc[v[0]]||0)+1;
+  dc[v[1]]=(dc[v[1]]||0)+1;
+ });
 
-    // Initial load
-    displayData();
+ let fJ=Object.entries(jc).sort((a,b)=>b[1]-a[1]).slice(0,2).map(x=>x[0]).join(",");
+ let fD=Object.entries(dc).sort((a,b)=>b[1]-a[1]).slice(0,2).map(x=>x[0]).join(",");
+
+ future.innerHTML="Strong 2 Jodi:<br>"+fJ+
+                  "<br><br>Strong 2 Single Ank:<br>Open to close<br>"+fD;
+}
 </script>
-
 </body>
 </html>
