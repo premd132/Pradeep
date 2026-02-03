@@ -3,239 +3,193 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kalyan AI Pro – Ultimate Fixed</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<title>Rajdhani AI - Vision Pro</title>
 <style>
-    :root { --gold: #ffd700; --blue: #3e84ff; --red: #ff3e3e; --bg: #121212; --panel: #1e1e1e; }
+    :root { --gold: #ffd700; --blue: #3e84ff; --red: #ff3e3e; --green: #00ff00; --bg: #0a0a0a; }
     body { font-family: 'Segoe UI', Arial; background: var(--bg); color: #fff; margin: 0; padding: 10px; }
-    h2 { color: var(--gold); text-align: center; text-transform: uppercase; margin: 5px 0; font-size: 1.2rem; }
-    .toolbar { background: var(--panel); padding: 10px; border-radius: 8px; border: 1px solid #444; margin-bottom: 10px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
-    .table-container { position: relative; display: inline-block; background: #fff; border-radius: 5px; box-shadow: 0 0 15px rgba(0,0,0,0.5); padding: 5px; }
-    table { border-collapse: collapse; font-size: 12px; position: relative; z-index: 2; color: #000; }
-    td, th { border: 1px solid #ccc; padding: 8px 4px; text-align: center; font-weight: bold; width: 35px; height: 35px; }
-    th { background: #800000; color: white; }
-    .f1 { border: 2.5px solid var(--blue) !important; border-radius: 100%; background: rgba(62, 132, 255, 0.1); }
-    .f2 { border: 2.5px solid var(--red) !important; border-radius: 100%; background: rgba(255, 62, 62, 0.1); }
-    .blank { background: #e0e0e0 !important; cursor: pointer; }
-    .dashboard { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
-    .card { background: var(--panel); padding: 10px; border-radius: 8px; border-left: 4px solid var(--gold); flex: 1; min-width: 250px; }
-    canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 3; }
-    button { background: var(--gold); color: #000; border: none; padding: 8px 12px; font-weight: bold; border-radius: 4px; cursor: pointer; }
-    #popup { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border: 3px solid var(--gold); display: none; z-index: 100; padding: 15px; border-radius: 8px; color: #000; box-shadow: 0 0 50px rgba(0,0,0,0.9); }
-    .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; z-index: 90; }
+    .toolbar { background: #1a1a1a; padding: 15px; border-radius: 10px; display: flex; gap: 10px; justify-content: center; border-bottom: 2px solid var(--gold); }
+    .table-container { position: relative; display: inline-block; background: #fff; border-radius: 5px; padding: 10px; margin-top: 15px; }
+    table { border-collapse: collapse; font-size: 13px; color: #000; z-index: 10; position: relative; }
+    td, th { border: 1px solid #999; width: 45px; height: 42px; text-align: center; font-weight: bold; }
+    th { background: #800; color: #fff; }
+    
+    .f1 { border: 3px solid var(--blue) !important; border-radius: 50%; background: rgba(62,132,255,0.2); }
+    .f2 { border: 3px solid var(--red) !important; border-radius: 50%; background: rgba(255,62,62,0.2); }
+    .f-res { border: 3px solid var(--green) !important; background: rgba(0,255,0,0.2); }
+    .blank { background: #eee !important; cursor: pointer; border: 1px dashed #777 !important; }
+
+    canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 20; }
+    .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+    .card { background: #1a1a1a; padding: 15px; border-radius: 8px; border-left: 5px solid var(--gold); }
+    .check-btn { display: block; width: 100%; margin-bottom: 8px; padding: 12px; background: #222; color: var(--gold); border: 1px solid #444; cursor: pointer; text-align: left; }
+    
+    /* Popup Style */
+    #popup { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; color: #000; padding: 20px; border: 5px solid var(--gold); z-index: 1000; border-radius: 10px; width: 90%; max-width: 450px; box-shadow: 0 0 100px #000; }
+    .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 999; }
 </style>
 </head>
 <body>
 
-<h2>🏆 Kalyan AI – CSV & Pattern Pro</h2>
-
 <div class="toolbar">
-    <input type="file" id="csvFile" accept=".csv" style="display:none">
-    <button onclick="document.getElementById('csvFile').click()" style="background:#6f42c1; color:white;">📂 Upload CSV</button>
-    <button onclick="addRow()">➕ Row</button>
-    <button onclick="saveData()" style="background:#28a745; color:white;">💾 Save</button>
-    <button onclick="exportImage()" style="background:#17a2b8; color:white;">📸 Screenshot</button>
-    <button onclick="clearData()" style="background:#dc3545; color:white;">🗑️ Reset</button>
+    <input type="file" id="csvFile" style="display:none" onchange="loadCSV(this)">
+    <button onclick="document.getElementById('csvFile').click()">📂 Upload History</button>
+    <button onclick="addRow()">➕ Add Row</button>
+    <button onclick="saveData()">💾 Save Data</button>
 </div>
 
 <center>
-    <div id="captureArea" class="table-container">
+    <div class="table-container">
         <canvas id="mainCanvas"></canvas>
         <table id="tbl"></table>
     </div>
 </center>
 
 <div class="dashboard">
-    <div class="card"><h3>🎯 Matches (Max 3)</h3><div id="checks"></div></div>
-    <div class="card"><h3>🔮 Future AI Prediction</h3><div id="future">Select match...</div></div>
+    <div class="card">
+        <h3>📍 Check Lines (Old Records)</h3>
+        <div id="checkList">Click a blank cell...</div>
+    </div>
+    <div class="card">
+        <h3>🔮 Future AI (3 Pair)</h3>
+        <div id="future" style="font-size: 26px; color: var(--gold); font-weight: bold; text-align: center;">-- | -- | --</div>
+    </div>
 </div>
 
 <div class="overlay" id="overlay" onclick="closePopup()"></div>
 <div id="popup">
-    <button onclick="closePopup()" style="float:right; background:#800000; color:white;">X</button>
-    <h3>Connection Detail</h3>
-    <div id="popData"></div>
+    <h3 style="text-align:center; color:#800;">Real Record Pattern</h3>
+    <div id="popContent"></div>
+    <center><button onclick="closePopup()" style="margin-top:15px; padding:10px 20px; background:red; color:white; border:none; cursor:pointer; font-weight:bold;">CLOSE</button></center>
 </div>
 
 <script>
-const STORAGE_KEY="pdata_kalyan_final_v5";
-const families={  
-    "22":["22","27","72","77"],"11":["11","61","66","16"],"33":["33","83","88","38"],"99":["99","44","49","94"],"55":["50","00","05","55"],
-    "12":["12","17","21","26","62","67","71","76"],"13":["13","18","31","36","63","68","81","86"],"14":["14","19","41","46","64","69","91","96"],
-    "15":["01","06","10","15","51","56","60","65"],"23":["23","28","32","37","73","78","82","87"],"24":["24","29","42","47","74","79","92","97"],
-    "25":["02","07","20","25","52","57","70","75"],"34":["34","39","43","48","84","89","93","98"],"35":["03","08","30","35","53","58","80","85"],
-    "45":["04","09","40","45","54","59","90","95"]
-};
+const families = {"22":["22","27","72","77"],"11":["11","61","66","16"],"33":["33","83","88","38"],"99":["99","44","49","94"],"55":["50","00","05","55"],"12":["12","17","21","26","62","67","71","76"],"13":["13","18","31","36","63","68","81","86"],"14":["14","19","41","46","64","69","91","96"],"15":["01","06","10","15","51","56","60","65"],"23":["23","28","32","37","73","78","82","87"],"24":["24","29","42","47","74","79","92","97"],"25":["02","07","20","25","52","57","70","75"],"34":["34","39","43","48","84","89","93","98"],"35":["03","08","30","35","53","58","80","85"],"45":["04","09","40","45","54","59","90","95"]};
+let data = JSON.parse(localStorage.getItem("raj_vision_v10")) || [["**","**","**","**","**"]];
+let activePattern = null;
 
-function fam(v){for(let k in families) if(families[k].includes(v)) return k; return "NA";}
-function norm(v){if(!v || v=="" || v=="**") return "**"; v=String(v).trim(); return v.length==1?"0"+v:v;}
+function fam(v){ for(let k in families) if(families[k].includes(String(v).padStart(2,'0'))) return k; return "NA"; }
 
-let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [["**","**","**","**","**","**"]];
-data = data.map(r => r.map(norm));
-
-let activeMark=null;
-let lastTargetCol=0;
-
-function draw(){
-    let h="<tr><th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th><th>SAT</th></tr>";
-    data.forEach((r,ri)=>{
-        h+="<tr>";
-        r.forEach((c,ci)=>{
-            let p = isPartOfPattern(ri, ci);
-            let cls = p ? (p === 1 ? "f1" : "f2") : "";
-            if(c=="**") cls += " blank";
-            h+=`<td class="${cls}" contenteditable oninput="edit(${ri},${ci},this)" onclick="${c=='**'?'makePattern('+ri+','+ci+')':'' }">${c}</td>`;
-        });
-        h+="</tr>";
-    });
-    document.getElementById("tbl").innerHTML=h;
-    if(activeMark) setTimeout(() => drawLines("mainCanvas", document.getElementById("tbl")), 50);
-}
-
-// --- CSV UPLOAD LOGIC (FIXED & TESTED) ---
-document.getElementById('csvFile').addEventListener('change', function(e) {
-    let file = e.target.files[0];
-    if (!file) return;
-    let reader = new FileReader();
-    reader.onload = function(event) {
-        let text = event.target.result;
-        let rows = text.split(/\r?\n/).filter(row => row.trim() !== '');
-        data = rows.map(row => {
-            let cols = row.split(',').map(v => norm(v.trim()));
-            while(cols.length < 6) cols.push("**");
-            return cols.slice(0, 6);
-        });
-        activeMark = null;
-        draw();
-        alert("✅ CSV Uploaded!");
-    };
-    reader.readAsText(file);
-});
-
-function isPartOfPattern(ri, ci){
-    if(!activeMark) return null;
-    let i = ri - activeMark.start;
-    if(i >= 0 && i < activeMark.shape.length) return activeMark.shape[i][ci] || null;
-    return null;
-}
-
-function drawLines(cvsId, tblEl) {
-    const cvs = document.getElementById(cvsId);
-    const ctx = cvs.getContext("2d");
-    cvs.width = tblEl.offsetWidth; cvs.height = tblEl.offsetHeight;
-    ctx.clearRect(0,0,cvs.width,cvs.height);
-    const tRect = tblEl.getBoundingClientRect();
-    const drawFor = (cls, color) => {
-        const els = Array.from(tblEl.querySelectorAll("."+cls));
-        if(els.length === 2) {
-            const r1 = els[0].getBoundingClientRect(); const r2 = els[1].getBoundingClientRect();
-            ctx.strokeStyle = color; ctx.lineWidth = 3; ctx.beginPath();
-            ctx.moveTo(r1.left-tRect.left+r1.width/2, r1.top-tRect.top+r1.height/2);
-            ctx.lineTo(r2.left-tRect.left+r2.width/2, r2.top-tRect.top+r2.height/2);
-            ctx.stroke();
-        }
-    };
-    drawFor("f1", "#3e84ff"); drawFor("f2", "#ff3e3e");
-}
-
-function makePattern(r, c) {
-    lastTargetCol = c;
-    let famPositions = {};
-    let scanStart = Math.max(0, r - 6);
-    for (let i = scanStart; i <= r; i++) {
-        let checkOrder = [c, 0, 1, 2, 3, 4, 5].filter((v, i, a) => a.indexOf(v) === i);
-        for (let j of checkOrder) {
-            let v = data[i][j];
-            if (v !== "**") {
-                let f = fam(v);
-                if (!famPositions[f]) famPositions[f] = [];
-                if (famPositions[f].length < 2) famPositions[f].push({ ri: i, ci: j });
+function draw() {
+    let h = "<tr><th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th></tr>";
+    data.forEach((row, ri) => {
+        h += "<tr>";
+        row.forEach((cell, ci) => {
+            let cls = "";
+            if(activePattern && ri >= activePattern.start && ri < activePattern.start + activePattern.shape.length) {
+                let p = activePattern.shape[ri - activePattern.start][ci];
+                if(p === 1) cls = "f1"; if(p === 2) cls = "f2";
             }
-        }
-    }
-    let topFams = Object.keys(famPositions).filter(f => famPositions[f].length === 2).slice(0, 2);
-    if (topFams.length < 2) { alert("⚠️ 2+2 pattern not found here."); return; }
-    let shapeHeight = r - scanStart + 1;
-    let shape = Array.from({ length: shapeHeight }, () => Array(6).fill(0));
-    topFams.forEach((f, idx) => {
-        famPositions[f].forEach(p => { shape[p.ri - scanStart][p.ci] = (idx + 1); });
+            if(activePattern && ri === activePattern.resR && ci === activePattern.resC) cls = "f-res";
+            if(cell === "**") cls += " blank";
+            h += `<td class="${cls}" contenteditable="true" onblur="updateCell(${ri},${ci},this.innerText)" onclick="smartScan(${ri},${ci})">${cell}</td>`;
+        });
+        h += "</tr>";
     });
-    searchPattern(shape, topFams);
+    document.getElementById("tbl").innerHTML = h;
+    setTimeout(renderLines, 100);
 }
 
-function searchPattern(shape, famList){
-    let matches = [];
-    for(let i=0; i <= data.length-shape.length; i++){
-        let ok = true;
-        for(let k=0; k<shape.length; k++){
-            for(let j=0; j<6; j++){
-                if(shape[k][j] === 1 && fam(data[i+k][j]) !== famList[0]) ok = false;
-                if(shape[k][j] === 2 && fam(data[i+k][j]) !== famList[1]) ok = false;
-                if(!ok) break;
-            }
-            if(!ok) break;
-        }
-        if(ok) matches.push({index: i});
-    }
-    showMatches(shape, matches.slice(0, 3));
-}
+function updateCell(r, c, v) { data[r][c] = v.trim() || "**"; }
 
-function showMatches(shape, matches){
-    const container = document.getElementById("checks");
-    container.innerHTML = matches.length ? "" : "No Combo Found";
-    matches.forEach((m, i) => {
-        let d = document.createElement("button");
-        d.style = "background:#333; color:gold; border:1px solid #444; width:100%; text-align:left; padding:10px; margin-bottom:5px; cursor:pointer;";
-        d.innerText = `Match #${i+1} (Row ${m.index + 1})`;
-        d.onclick = () => { 
-            activeMark = {start: m.index, shape: shape}; 
-            draw(); 
-            openPopup(m.index, shape);
-            predictFuture(matches);
-        };
-        container.appendChild(d);
-    });
-}
-
-function predictFuture(matches) {
+function smartScan(r, c) {
+    if(data[r][c] !== "**") return;
+    activePattern = null;
     let pool = [];
-    matches.forEach(m => {
-        let nextRow = m.index + activeMark.shape.length;
-        if(nextRow < data.length && data[nextRow][lastTargetCol] !== "**") pool.push(data[nextRow][lastTargetCol]);
+    // 10 week search
+    for(let i=r-1; i>=Math.max(0, r-10); i--) {
+        data[i].forEach((v, ci) => { if(v!=="**") pool.push({ri:i, ci:ci, f:fam(v)}); });
+    }
+    
+    let validFams = [...new Set(pool.map(p => p.f))].filter(f => pool.filter(p => p.f === f).length >= 2);
+    if(validFams.length < 2) return alert("Min 2 families required in last 10 weeks!");
+
+    let selected = validFams.sort(() => 0.5 - Math.random()).slice(0, 2);
+    let p1 = pool.filter(x => x.f === selected[0]).slice(0, 2);
+    let p2 = pool.filter(x => x.f === selected[1]).slice(0, 2);
+    
+    let top = Math.min(p1[0].ri, p1[1].ri, p2[0].ri, p2[1].ri);
+    let shape = Array.from({length: r - top}, () => Array(5).fill(0));
+    p1.forEach(p => shape[p.ri-top][p.ci] = 1);
+    p2.forEach(p => shape[p.ri-top][p.ci] = 2);
+
+    let matches = [];
+    for(let i=0; i <= data.length - shape.length - 1; i++) {
+        let ok = true;
+        for(let k=0; k<shape.length; k++) {
+            for(let j=0; j<5; j++) {
+                if(shape[k][j] === 1 && fam(data[i+k][j]) !== selected[0]) ok = false;
+                if(shape[k][j] === 2 && fam(data[i+k][j]) !== selected[1]) ok = false;
+            }
+        }
+        if(ok && i !== top && data[i+shape.length][c] !== "**") {
+            matches.push({start: i, shape: shape, resR: i+shape.length, resC: c, val: data[i+shape.length][c]});
+        }
+    }
+
+    let list = document.getElementById("checkList");
+    list.innerHTML = matches.length ? "" : "No history match found.";
+    matches.slice(0, 3).forEach((m, idx) => {
+        let btn = document.createElement("button");
+        btn.className = "check-btn";
+        btn.innerHTML = `🏁 Check Line #${idx+1} (Row ${m.start+1}) Result: ${m.val}`;
+        btn.onclick = () => { activePattern = m; draw(); showPopup(m); };
+        list.appendChild(btn);
     });
-    document.getElementById("future").innerHTML = pool.length ? `<b>AI Recommendation:</b> ${[...new Set(pool)].join(", ")}` : "No future data";
+    document.getElementById("future").innerText = matches.slice(0, 3).map(m => m.val).join(" | ") || "-- | -- | --";
+    draw();
 }
 
-function openPopup(idx, shape) {
-    let html = "<table>";
-    for(let i=0; i<shape.length; i++) {
-        html += "<tr>";
-        data[idx+i].forEach((v, j) => {
-            let cls = shape[i][j] === 1 ? "f1" : (shape[i][j] === 2 ? "f2" : "");
-            html += `<td class="${cls}">${v}</td>`;
+function showPopup(m) {
+    let h = "<table border='1' style='width:100%; border-collapse:collapse; background:white; color:black;'>";
+    for(let i=0; i <= m.shape.length; i++) {
+        h += "<tr>";
+        data[m.start + i].forEach((cell, ci) => {
+            let s = "padding:8px; text-align:center; font-weight:bold;";
+            if(i < m.shape.length && m.shape[i][ci] > 0) s += `background:${m.shape[i][ci]===1?'rgba(62,132,255,0.3)':'rgba(255,62,62,0.3)'}; border-radius:50%;`;
+            if(m.start + i === m.resR && ci === m.resC) s += "background:rgba(0,255,0,0.4); border:2px solid green;";
+            h += `<td style='${s}'>${cell}</td>`;
         });
-        html += "</tr>";
+        h += "</tr>";
     }
-    document.getElementById("popData").innerHTML = html + "</table>";
+    document.getElementById("popContent").innerHTML = h + "</table>";
     document.getElementById("popup").style.display = "block";
     document.getElementById("overlay").style.display = "block";
 }
 
-function exportImage() {
-    html2canvas(document.querySelector("#captureArea")).then(canvas => {
-        let link = document.createElement('a');
-        link.download = 'kalyan_ai_pattern.png';
-        link.href = canvas.toDataURL();
-        link.click();
+function renderLines() {
+    const cvs = document.getElementById("mainCanvas");
+    const ctx = cvs.getContext("2d");
+    const tbl = document.getElementById("tbl");
+    cvs.width = tbl.offsetWidth; cvs.height = tbl.offsetHeight;
+    ctx.clearRect(0,0,cvs.width,cvs.height);
+    const rect = tbl.getBoundingClientRect();
+    ["f1", "f2", "f-res"].forEach((cls, idx) => {
+        let els = Array.from(tbl.querySelectorAll("." + cls));
+        if(els.length >= 1) {
+            ctx.strokeStyle = idx === 0 ? "#3e84ff" : (idx === 1 ? "#ff3e3e" : "#00aa00");
+            ctx.lineWidth = 3; ctx.beginPath();
+            els.forEach((el, i) => {
+                let r = el.getBoundingClientRect();
+                let x = r.left - rect.left + r.width/2;
+                let y = r.top - rect.top + r.height/2;
+                if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+            });
+            ctx.stroke();
+        }
     });
 }
 
 function closePopup() { document.getElementById("popup").style.display = "none"; document.getElementById("overlay").style.display = "none"; }
-function edit(r,c,el){ data[r][c]=norm(el.innerText.trim()); }
-function addRow(){ data.push(["**","**","**","**","**","**"]); draw(); }
-function saveData(){ localStorage.setItem(STORAGE_KEY,JSON.stringify(data)); alert("Saved!"); }
-function clearData(){ if(confirm("Clear everything?")){ localStorage.clear(); location.reload(); }}
-
+function addRow(){ data.push(["**","**","**","**","**"]); draw(); }
+function saveData(){ localStorage.setItem("raj_vision_v10", JSON.stringify(data)); alert("Memory Saved!"); }
+function loadCSV(input){
+    let reader = new FileReader();
+    reader.onload = () => {
+        data = reader.result.split('\n').filter(l=>l.trim()).map(l => l.split(',').map(v=>v.trim().padStart(2,'0')));
+        draw();
+    };
+    reader.readAsText(input.files[0]);
+}
 draw();
 </script>
 </body>
