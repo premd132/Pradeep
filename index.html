@@ -165,7 +165,7 @@ function showMatches(shape, matches){
     container.innerHTML = matches.length ? "" : "No 2+2 Combo Found";
     matches.forEach((m, i) => {
         let d = document.createElement("div");
-        d.innerText = `Match Line #${i+1} (Row ${m.index + 1})`;
+        d.innerText = `Match Line #${i+3} (Row ${m.index + 3})`;
         d.onclick = () => { activeMark = {start: m.index, shape: shape}; draw(); };
         container.appendChild(d);
     });
