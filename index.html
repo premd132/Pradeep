@@ -142,8 +142,13 @@ function drawLines(cvsId, tblEl) {
 function makePattern(r,c){
     lastTargetCol = c;
     let famPositions = {};
+    
+    // SCAN LOGIC: Ab ye aapke click kiye gaye column 'c' ke aas-paas focus karega
+    // Hum sirf wahi families uthayenge jo aapke target area ke kareeb hain
     for(let i=Math.max(0, r-6); i<=r; i++){
-        for(let j=0; j<6; j++){
+        // Pehle target column 'c' ko check karo, fir baaki columns ko
+        let checkOrder = [c, 0, 1, 2, 3, 4, 5]; 
+        for(let j of checkOrder){
             let v = data[i][j];
             if(v !== "**"){
                 let f = fam(v);
@@ -152,14 +157,31 @@ function makePattern(r,c){
             }
         }
     }
-    let topFams = Object.keys(famPositions).filter(f => famPositions[f].length === 2).slice(0, 2);
-    if(topFams.length < 2) { alert("At least 2 families with 2 jodis needed!"); return; }
 
+    // TOP FAMILIES: Sirf wahi 2 families jo current context mein sabse pehle mili
+    let topFams = Object.keys(famPositions).filter(f => famPositions[f].length === 2).slice(0, 2);
+    
+    if(topFams.length < 2) { 
+        alert("Is area/column ke hisab se 2 families nahi mil rahi hain. Thoda data aur bhariye!"); 
+        return; 
+    }
+
+    // SHAPE BUILDING: Ab shape har click ke liye unique hogi
     let startRow = Math.max(0, r-6);
     let shapeHeight = r - startRow + 1;
     let shape = Array.from({length: shapeHeight}, () => Array(6).fill(0));
-    topFams.forEach((f, idx) => { famPositions[f].forEach(p => { shape[p.ri-startRow][p.ci] = (idx+1); }); });
+
+    topFams.forEach((f, idx) => {
+        famPositions[f].forEach(p => {
+            // Check if position is within our current shape height
+            if(p.ri >= startRow) {
+                shape[p.ri - startRow][p.ci] = (idx + 1);
+            }
+        });
+    });
+
     searchPattern(shape, topFams);
+}
 }
 
 function searchPattern(shape, famList){
