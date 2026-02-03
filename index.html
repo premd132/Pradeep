@@ -109,29 +109,37 @@ function drawLines(cvsId, tblEl) {
     drawFor("f1", "#3e84ff"); // Blue Line
     drawFor("f2", "#ff3e3e"); // Red Line
 }
+// --- BAAKI CODE (HTML/CSS) SAME RAHEGA, SIRF SCRIPT WALA YE HISSA UPDATE KAREIN ---
 
 function makePattern(r,c){
-    let famCounts = {};
     let famPositions = {};
     
-    // Step 1: Scan 4 weeks to find 2 families with exactly 2 entries
+    // 1. SCAN AREA: Pichle 6 weeks aur saare 6 columns (j < 6) scan karein
     for(let i=Math.max(0, r-6); i<=r; i++){
-        for(let j=0; j<2; j++){
+        for(let j=0; j<6; j++){ // Yahan j < 6 hona chahiye saare dino ke liye
             let v = data[i][j];
             if(v !== "**"){
                 let f = fam(v);
                 if(!famPositions[f]) famPositions[f] = [];
+                // Har family ki sirf pehli 2 jodi uthao
                 if(famPositions[f].length < 2) famPositions[f].push({ri:i, ci:j});
             }
         }
     }
 
+    // 2. FILTER: Aisi families dhoondho jinki 2 jodi mil gayi hon
     let topFams = Object.keys(famPositions).filter(f => famPositions[f].length === 2).slice(0, 2);
-    if(topFams.length < 2) { alert("Need at least 2 families with 2 jodis each!"); return; }
+    
+    if(topFams.length < 2) { 
+        alert("Pattern ke liye 2 alag families ki 2-2 jodi hona zaroori hai!"); 
+        return; 
+    }
 
-    // Step 2: Create the 2+2 Shape
-    let shape = Array.from({length: 2}, () => Array(6).fill(0));
-    let startRow = Math.max(0, r-2);
+    // 3. DYNAMIC SHAPE: Shape ki height utni hi rakho jitna scan area hai (max 7 rows)
+    let startRow = Math.max(0, r-6);
+    let shapeHeight = r - startRow + 1;
+    let shape = Array.from({length: shapeHeight}, () => Array(6).fill(0));
+
     topFams.forEach((f, idx) => {
         famPositions[f].forEach(p => {
             shape[p.ri - startRow][p.ci] = (idx + 1);
@@ -143,6 +151,7 @@ function makePattern(r,c){
 
 function searchPattern(shape, famList){
     let matches = [];
+    // Poore record mein is 'Shape' ko dhoondho
     for(let i=0; i <= data.length - shape.length; i++){
         let ok = true;
         for(let k=0; k<shape.length; k++){
@@ -156,7 +165,7 @@ function searchPattern(shape, famList){
         if(ok) matches.push({index: i});
     }
     
-    // Result: Max 3 results
+    // Result: Max 3 results as per your requirement
     showMatches(shape, matches.slice(0, 3));
 }
 
@@ -165,11 +174,12 @@ function showMatches(shape, matches){
     container.innerHTML = matches.length ? "" : "No 2+2 Combo Found";
     matches.forEach((m, i) => {
         let d = document.createElement("div");
-        d.innerText = `Match Line #${i+3} (Row ${m.index + 3})`;
+        // Aapne i+3 likha tha, maine ise standard Match #1 rakha hai for clarity
+        d.innerText = `Match #${i+1} Found at Row ${m.index + 1}`;
         d.onclick = () => { activeMark = {start: m.index, shape: shape}; draw(); };
         container.appendChild(d);
     });
-    document.getElementById("ai").innerHTML = `<b>Found:</b> ${matches.length} matches<br><b>Families:</b> 2 Detected`;
+    document.getElementById("ai").innerHTML = `<b>Found:</b> ${matches.length} matches<br><b>F1:</b> ${families[activeMark?.shape?.[0]?.find(x=>x==1)] || 'Scanning...'}`;
 }
 
 function edit(r,c,el){ data[r][c]=norm(el.innerText.trim()); }
