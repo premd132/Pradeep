@@ -3,51 +3,61 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kalyan Pro – Strict 2+2 AI</title>
+<title>Kalyan AI Pro – Final</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
     :root { --gold: #ffd700; --blue: #3e84ff; --red: #ff3e3e; --bg: #121212; --panel: #1e1e1e; }
-    body { font-family: 'Segoe UI', Arial; background: var(--bg); color: #fff; margin: 0; padding: 10px; overflow-x: hidden; }
+    body { font-family: 'Segoe UI', Arial; background: var(--bg); color: #fff; margin: 0; padding: 10px; }
     h2 { color: var(--gold); text-align: center; text-transform: uppercase; margin: 5px 0; font-size: 1.2rem; }
-    .toolbar { background: var(--panel); padding: 10px; border-radius: 8px; border: 1px solid #444; margin-bottom: 10px; display: flex; gap: 8px; justify-content: center; }
-    .table-container { position: relative; display: inline-block; background: #fff; border-radius: 5px; box-shadow: 0 0 15px rgba(0,0,0,0.5); }
+    .toolbar { background: var(--panel); padding: 10px; border-radius: 8px; border: 1px solid #444; margin-bottom: 10px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .table-container { position: relative; display: inline-block; background: #fff; border-radius: 5px; box-shadow: 0 0 15px rgba(0,0,0,0.5); padding: 5px; }
     table { border-collapse: collapse; font-size: 12px; position: relative; z-index: 2; color: #000; }
     td, th { border: 1px solid #ccc; padding: 8px 4px; text-align: center; font-weight: bold; width: 35px; height: 35px; }
     th { background: #800000; color: white; }
-    .blank { background: #e0e0e0 !important; cursor: pointer; color: #888; }
-    /* Circles for Family 1 and 2 */
-    .f1 { border: 2.5px solid var(--blue) !important; border-radius: 100%; background: rgba(62, 132, 255, 0.15); }
-    .f2 { border: 2.5px solid var(--red) !important; border-radius: 100%; background: rgba(255, 62, 62, 0.15); }
+    .f1 { border: 2.5px solid var(--blue) !important; border-radius: 100%; background: rgba(62, 132, 255, 0.1); }
+    .f2 { border: 2.5px solid var(--red) !important; border-radius: 100%; background: rgba(255, 62, 62, 0.1); }
+    .blank { background: #e0e0e0 !important; cursor: pointer; }
     .dashboard { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
     .card { background: var(--panel); padding: 10px; border-radius: 8px; border-left: 4px solid var(--gold); flex: 1; min-width: 250px; }
     canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 3; }
-    button { background: var(--gold); color: #000; border: none; padding: 8px 12px; font-weight: bold; border-radius: 4px; cursor: pointer; }
-    #checks div { background: #2a2a2a; margin: 5px 0; padding: 8px; cursor: pointer; border-radius: 4px; font-size: 12px; color: var(--gold); border: 1px solid #444; }
+    button { background: var(--gold); color: #000; border: none; padding: 8px 12px; font-weight: bold; border-radius: 4px; cursor: pointer; transition: 0.2s; }
+    button:hover { opacity: 0.8; }
+    #popup { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border: 3px solid var(--gold); display: none; z-index: 100; padding: 15px; border-radius: 8px; color: #000; box-shadow: 0 0 50px rgba(0,0,0,0.9); }
+    .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; z-index: 90; }
 </style>
 </head>
 <body>
 
-<h2>🏆 Kalyan Strict 2+2 AI</h2>
+<h2>🏆 Kalyan Strict 2+2 AI Pro</h2>
 
 <div class="toolbar">
     <button onclick="addRow()">➕ Row</button>
     <button onclick="saveData()" style="background:#28a745; color:white;">💾 Save</button>
+    <button onclick="exportImage()" style="background:#17a2b8; color:white;">📸 Save Photo</button>
     <button onclick="clearData()" style="background:#dc3545; color:white;">🗑️ Reset</button>
 </div>
 
 <center>
-    <div class="table-container">
+    <div id="captureArea" class="table-container">
         <canvas id="mainCanvas"></canvas>
         <table id="tbl"></table>
     </div>
 </center>
 
 <div class="dashboard">
-    <div class="card"><h3>✔ Matches (Max 3)</h3><div id="checks"></div></div>
-    <div class="card"><h3>🤖 Logic Info</h3><div id="ai" style="font-size:13px;">Click on ** to scan 2+2 pattern...</div></div>
+    <div class="card"><h3>🎯 Matches (Max 3)</h3><div id="checks"></div></div>
+    <div class="card"><h3>🔮 Future AI Prediction</h3><div id="future">Select match...</div></div>
+</div>
+
+<div class="overlay" id="overlay" onclick="closePopup()"></div>
+<div id="popup">
+    <button onclick="closePopup()" style="float:right; background:#800000; color:white;">X</button>
+    <h3>Connection Detail</h3>
+    <div id="popData"></div>
 </div>
 
 <script>
-const STORAGE_KEY="pdata_kalyan_v3";
+const STORAGE_KEY="pdata_kalyan_final";
 const families={  
     "22":["22","27","72","77"],"11":["11","61","66","16"],"33":["33","83","88","38"],"99":["99","44","49","94"],"55":["50","00","05","55"],
     "12":["12","17","21","26","62","67","71","76"],"13":["13","18","31","36","63","68","81","86"],"14":["14","19","41","46","64","69","91","96"],
@@ -59,10 +69,11 @@ const families={
 function fam(v){for(let k in families) if(families[k].includes(v)) return k; return "NA";}
 function norm(v){if(v==""||v=="**")return "**"; v=String(v); return v.length==1?"0"+v:v;}
 
-let data=JSON.parse(localStorage.getItem(STORAGE_KEY)) || [["51","91","41","57","19","95"],["05","90","74","06","19","63"],["90","34","82","09","28","19"],["**","**","**","**","**","**"]];
+let data=JSON.parse(localStorage.getItem(STORAGE_KEY)) || [["51","91","41","57","19","95"],["05","90","74","06","19","63"],["90","34","82","09","28","19"],["11","17","86","44","00","25"],["**","**","**","**","**","**"]];
 data = data.map(r => r.map(norm));
 
 let activeMark=null;
+let lastTargetCol=0;
 
 function draw(){
     let h="<tr><th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th><th>SAT</th></tr>";
@@ -72,7 +83,7 @@ function draw(){
             let p = isPartOfPattern(ri, ci);
             let cls = p ? (p === 1 ? "f1" : "f2") : "";
             if(c=="**") cls += " blank";
-            h+=`<td id="cell-${ri}-${ci}" class="${cls}" contenteditable oninput="edit(${ri},${ci},this)" onclick="${c=='**'?'makePattern('+ri+','+ci+')':'' }">${c}</td>`;
+            h+=`<td class="${cls}" contenteditable oninput="edit(${ri},${ci},this)" onclick="${c=='**'?'makePattern('+ri+','+ci+')':'' }">${c}</td>`;
         });
         h+="</tr>";
     });
@@ -93,66 +104,45 @@ function drawLines(cvsId, tblEl) {
     cvs.width = tblEl.offsetWidth; cvs.height = tblEl.offsetHeight;
     ctx.clearRect(0,0,cvs.width,cvs.height);
     const tRect = tblEl.getBoundingClientRect();
-
     const drawFor = (cls, color) => {
         const els = Array.from(tblEl.querySelectorAll("."+cls));
         if(els.length === 2) {
-            const r1 = els[0].getBoundingClientRect();
-            const r2 = els[1].getBoundingClientRect();
-            ctx.strokeStyle = color; ctx.lineWidth = 2.5;
-            ctx.beginPath();
-            ctx.moveTo(r1.left - tRect.left + r1.width/2, r1.top - tRect.top + r1.height/2);
-            ctx.lineTo(r2.left - tRect.left + r2.width/2, r2.top - tRect.top + r2.height/2);
+            const r1 = els[0].getBoundingClientRect(); const r2 = els[1].getBoundingClientRect();
+            ctx.strokeStyle = color; ctx.lineWidth = 3; ctx.beginPath();
+            ctx.moveTo(r1.left-tRect.left+r1.width/2, r1.top-tRect.top+r1.height/2);
+            ctx.lineTo(r2.left-tRect.left+r2.width/2, r2.top-tRect.top+r2.height/2);
             ctx.stroke();
         }
     };
-    drawFor("f1", "#3e84ff"); // Blue Line
-    drawFor("f2", "#ff3e3e"); // Red Line
+    drawFor("f1", "#3e84ff"); drawFor("f2", "#ff3e3e");
 }
-// --- BAAKI CODE (HTML/CSS) SAME RAHEGA, SIRF SCRIPT WALA YE HISSA UPDATE KAREIN ---
 
 function makePattern(r,c){
+    lastTargetCol = c;
     let famPositions = {};
-    
-    // 1. SCAN AREA: Pichle 6 weeks aur saare 6 columns (j < 6) scan karein
     for(let i=Math.max(0, r-6); i<=r; i++){
-        for(let j=0; j<6; j++){ // Yahan j < 6 hona chahiye saare dino ke liye
+        for(let j=0; j<6; j++){
             let v = data[i][j];
             if(v !== "**"){
                 let f = fam(v);
                 if(!famPositions[f]) famPositions[f] = [];
-                // Har family ki sirf pehli 2 jodi uthao
                 if(famPositions[f].length < 2) famPositions[f].push({ri:i, ci:j});
             }
         }
     }
-
-    // 2. FILTER: Aisi families dhoondho jinki 2 jodi mil gayi hon
     let topFams = Object.keys(famPositions).filter(f => famPositions[f].length === 2).slice(0, 2);
-    
-    if(topFams.length < 2) { 
-        alert("Pattern ke liye 2 alag families ki 2-2 jodi hona zaroori hai!"); 
-        return; 
-    }
+    if(topFams.length < 2) { alert("Need 2 families with 2 jodis!"); return; }
 
-    // 3. DYNAMIC SHAPE: Shape ki height utni hi rakho jitna scan area hai (max 7 rows)
     let startRow = Math.max(0, r-6);
     let shapeHeight = r - startRow + 1;
     let shape = Array.from({length: shapeHeight}, () => Array(6).fill(0));
-
-    topFams.forEach((f, idx) => {
-        famPositions[f].forEach(p => {
-            shape[p.ri - startRow][p.ci] = (idx + 1);
-        });
-    });
-
+    topFams.forEach((f, idx) => { famPositions[f].forEach(p => { shape[p.ri-startRow][p.ci] = (idx+1); }); });
     searchPattern(shape, topFams);
 }
 
 function searchPattern(shape, famList){
     let matches = [];
-    // Poore record mein is 'Shape' ko dhoondho
-    for(let i=0; i <= data.length - shape.length; i++){
+    for(let i=0; i <= data.length-shape.length; i++){
         let ok = true;
         for(let k=0; k<shape.length; k++){
             for(let j=0; j<6; j++){
@@ -164,8 +154,6 @@ function searchPattern(shape, famList){
         }
         if(ok) matches.push({index: i});
     }
-    
-    // Result: Max 3 results as per your requirement
     showMatches(shape, matches.slice(0, 3));
 }
 
@@ -173,15 +161,53 @@ function showMatches(shape, matches){
     const container = document.getElementById("checks");
     container.innerHTML = matches.length ? "" : "No 2+2 Combo Found";
     matches.forEach((m, i) => {
-        let d = document.createElement("div");
-        // Aapne i+3 likha tha, maine ise standard Match #1 rakha hai for clarity
-        d.innerText = `Match #${i+1} Found at Row ${m.index + 1}`;
-        d.onclick = () => { activeMark = {start: m.index, shape: shape}; draw(); };
+        let d = document.createElement("button");
+        d.style = "background:#333; color:gold; border:1px solid #444; width:100%; text-align:left; padding:10px; margin-bottom:5px; cursor:pointer;";
+        d.innerText = `Match #${i+1} (Row ${m.index + 1})`;
+        d.onclick = () => { 
+            activeMark = {start: m.index, shape: shape}; 
+            draw(); 
+            openPopup(m.index, shape);
+            predictFuture(matches);
+        };
         container.appendChild(d);
     });
-    document.getElementById("ai").innerHTML = `<b>Found:</b> ${matches.length} matches<br><b>F1:</b> ${families[activeMark?.shape?.[0]?.find(x=>x==1)] || 'Scanning...'}`;
 }
 
+function predictFuture(matches) {
+    let pool = [];
+    matches.forEach(m => {
+        let nextRow = m.index + activeMark.shape.length;
+        if(nextRow < data.length && data[nextRow][lastTargetCol] !== "**") pool.push(data[nextRow][lastTargetCol]);
+    });
+    document.getElementById("future").innerHTML = pool.length ? `<b>Next Jodi Chance:</b> ${[...new Set(pool)].join(", ")}` : "No data";
+}
+
+function openPopup(idx, shape) {
+    let html = "<table>";
+    for(let i=0; i<shape.length; i++) {
+        html += "<tr>";
+        data[idx+i].forEach((v, j) => {
+            let cls = shape[i][j] === 1 ? "f1" : (shape[i][j] === 2 ? "f2" : "");
+            html += `<td class="${cls}">${v}</td>`;
+        });
+        html += "</tr>";
+    }
+    document.getElementById("popData").innerHTML = html + "</table>";
+    document.getElementById("popup").style.display = "block";
+    document.getElementById("overlay").style.display = "block";
+}
+
+function exportImage() {
+    html2canvas(document.querySelector("#captureArea")).then(canvas => {
+        let link = document.createElement('a');
+        link.download = 'kalyan-pattern.png';
+        link.href = canvas.toDataURL();
+        link.click();
+    });
+}
+
+function closePopup() { document.getElementById("popup").style.display = "none"; document.getElementById("overlay").style.display = "none"; }
 function edit(r,c,el){ data[r][c]=norm(el.innerText.trim()); }
 function addRow(){ data.push(["**","**","**","**","**","**"]); draw(); }
 function saveData(){ localStorage.setItem(STORAGE_KEY,JSON.stringify(data)); alert("Saved!"); }
