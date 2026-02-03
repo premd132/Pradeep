@@ -101,82 +101,75 @@ function draw(){
 
 // --- CSV UPLOAD LOGIC ---
 document.getElementById('csvFile').addEventListener('change', function(e) {
+// --- CSV UPLOAD LOGIC (FIXED) ---
+document.getElementById('csvFile').addEventListener('change', function(e) {
     let file = e.target.files[0];
+    if (!file) return;
+
     let reader = new FileReader();
     reader.onload = function(event) {
         let text = event.target.result;
-        let rows = text.split('\n').filter(row => row.trim() !== '');
-        data = rows.map(row => row.split(',').map(norm));
+        // Rows ko split karein aur khaali lines hatayein
+        let rows = text.split(/\r?\n/).filter(row => row.trim() !== '');
+        
+        // Data format set karein
+        data = rows.map(row => {
+            let cols = row.split(',').map(v => norm(v.trim()));
+            // Ensure har row mein 6 columns hon
+            while(cols.length < 6) cols.push("**");
+            return cols.slice(0, 6);
+        });
+
+        activeMark = null; // Purani marking hatao
         draw();
-        alert("CSV Data Uploaded!");
+        alert("✅ CSV Data Successfully Uploaded!");
     };
     reader.readAsText(file);
 });
 
-function isPartOfPattern(ri, ci){
-    if(!activeMark) return null;
-    let i = ri - activeMark.start;
-    if(i >= 0 && i < activeMark.shape.length) return activeMark.shape[i][ci] || null;
-    return null;
-}
-
-function drawLines(cvsId, tblEl) {
-    const cvs = document.getElementById(cvsId);
-    const ctx = cvs.getContext("2d");
-    cvs.width = tblEl.offsetWidth; cvs.height = tblEl.offsetHeight;
-    ctx.clearRect(0,0,cvs.width,cvs.height);
-    const tRect = tblEl.getBoundingClientRect();
-    const drawFor = (cls, color) => {
-        const els = Array.from(tblEl.querySelectorAll("."+cls));
-        if(els.length === 2) {
-            const r1 = els[0].getBoundingClientRect(); const r2 = els[1].getBoundingClientRect();
-            ctx.strokeStyle = color; ctx.lineWidth = 3; ctx.beginPath();
-            ctx.moveTo(r1.left-tRect.left+r1.width/2, r1.top-tRect.top+r1.height/2);
-            ctx.lineTo(r2.left-tRect.left+r2.width/2, r2.top-tRect.top+r2.height/2);
-            ctx.stroke();
-        }
-    };
-    drawFor("f1", "#3e84ff"); drawFor("f2", "#ff3e3e");
-}
-
-function makePattern(r,c){
+// --- DYNAMIC PATTERN LOGIC (Column Specific) ---
+function makePattern(r, c) {
     lastTargetCol = c;
     let famPositions = {};
     
-    // SCAN LOGIC: Ab ye aapke click kiye gaye column 'c' ke aas-paas focus karega
-    // Hum sirf wahi families uthayenge jo aapke target area ke kareeb hain
-    for(let i=Math.max(0, r-6); i<=r; i++){
-        // Pehle target column 'c' ko check karo, fir baaki columns ko
-        let checkOrder = [c, 0, 1, 2, 3, 4, 5]; 
-        for(let j of checkOrder){
+    // Sirf pichle 6 weeks scan karein
+    let scanStart = Math.max(0, r - 6);
+    
+    for (let i = scanStart; i <= r; i++) {
+        // Priority: Pehle wahi column dekho jahan click kiya gaya hai
+        let checkOrder = [c, 0, 1, 2, 3, 4, 5].filter((v, i, a) => a.indexOf(v) === i);
+        
+        for (let j of checkOrder) {
             let v = data[i][j];
-            if(v !== "**"){
+            if (v !== "**") {
                 let f = fam(v);
-                if(!famPositions[f]) famPositions[f] = [];
-                if(famPositions[f].length < 2) famPositions[f].push({ri:i, ci:j});
+                if (!famPositions[f]) famPositions[f] = [];
+                // Ek family ki maximum 2 jodi hi leni hai pattern ke liye
+                if (famPositions[f].length < 2) {
+                    famPositions[f].push({ ri: i, ci: j });
+                }
             }
         }
     }
 
-    // TOP FAMILIES: Sirf wahi 2 families jo current context mein sabse pehle mili
-    let topFams = Object.keys(famPositions).filter(f => famPositions[f].length === 2).slice(0, 2);
+    // Sirf wo 2 families uthao jo sabse pehle (clicked column ke hisab se) mili
+    let topFams = Object.keys(famPositions)
+        .filter(f => famPositions[f].length === 2)
+        .slice(0, 2);
     
-    if(topFams.length < 2) { 
-        alert("Is area/column ke hisab se 2 families nahi mil rahi hain. Thoda data aur bhariye!"); 
+    if (topFams.length < 2) { 
+        alert("⚠️ Is din (Column) ke liye 2+2 pattern nahi mil raha. Kripya data check karein."); 
         return; 
     }
 
-    // SHAPE BUILDING: Ab shape har click ke liye unique hogi
-    let startRow = Math.max(0, r-6);
+    // Shape building
+    let startRow = scanStart;
     let shapeHeight = r - startRow + 1;
-    let shape = Array.from({length: shapeHeight}, () => Array(6).fill(0));
+    let shape = Array.from({ length: shapeHeight }, () => Array(6).fill(0));
 
     topFams.forEach((f, idx) => {
         famPositions[f].forEach(p => {
-            // Check if position is within our current shape height
-            if(p.ri >= startRow) {
-                shape[p.ri - startRow][p.ci] = (idx + 1);
-            }
+            shape[p.ri - startRow][p.ci] = (idx + 1);
         });
     });
 
