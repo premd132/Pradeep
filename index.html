@@ -115,7 +115,7 @@ function makePattern(r,c){
     let famPositions = {};
     
     // Step 1: Scan 4 weeks to find 2 families with exactly 2 entries
-    for(let i=Math.max(0, r-4); i<=r; i++){
+    for(let i=Math.max(0, r-6); i<=r; i++){
         for(let j=0; j<2; j++){
             let v = data[i][j];
             if(v !== "**"){
@@ -130,7 +130,7 @@ function makePattern(r,c){
     if(topFams.length < 2) { alert("Need at least 2 families with 2 jodis each!"); return; }
 
     // Step 2: Create the 2+2 Shape
-    let shape = Array.from({length: 5}, () => Array(6).fill(0));
+    let shape = Array.from({length: 2}, () => Array(6).fill(0));
     let startRow = Math.max(0, r-2);
     topFams.forEach((f, idx) => {
         famPositions[f].forEach(p => {
