@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kalyan AI Pro – Final</title>
+<title>Kalyan AI Pro – Ultimate</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
     :root { --gold: #ffd700; --blue: #3e84ff; --red: #ff3e3e; --bg: #121212; --panel: #1e1e1e; }
@@ -20,20 +20,21 @@
     .dashboard { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
     .card { background: var(--panel); padding: 10px; border-radius: 8px; border-left: 4px solid var(--gold); flex: 1; min-width: 250px; }
     canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 3; }
-    button { background: var(--gold); color: #000; border: none; padding: 8px 12px; font-weight: bold; border-radius: 4px; cursor: pointer; transition: 0.2s; }
-    button:hover { opacity: 0.8; }
+    button { background: var(--gold); color: #000; border: none; padding: 8px 12px; font-weight: bold; border-radius: 4px; cursor: pointer; }
     #popup { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border: 3px solid var(--gold); display: none; z-index: 100; padding: 15px; border-radius: 8px; color: #000; box-shadow: 0 0 50px rgba(0,0,0,0.9); }
     .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; z-index: 90; }
 </style>
 </head>
 <body>
 
-<h2>🏆 Kalyan Strict 2+2 AI Pro</h2>
+<h2>🏆 Kalyan AI – CSV & Pattern Pro</h2>
 
 <div class="toolbar">
+    <input type="file" id="csvFile" accept=".csv" style="display:none">
+    <button onclick="document.getElementById('csvFile').click()" style="background:#6f42c1; color:white;">📂 Upload CSV</button>
     <button onclick="addRow()">➕ Row</button>
     <button onclick="saveData()" style="background:#28a745; color:white;">💾 Save</button>
-    <button onclick="exportImage()" style="background:#17a2b8; color:white;">📸 Save Photo</button>
+    <button onclick="exportImage()" style="background:#17a2b8; color:white;">📸 Screenshot</button>
     <button onclick="clearData()" style="background:#dc3545; color:white;">🗑️ Reset</button>
 </div>
 
@@ -57,7 +58,7 @@
 </div>
 
 <script>
-const STORAGE_KEY="pdata_kalyan_final";
+const STORAGE_KEY="pdata_kalyan_final_v5";
 const families={  
     "22":["22","27","72","77"],"11":["11","61","66","16"],"33":["33","83","88","38"],"99":["99","44","49","94"],"55":["50","00","05","55"],
     "12":["12","17","21","26","62","67","71","76"],"13":["13","18","31","36","63","68","81","86"],"14":["14","19","41","46","64","69","91","96"],
@@ -67,9 +68,16 @@ const families={
 };
 
 function fam(v){for(let k in families) if(families[k].includes(v)) return k; return "NA";}
-function norm(v){if(v==""||v=="**")return "**"; v=String(v); return v.length==1?"0"+v:v;}
+function norm(v){if(!v || v=="" || v=="**") return "**"; v=String(v).trim(); return v.length==1?"0"+v:v;}
 
-let data=JSON.parse(localStorage.getItem(STORAGE_KEY)) || [["51","91","41","57","19","95"],["05","90","74","06","19","63"],["90","34","82","09","28","19"],["11","17","86","44","00","25"],["**","**","**","**","**","**"]];
+// --- LOCAL STORAGE LOGIC ---
+let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [
+    ["51","91","41","57","19","95"],
+    ["05","90","74","06","19","63"],
+    ["90","34","82","09","28","19"],
+    ["11","17","86","44","00","25"],
+    ["**","**","**","**","**","**"]
+];
 data = data.map(r => r.map(norm));
 
 let activeMark=null;
@@ -90,6 +98,20 @@ function draw(){
     document.getElementById("tbl").innerHTML=h;
     if(activeMark) setTimeout(() => drawLines("mainCanvas", document.getElementById("tbl")), 50);
 }
+
+// --- CSV UPLOAD LOGIC ---
+document.getElementById('csvFile').addEventListener('change', function(e) {
+    let file = e.target.files[0];
+    let reader = new FileReader();
+    reader.onload = function(event) {
+        let text = event.target.result;
+        let rows = text.split('\n').filter(row => row.trim() !== '');
+        data = rows.map(row => row.split(',').map(norm));
+        draw();
+        alert("CSV Data Uploaded!");
+    };
+    reader.readAsText(file);
+});
 
 function isPartOfPattern(ri, ci){
     if(!activeMark) return null;
@@ -131,7 +153,7 @@ function makePattern(r,c){
         }
     }
     let topFams = Object.keys(famPositions).filter(f => famPositions[f].length === 2).slice(0, 2);
-    if(topFams.length < 2) { alert("Need 2 families with 2 jodis!"); return; }
+    if(topFams.length < 2) { alert("At least 2 families with 2 jodis needed!"); return; }
 
     let startRow = Math.max(0, r-6);
     let shapeHeight = r - startRow + 1;
@@ -159,7 +181,7 @@ function searchPattern(shape, famList){
 
 function showMatches(shape, matches){
     const container = document.getElementById("checks");
-    container.innerHTML = matches.length ? "" : "No 2+2 Combo Found";
+    container.innerHTML = matches.length ? "" : "No Combo Found";
     matches.forEach((m, i) => {
         let d = document.createElement("button");
         d.style = "background:#333; color:gold; border:1px solid #444; width:100%; text-align:left; padding:10px; margin-bottom:5px; cursor:pointer;";
@@ -180,7 +202,7 @@ function predictFuture(matches) {
         let nextRow = m.index + activeMark.shape.length;
         if(nextRow < data.length && data[nextRow][lastTargetCol] !== "**") pool.push(data[nextRow][lastTargetCol]);
     });
-    document.getElementById("future").innerHTML = pool.length ? `<b>Next Jodi Chance:</b> ${[...new Set(pool)].join(", ")}` : "No data";
+    document.getElementById("future").innerHTML = pool.length ? `<b>AI Recommendation:</b> ${[...new Set(pool)].join(", ")}` : "No future data";
 }
 
 function openPopup(idx, shape) {
@@ -201,7 +223,7 @@ function openPopup(idx, shape) {
 function exportImage() {
     html2canvas(document.querySelector("#captureArea")).then(canvas => {
         let link = document.createElement('a');
-        link.download = 'kalyan-pattern.png';
+        link.download = 'kalyan_ai_pattern.png';
         link.href = canvas.toDataURL();
         link.click();
     });
@@ -210,8 +232,8 @@ function exportImage() {
 function closePopup() { document.getElementById("popup").style.display = "none"; document.getElementById("overlay").style.display = "none"; }
 function edit(r,c,el){ data[r][c]=norm(el.innerText.trim()); }
 function addRow(){ data.push(["**","**","**","**","**","**"]); draw(); }
-function saveData(){ localStorage.setItem(STORAGE_KEY,JSON.stringify(data)); alert("Saved!"); }
-function clearData(){ if(confirm("Clear?")){ localStorage.clear(); location.reload(); }}
+function saveData(){ localStorage.setItem(STORAGE_KEY,JSON.stringify(data)); alert("Data Saved Locally!"); }
+function clearData(){ if(confirm("Clear everything?")){ localStorage.clear(); location.reload(); }}
 
 draw();
 </script>
