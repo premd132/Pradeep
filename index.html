@@ -116,7 +116,7 @@ function makePattern(r,c){
     
     // Step 1: Scan 4 weeks to find 2 families with exactly 2 entries
     for(let i=Math.max(0, r-4); i<=r; i++){
-        for(let j=0; j<6; j++){
+        for(let j=0; j<2; j++){
             let v = data[i][j];
             if(v !== "**"){
                 let f = fam(v);
@@ -131,7 +131,7 @@ function makePattern(r,c){
 
     // Step 2: Create the 2+2 Shape
     let shape = Array.from({length: 5}, () => Array(6).fill(0));
-    let startRow = Math.max(0, r-4);
+    let startRow = Math.max(0, r-2);
     topFams.forEach((f, idx) => {
         famPositions[f].forEach(p => {
             shape[p.ri - startRow][p.ci] = (idx + 1);
