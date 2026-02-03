@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kalyan AI Pro – Ultimate</title>
+<title>Kalyan AI Pro – Ultimate Fixed</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
     :root { --gold: #ffd700; --blue: #3e84ff; --red: #ff3e3e; --bg: #121212; --panel: #1e1e1e; }
@@ -70,14 +70,7 @@ const families={
 function fam(v){for(let k in families) if(families[k].includes(v)) return k; return "NA";}
 function norm(v){if(!v || v=="" || v=="**") return "**"; v=String(v).trim(); return v.length==1?"0"+v:v;}
 
-// --- LOCAL STORAGE LOGIC ---
-let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [
-    ["51","91","41","57","19","95"],
-    ["05","90","74","06","19","63"],
-    ["90","34","82","09","28","19"],
-    ["11","17","86","44","00","25"],
-    ["**","**","**","**","**","**"]
-];
+let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [["**","**","**","**","**","**"]];
 data = data.map(r => r.map(norm));
 
 let activeMark=null;
@@ -99,83 +92,77 @@ function draw(){
     if(activeMark) setTimeout(() => drawLines("mainCanvas", document.getElementById("tbl")), 50);
 }
 
-// --- CSV UPLOAD LOGIC ---
-document.getElementById('csvFile').addEventListener('change', function(e) {
-// --- CSV UPLOAD LOGIC (FIXED) ---
+// --- CSV UPLOAD LOGIC (FIXED & TESTED) ---
 document.getElementById('csvFile').addEventListener('change', function(e) {
     let file = e.target.files[0];
     if (!file) return;
-
     let reader = new FileReader();
     reader.onload = function(event) {
         let text = event.target.result;
-        // Rows ko split karein aur khaali lines hatayein
         let rows = text.split(/\r?\n/).filter(row => row.trim() !== '');
-        
-        // Data format set karein
         data = rows.map(row => {
             let cols = row.split(',').map(v => norm(v.trim()));
-            // Ensure har row mein 6 columns hon
             while(cols.length < 6) cols.push("**");
             return cols.slice(0, 6);
         });
-
-        activeMark = null; // Purani marking hatao
+        activeMark = null;
         draw();
-        alert("✅ CSV Data Successfully Uploaded!");
+        alert("✅ CSV Uploaded!");
     };
     reader.readAsText(file);
 });
 
-// --- DYNAMIC PATTERN LOGIC (Column Specific) ---
+function isPartOfPattern(ri, ci){
+    if(!activeMark) return null;
+    let i = ri - activeMark.start;
+    if(i >= 0 && i < activeMark.shape.length) return activeMark.shape[i][ci] || null;
+    return null;
+}
+
+function drawLines(cvsId, tblEl) {
+    const cvs = document.getElementById(cvsId);
+    const ctx = cvs.getContext("2d");
+    cvs.width = tblEl.offsetWidth; cvs.height = tblEl.offsetHeight;
+    ctx.clearRect(0,0,cvs.width,cvs.height);
+    const tRect = tblEl.getBoundingClientRect();
+    const drawFor = (cls, color) => {
+        const els = Array.from(tblEl.querySelectorAll("."+cls));
+        if(els.length === 2) {
+            const r1 = els[0].getBoundingClientRect(); const r2 = els[1].getBoundingClientRect();
+            ctx.strokeStyle = color; ctx.lineWidth = 3; ctx.beginPath();
+            ctx.moveTo(r1.left-tRect.left+r1.width/2, r1.top-tRect.top+r1.height/2);
+            ctx.lineTo(r2.left-tRect.left+r2.width/2, r2.top-tRect.top+r2.height/2);
+            ctx.stroke();
+        }
+    };
+    drawFor("f1", "#3e84ff"); drawFor("f2", "#ff3e3e");
+}
+
 function makePattern(r, c) {
     lastTargetCol = c;
     let famPositions = {};
-    
-    // Sirf pichle 6 weeks scan karein
     let scanStart = Math.max(0, r - 6);
-    
     for (let i = scanStart; i <= r; i++) {
-        // Priority: Pehle wahi column dekho jahan click kiya gaya hai
         let checkOrder = [c, 0, 1, 2, 3, 4, 5].filter((v, i, a) => a.indexOf(v) === i);
-        
         for (let j of checkOrder) {
             let v = data[i][j];
             if (v !== "**") {
                 let f = fam(v);
                 if (!famPositions[f]) famPositions[f] = [];
-                // Ek family ki maximum 2 jodi hi leni hai pattern ke liye
-                if (famPositions[f].length < 2) {
-                    famPositions[f].push({ ri: i, ci: j });
-                }
+                if (famPositions[f].length < 2) famPositions[f].push({ ri: i, ci: j });
             }
         }
     }
-
-    // Sirf wo 2 families uthao jo sabse pehle (clicked column ke hisab se) mili
-    let topFams = Object.keys(famPositions)
-        .filter(f => famPositions[f].length === 2)
-        .slice(0, 2);
-    
-    if (topFams.length < 2) { 
-        alert("⚠️ Is din (Column) ke liye 2+2 pattern nahi mil raha. Kripya data check karein."); 
-        return; 
-    }
-
-    // Shape building
-    let startRow = scanStart;
-    let shapeHeight = r - startRow + 1;
+    let topFams = Object.keys(famPositions).filter(f => famPositions[f].length === 2).slice(0, 2);
+    if (topFams.length < 2) { alert("⚠️ 2+2 pattern not found here."); return; }
+    let shapeHeight = r - scanStart + 1;
     let shape = Array.from({ length: shapeHeight }, () => Array(6).fill(0));
-
     topFams.forEach((f, idx) => {
-        famPositions[f].forEach(p => {
-            shape[p.ri - startRow][p.ci] = (idx + 1);
-        });
+        famPositions[f].forEach(p => { shape[p.ri - scanStart][p.ci] = (idx + 1); });
     });
-
     searchPattern(shape, topFams);
 }
-    
+
 function searchPattern(shape, famList){
     let matches = [];
     for(let i=0; i <= data.length-shape.length; i++){
@@ -246,7 +233,7 @@ function exportImage() {
 function closePopup() { document.getElementById("popup").style.display = "none"; document.getElementById("overlay").style.display = "none"; }
 function edit(r,c,el){ data[r][c]=norm(el.innerText.trim()); }
 function addRow(){ data.push(["**","**","**","**","**","**"]); draw(); }
-function saveData(){ localStorage.setItem(STORAGE_KEY,JSON.stringify(data)); alert("Data Saved Locally!"); }
+function saveData(){ localStorage.setItem(STORAGE_KEY,JSON.stringify(data)); alert("Saved!"); }
 function clearData(){ if(confirm("Clear everything?")){ localStorage.clear(); location.reload(); }}
 
 draw();
