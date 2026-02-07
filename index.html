@@ -3,155 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalyan Pro AI - Original Logic</title>
+    <title>Kalyan Pro AI - Full Control</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #ffd700; --blue: #0084ff; --green: #00ff88; --bg: #0f172a; --panel: #1e293b; }
-        * { box-sizing: border-box; font-family: sans-serif; margin: 0; padding: 0; }
+        * { box-sizing: border-box; font-family: 'Poppins', sans-serif; margin: 0; padding: 0; }
         body { background: var(--bg); color: #fff; overflow-x: hidden; }
 
         /* Home Page Overlay */
-        #home-page {
+        #home-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #0f172a; display: flex; flex-direction: column;
             align-items: center; justify-content: center; z-index: 9999;
         }
         .start-btn {
-            background: var(--gold); color: #000; padding: 20px 60px;
-            font-size: 1.2rem; font-weight: 800; border: none; border-radius: 50px; cursor: pointer;
+            background: var(--gold); color: #000; padding: 18px 55px;
+            font-size: 1.1rem; font-weight: 800; border: none; border-radius: 50px; cursor: pointer;
         }
 
-        /* App UI */
+        /* Tabs & Toolbar */
         .tabs { display: flex; background: #000; padding: 10px; gap: 5px; }
-        .tab-btn { flex: 1; padding: 12px; border: none; background: #334155; color: white; font-weight: 800; border-radius: 8px; font-size: 10px; }
+        .tab-btn { flex: 1; padding: 12px 5px; border: none; background: #334155; color: white; border-radius: 8px; font-weight: 800; font-size: 10px; }
         .tab-btn.active { background: var(--gold); color: #000; }
+        
+        .toolbar { display: flex; justify-content: center; gap: 10px; padding: 15px; background: #111; border-bottom: 1px solid #333; }
+        .tool-btn { padding: 8px 15px; border-radius: 5px; border: none; font-weight: bold; font-size: 11px; cursor: pointer; }
 
         /* Grid & Circles */
-        .table-container { background: #fff; border-radius: 12px; padding: 8px; display: inline-block; position: relative; margin: 20px 0; }
-        table { border-collapse: collapse; color: #000; z-index: 10; position: relative; }
-        td, th { border: 1px solid #ddd; width: 44px; height: 44px; text-align: center; font-weight: 800; }
+        .table-container { background: #fff; border-radius: 12px; padding: 8px; display: inline-block; position: relative; margin: 15px 0; }
+        table { border-collapse: collapse; color: #000; position: relative; z-index: 10; }
+        td, th { border: 1px solid #ddd; width: 44px; height: 44px; text-align: center; font-weight: 800; font-size: 14px; }
         th { background: #1e293b; color: white; font-size: 9px; }
 
-        .circle-mark { border: 3px solid var(--blue) !important; border-radius: 50%; background: rgba(0, 132, 255, 0.1); }
+        .circle-mark { border: 3px solid var(--blue) !important; border-radius: 8px; background: rgba(0, 132, 255, 0.1); }
         canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 5; }
 
-        .card { background: var(--panel); padding: 15px; border-radius: 12px; margin: 10px; border-top: 3px solid var(--gold); }
-        #popup { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 20px; display: none; z-index: 1100; width: 95%; max-width: 400px; padding: 20px; color: #000; text-align: center; box-shadow: 0 0 50px #000; }
+        .card { background: var(--panel); padding: 15px; border-radius: 12px; border-top: 3px solid var(--gold); margin: 10px; }
     </style>
 </head>
 <body>
 
-<div id="home-page">
-    <h1 style="color:var(--gold); margin-bottom:10px;">KALYAN PRO AI</h1>
-    <p style="color:#8a99af; margin-bottom:30px;">MASTER PATTERN SYSTEM</p>
-    <button class="start-btn" onclick="document.getElementById('home-page').style.display='none'">START ANALYSIS</button>
+<div id="home-screen">
+    <h1 style="color:var(--gold); font-size: 2.5rem; font-weight: 800;">KALYAN PRO AI</h1>
+    <p style="color:#8a99af; margin-bottom:30px;">ADVANCED ANALYSIS SYSTEM</p>
+    <button class="start-btn" onclick="document.getElementById('home-screen').style.display='none'">START ANALYSIS</button>
 </div>
 
 <div class="tabs">
-    <button class="tab-btn active" onclick="setMarket('KALYAN', 6, this)">KALYAN (6D)</button>
-    <button class="tab-btn" onclick="setMarket('MILAN', 6, this)">MILAN (6D)</button>
-    <button class="tab-btn" onclick="setMarket('RAJDHANI', 5, this)">RAJDHANI (5D)</button>
+    <button class="tab-btn active" onclick="switchMarket('KALYAN', 6, this)">KALYAN (6D)</button>
+    <button class="tab-btn" onclick="switchMarket('MILAN', 6, this)">MILAN (6D)</button>
+    <button class="tab-btn" onclick="switchMarket('RAJDHANI', 5, this)">RAJDHANI (5D)</button>
+</div>
+
+<div class="toolbar">
+    <input type="file" id="csv-input" style="display:none" onchange="loadCSV(this)">
+    <button class="tool-btn" style="background:#444; color:#fff;" onclick="document.getElementById('csv-input').click()">📂 CSV IMPORT</button>
+    <button class="tool-btn" style="background:var(--green); color:#000;" onclick="saveToLocal()">💾 SAVE TO LOCAL</button>
+    <button class="tool-btn" style="background:#444; color:#fff;" onclick="addNewRow()">➕ ADD ROW</button>
 </div>
 
 <center>
-    <div class="table-container" id="t-cont">
-        <canvas id="cvs"></canvas>
-        <table id="tbl"></table>
+    <div class="table-container">
+        <canvas id="main-cvs"></canvas>
+        <table id="data-tbl"></table>
     </div>
 </center>
 
 <div class="card">
-    <h3 style="color:var(--gold); font-size:14px;">🔮 AI 3-PAIR PREDICTION</h3>
-    <div id="pred" style="font-size:24px; font-weight:900; color:var(--gold); margin-top:10px;">-- -- --</div>
-</div>
-
-<div class="card">
-    <h3 style="color:var(--gold); font-size:14px; margin-bottom:10px;">🔍 CHECK LINES (PATTERN 1-2-3)</h3>
-    <div id="check-lines" style="font-size:12px; color:#ccc;">Click blank cell to scan last 10 weeks...</div>
-</div>
-
-<div id="popup">
-    <h3 style="margin-bottom:15px;">History Evidence View</h3>
-    <div id="pop-content" style="background:#fff; border:1px solid #ddd; border-radius:10px;"></div>
-    <button onclick="document.getElementById('popup').style.display='none'" style="background:red; color:white; border:none; padding:12px; width:100%; border-radius:8px; margin-top:10px; font-weight:bold;">CLOSE</button>
+    <h3 style="color:var(--gold); font-size: 14px;">🔮 PREDICTION (FROM LAST PAIR)</h3>
+    <div id="prediction" style="font-size: 1.5rem; font-weight: 800; color: var(--gold); margin-top:10px;">-- -- --</div>
 </div>
 
 <script>
-let curM = "KALYAN", cols = 6;
-let db = JSON.parse(localStorage.getItem("MASTER_V10")) || {
-    "KALYAN": Array(20).fill().map(() => Array(6).fill("**")),
-    "MILAN": Array(20).fill().map(() => Array(6).fill("**")),
-    "RAJDHANI": Array(20).fill().map(() => Array(5).fill("**"))
+let curM = "KALYAN";
+let curCols = 6;
+// Local Storage logic [cite: 2026-02-03]
+let db = JSON.parse(localStorage.getItem("PRO_DATA_V11")) || {
+    "KALYAN": Array(12).fill().map(() => Array(6).fill("**")),
+    "MILAN": Array(12).fill().map(() => Array(6).fill("**")),
+    "RAJDHANI": Array(12).fill().map(() => Array(5).fill("**"))
 };
 
-function setMarket(m, c, btn) {
-    curM = m; cols = c; [cite: 2026-02-03]
+function switchMarket(name, cols, btn) {
+    curM = name; curCols = cols; [cite: 2026-02-03]
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     render();
 }
 
-function render(target="tbl", data=db[curM], patternRows=[]) {
-    let days = ["MON","TUE","WED","THU","FRI","SAT"].slice(0, cols);
-    let h = "<tr>" + days.map(d => `<th>${d}</th>`).join('') + "</tr>";
+function render(patternCells = []) {
+    let data = db[curM];
+    let h = "<tr><th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th>" + (curCols==6?"<th>SAT</th>":"") + "</tr>";
     
     data.forEach((row, ri) => {
         h += "<tr>";
-        row.slice(0, cols).forEach((cell, ci) => {
-            let isMarked = patternRows.some(p => p.r == ri && p.c == ci);
-            h += `<td class="${isMarked?'circle-mark':''}" contenteditable oninput="upd(${ri},${ci},this)" onclick="${cell=='**'?'findPattern('+ri+','+ci+')':'' }">${cell}</td>`;
+        row.slice(0, curCols).forEach((cell, ci) => {
+            let marked = patternCells.some(p => p.r == ri && p.c == ci);
+            h += `<td class="${marked?'circle-mark':''}" contenteditable="true" oninput="editCell(${ri},${ci},this)" onclick="${cell=='**'?'runAnalysis('+ri+','+ci+')':'' }">${cell}</td>`;
         });
         h += "</tr>";
     });
-    document.getElementById(target).innerHTML = h;
-    if(patternRows.length > 0) setTimeout(() => drawGreenLine(patternRows), 50);
+    document.getElementById('data-tbl').innerHTML = h;
+    if(patternCells.length > 0) setTimeout(() => drawLine(patternCells), 50);
 }
 
-function upd(r, c, el) { db[curM][r][c] = el.innerText.trim() || "**"; localStorage.setItem("MASTER_V10", JSON.stringify(db)); }
+function editCell(r, c, el) {
+    db[curM][r][c] = el.innerText.trim() || "**";
+}
 
-function findPattern(r, c) {
-    // 1. Scan Last 10 Weeks [cite: 2026-02-03]
-    let lookback = Math.max(0, r - 10);
-    let foundPatterns = [];
-    
-    // 2. Logic: Form pattern from row directly above [cite: 2026-02-03]
+function saveToLocal() {
+    localStorage.setItem("PRO_DATA_V11", JSON.stringify(db)); [cite: 2026-02-03]
+    alert("System Data Saved to Local Storage!");
+}
+
+function addNewRow() {
+    db[curM].push(Array(curCols).fill("**"));
+    render();
+}
+
+function loadCSV(input) {
+    let reader = new FileReader();
+    reader.onload = (e) => {
+        let lines = e.target.result.split('\n');
+        db[curM] = lines.map(l => l.split(',').map(v => v.trim() || "**").slice(0, curCols));
+        render();
+    };
+    reader.readAsText(input.files[0]);
+}
+
+function runAnalysis(r, c) {
+    // Original Pattern: Formed from row above [cite: 2026-02-03]
     if(r > 0) {
-        let basePair = db[curM][r-1][c];
-        if(basePair != "**") {
-            // Visualize the flow (1-2-3 connection)
-            let markers = [{r: r-1, c: c}, {r: r-2, c: (c>0?c-1:c+1)}, {r: r-3, c: c}];
-            render("tbl", db[curM], markers);
-            
-            // Prediction [cite: 2026-02-03]
-            document.getElementById('pred').innerText = basePair + " " + (parseInt(basePair)+5) + " " + (parseInt(basePair)+10);
-            
-            // Check Lines
-            document.getElementById('check-lines').innerHTML = `<div style="background:#2a3a50; padding:10px; border-radius:5px; border-left:4px solid var(--blue); cursor:pointer;" onclick="showPopupEvidence()">View History Evidence Pattern (Row ${r-1})</div>`;
+        let lastPair = db[curM][r-1][c];
+        if(lastPair != "**") {
+            let flow = [{r: r-1, c: c}, {r: r-2, c: c}];
+            render(flow);
+            document.getElementById('prediction').innerText = lastPair + " " + (parseInt(lastPair)+5) + " " + (parseInt(lastPair)+10);
         }
     }
 }
 
-function drawGreenLine(markers) {
-    const cvs = document.getElementById('cvs');
-    const ctx = cvs.getContext('2d');
-    const tbl = document.getElementById('tbl');
+function drawLine(cells) {
+    const cvs = document.getElementById('main-cvs'), tbl = document.getElementById('data-tbl'), ctx = cvs.getContext('2d');
     cvs.width = tbl.offsetWidth; cvs.height = tbl.offsetHeight;
-    ctx.clearRect(0,0,cvs.width,cvs.height);
     ctx.strokeStyle = "#00ff88"; ctx.lineWidth = 3; ctx.beginPath();
-    
-    let cells = document.querySelectorAll('.circle-mark');
-    cells.forEach((cell, i) => {
-        let r = cell.getBoundingClientRect();
-        let tr = tbl.getBoundingClientRect();
-        let x = r.left - tr.left + r.width/2;
-        let y = r.top - tr.top + r.height/2;
+    let domCells = document.querySelectorAll('.circle-mark');
+    domCells.forEach((dc, i) => {
+        let r = dc.getBoundingClientRect(), tr = tbl.getBoundingClientRect();
+        let x = r.left - tr.left + r.width/2, y = r.top - tr.top + r.height/2;
         if(i==0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
     });
     ctx.stroke();
-}
-
-function showPopupEvidence() {
-    document.getElementById('popup').style.display = 'block';
-    document.getElementById('pop-content').innerHTML = "<p style='padding:20px;'>Similar 1,2,3 Pattern found in records at Week -4.</p>";
 }
 
 render();
