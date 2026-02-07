@@ -3,56 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalyan Pro AI - Hub</title>
+    <title>Kalyan Pro AI - Home</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        body {
-            background: #0f172a;
-            color: white;
-            font-family: sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
+        :root { --gold: #ffd700; --blue: #0084ff; --green: #00ff88; --bg: #0f172a; --card: #1e293b; }
+        * { box-sizing: border-box; font-family: 'Poppins', sans-serif; margin: 0; padding: 0; }
+        body { background: var(--bg); color: white; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
+
+        .header { text-align: center; margin-bottom: 30px; margin-top: 20px; }
+        .header h1 { font-size: 2.5rem; color: var(--gold); letter-spacing: 2px; text-shadow: 0 0 20px rgba(255,215,0,0.3); }
+        .header p { color: #8a99af; font-size: 0.9rem; }
+
+        .user-info { background: var(--card); padding: 15px 25px; border-radius: 50px; border: 1px solid #334155; margin-bottom: 30px; display: flex; align-items: center; gap: 15px; }
+        .user-dot { width: 10px; height: 10px; background: var(--green); border-radius: 50%; box-shadow: 0 0 10px var(--green); }
+
+        .menu-grid { display: grid; grid-template-columns: 1fr; gap: 20px; width: 100%; max-width: 400px; }
+        .menu-card { 
+            text-decoration: none; background: var(--card); padding: 25px; border-radius: 20px;
+            display: flex; align-items: center; justify-content: space-between;
+            transition: all 0.3s ease; border-left: 5px solid transparent;
         }
-        h1 { color: #ffd700; margin-bottom: 30px; font-size: 2.5rem; }
-        .menu-container {
-            display: grid;
-            gap: 20px;
-            width: 90%;
-            max-width: 400px;
-        }
-        .menu-btn {
-            padding: 20px;
-            border: none;
-            border-radius: 15px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            cursor: pointer;
-            text-decoration: none;
-            text-align: center;
-            transition: transform 0.2s;
-            color: #000;
-        }
-        .menu-btn:active { transform: scale(0.95); }
-        .kalyan { background: #ffd700; }
-        .milan { background: #0084ff; color: white; }
-        .rajdhani { background: #00ff88; }
-        p { color: #8a99af; margin-top: 20px; font-size: 0.9rem; }
+        .menu-card:active { transform: scale(0.96); }
+        
+        .kalyan-card { border-left-color: var(--gold); }
+        .milan-card { border-left-color: var(--blue); }
+        .rajdhani-card { border-left-color: var(--green); }
+
+        .card-info h2 { font-size: 1.3rem; margin-bottom: 5px; color: #fff; }
+        .card-info span { font-size: 0.8rem; color: #8a99af; }
+        .arrow { font-size: 1.5rem; color: #334155; }
+
+        .footer { margin-top: auto; padding: 20px; text-align: center; color: #475569; font-size: 0.8rem; border-top: 1px solid #1e293b; width: 100%; }
     </style>
 </head>
 <body>
 
-    <h1>PRO AI SYSTEM</h1>
-
-    <div class="menu-container">
-        <a href="kalyan.html" class="menu-btn kalyan">OPEN KALYAN</a>
-        <a href="milan.html" class="menu-btn milan">OPEN MILAN</a>
-        <a href="rajdhani.html" class="menu-btn rajdhani">OPEN RAJDHANI</a>
+    <div class="header">
+        <h1>PRO AI HUB</h1>
+        <p>Advanced Pattern Recognition System</p>
     </div>
 
-    <p>Pradeep Kumar Dehariya Edition v2.0</p>
+    <div class="user-info">
+        <div class="user-dot"></div>
+        <span style="font-weight: 600; font-size: 0.9rem;">Pradeep Kumar Dehariya</span>
+    </div>
+
+    <div class="menu-grid">
+        <a href="kalyan.html" class="menu-card kalyan-card">
+            <div class="card-info">
+                <h2 style="color: var(--gold);">KALYAN</h2>
+                <span>Monday - Saturday (6 Days)</span>
+            </div>
+            <div class="arrow">➔</div>
+        </a>
+
+        <a href="milan.html" class="menu-card milan-card">
+            <div class="card-info">
+                <h2 style="color: var(--blue);">MILAN</h2>
+                <span>Monday - Saturday (6 Days)</span>
+            </div>
+            <div class="arrow">➔</div>
+        </a>
+
+        <a href="rajdhani.html" class="menu-card rajdhani-card">
+            <div class="card-info">
+                <h2 style="color: var(--green);">RAJDHANI</h2>
+                <span>Monday - Friday (5 Days)</span>
+            </div>
+            <div class="arrow">➔</div>
+        </a>
+    </div>
+
+    <div class="footer">
+        System Ver: 2.0.6 | Last Update: Feb 2026
+    </div>
 
 </body>
 </html>
