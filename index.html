@@ -3,183 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalyan Pro AI – Pradeep Edition</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>Kalyan Pro AI – Fixed & Final</title>
     <style>
         :root { --gold: #ffd700; --blue: #0084ff; --green: #00ff88; --bg: #0f172a; --panel: #1e293b; }
-        * { box-sizing: border-box; font-family: 'Poppins', sans-serif; margin: 0; padding: 0; }
-        body { background: var(--bg); color: #fff; }
+        * { box-sizing: border-box; font-family: sans-serif; margin: 0; padding: 0; }
+        body { background: var(--bg); color: #fff; overflow-x: hidden; }
 
-        /* --- HOME SCREEN FIXED --- */
+        /* --- Home Screen Layer --- */
         #home-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #0f172a; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; z-index: 99999;
+            position: fixed; inset: 0; background: #0f172a;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 9999;
         }
-        .hero-title { font-size: 2.5rem; color: var(--gold); font-weight: 800; }
         .enter-btn {
-            background: var(--gold); color: #000; padding: 18px 60px;
-            font-size: 1.2rem; font-weight: 800; border: none; border-radius: 50px;
-            cursor: pointer; margin-top: 20px;
+            background: var(--gold); color: #000; padding: 20px 60px;
+            font-size: 1.5rem; font-weight: 800; border: none; border-radius: 50px; cursor: pointer;
         }
 
-        /* --- MAIN APP --- */
-        #main-app { padding: 10px; display: none; } /* Hidden by default */
+        /* --- Dashboard Container --- */
+        #main-app { display: none; padding: 10px; position: relative; z-index: 100; }
         
-        .tabs { display: flex; gap: 5px; margin-bottom: 10px; position: relative; z-index: 10; }
-        .tab-btn { flex: 1; padding: 12px 5px; border: none; background: #334155; color: white; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 11px; }
+        .tabs { display: flex; gap: 5px; margin-bottom: 10px; }
+        .tab-btn { flex: 1; padding: 15px 5px; border: none; background: #334155; color: white; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 12px; }
         .tab-btn.active { background: var(--gold); color: #000; }
 
-        .toolbar { display: flex; gap: 8px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap; position: relative; z-index: 10; }
-        .tool-btn { padding: 10px 15px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; color: white; background: #444; font-size: 11px; }
+        .toolbar { display: flex; gap: 10px; justify-content: center; margin: 15px 0; flex-wrap: wrap; }
+        .tool-btn { padding: 12px 20px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; color: white; background: #444; }
 
-        /* Table */
-        .table-container { position: relative; background: #fff; border-radius: 10px; padding: 5px; display: inline-block; }
-        table { border-collapse: collapse; color: #000; position: relative; z-index: 5; }
-        td, th { border: 1px solid #ddd; width: 45px; height: 45px; text-align: center; font-weight: bold; }
+        /* Table & Canvas */
+        .table-container { position: relative; background: #fff; border-radius: 12px; padding: 10px; display: inline-block; margin-top: 10px; }
+        table { border-collapse: collapse; color: #000; position: relative; z-index: 10; }
+        td, th { border: 1px solid #ddd; width: 48px; height: 48px; text-align: center; font-weight: bold; font-size: 16px; }
         th { background: #1e293b; color: white; font-size: 10px; }
         
-        .circle { border: 3px solid var(--blue) !important; border-radius: 50% !important; background: rgba(0, 132, 255, 0.15); }
-        canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 4; }
+        .circle { border: 4px solid var(--blue) !important; border-radius: 50% !important; background: rgba(0, 132, 255, 0.2); }
+        canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 5; }
+
+        .status-card { background: var(--panel); padding: 15px; border-radius: 15px; border-top: 4px solid var(--gold); margin-top: 20px; }
     </style>
 </head>
 <body>
 
 <div id="home-screen">
-    <h1 class="hero-title">Kalyan PRO AI</h1>
-    <p style="color:#8a99af; letter-spacing:2px;">MASTER SYSTEM</p>
-    <button class="enter-btn" onclick="openSystem()">ENTER SYSTEM</button>
+    <h1 style="color:var(--gold); font-size: 2.5rem; margin-bottom: 20px;">KALYAN PRO AI</h1>
+    <button class="enter-btn" onclick="enterSystem()">ENTER SYSTEM</button>
 </div>
 
 <div id="main-app">
     <div class="tabs">
-        <button class="tab-btn active" onclick="setM('KALYAN', 6, this)">KALYAN</button>
-        <button class="tab-btn" onclick="setM('MILAN', 6, this)">MILAN</button>
-        <button class="tab-btn" onclick="setM('RAJDHANI', 5, this)">RAJDHANI (5D)</button>
+        <button class="tab-btn active" onclick="switchMarket('KALYAN', 6, this)">KALYAN</button>
+        <button class="tab-btn" onclick="switchMarket('MILAN', 6, this)">MILAN</button>
+        <button class="tab-btn" onclick="switchMarket('RAJDHANI', 5, this)">RAJDHANI (5D)</button>
     </div>
 
     <div class="toolbar">
-        <input type="file" id="csv-input" style="display:none" onchange="loadCSV(this)">
-        <button class="tool-btn" onclick="document.getElementById('csv-input').click()">📂 CSV LOAD</button>
-        <button class="tool-btn" onclick="addRow()">➕ ROW</button>
-        <button class="tool-btn" onclick="saveData()" style="background:#28a745;">💾 SAVE</button>
+        <input type="file" id="csv-file" style="display:none" onchange="importCSV(this)">
+        <button class="tool-btn" onclick="document.getElementById('csv-file').click()">📂 LOAD CSV</button>
+        <button class="tool-btn" onclick="addNewRow()">➕ ADD ROW</button>
+        <button class="tool-btn" onclick="saveToLocal()" style="background:#28a745;">💾 SAVE DATA</button>
     </div>
 
     <center>
-        <div class="table-container">
-            <canvas id="cvs"></canvas>
-            <table id="tbl"></table>
+        <div class="table-container" id="t-wrap">
+            <canvas id="mainCvs"></canvas>
+            <table id="mainTbl"></table>
         </div>
     </center>
 
-    <div style="background:var(--panel); padding:15px; border-radius:12px; margin-top:15px; border-top:3px solid var(--gold);">
-        <h3 style="color:var(--gold); font-size:13px;">🤖 SYSTEM STATUS</h3>
-        <div id="msg" style="font-size:12px; margin-top:5px;">Select a blank cell to begin...</div>
+    <div class="status-card">
+        <h3 style="color:var(--gold); font-size: 14px; margin-bottom: 10px;">🔍 PATTERN RECOGNITION</h3>
+        <div id="results" style="font-size: 13px; color: #cbd5e1;">Click any blank cell (**) to start scanning history...</div>
     </div>
 </div>
 
 <script>
-let market = "KALYAN", colCount = 6, activeP = null;
-const families = {"12":["12","17","21","26","62","67","71","76"],"13":["13","18","31","36","63","68","81","86"],"14":["14","19","41","46","64","69","91","96"],"15":["01","06","10","15","51","56","60","65"],"23":["23","28","32","37","73","78","82","87"],"24":["24","29","42","47","74","79","92","97"],"25":["02","07","20","25","52","57","70","75"],"34":["34","39","43","48","84","89","93","98"],"35":["03","08","30","35","53","58","80","85"],"45":["04","09","40","45","54","59","90","95"],"HR":["05","16","27","38","49","50","61","72","83","94"],"FR":["00","11","22","33","44","55","66","77","88","99"]};
+let curM = "KALYAN", curC = 6, activeP = null;
+const fams={"12":["12","17","21","26","62","67","71","76"],"13":["13","18","31","36","63","68","81","86"],"14":["14","19","41","46","64","69","91","96"],"15":["01","06","10","15","51","56","60","65"],"23":["23","28","32","37","73","78","82","87"],"24":["24","29","42","47","74","79","92","97"],"25":["02","07","20","25","52","57","70","75"],"34":["34","39","43","48","84","89","93","98"],"35":["03","08","30","35","53","58","80","85"],"45":["04","09","40","45","54","59","90","95"],"HR":["05","16","27","38","49","50","61","72","83","94"],"FR":["00","11","22","33","44","55","66","77","88","99"]};
 
-// Storage logic [cite: 2026-02-03]
-let db = JSON.parse(localStorage.getItem("PRO_MASTER_DB_V2")) || {
+// Data handling with Local Storage [cite: 2026-02-03]
+let db = JSON.parse(localStorage.getItem("FINAL_AI_STORAGE")) || {
     "KALYAN": [["51","91","41","57","19","95"],["05","90","74","06","19","63"],["**","**","**","**","**","**"]],
     "MILAN": [["**","**","**","**","**","**"]],
     "RAJDHANI": [["**","**","**","**","**"]]
 };
 
-function openSystem() {
-    document.getElementById('home-screen').remove(); // Poora parda delete
-    document.getElementById('main-app').style.display = 'block'; // Dashboard show
+function enterSystem() {
+    document.getElementById('home-screen').style.display = 'none';
+    document.getElementById('main-app').style.display = 'block';
     render();
 }
 
-function setM(n, c, b) {
-    market = n; colCount = c; [cite: 2026-02-03]
-    document.querySelectorAll('.tab-btn').forEach(x => x.classList.remove('active'));
-    b.classList.add('active');
+function switchMarket(name, cols, btn) {
+    curM = name; curC = cols; [cite: 2026-02-03]
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
     activeP = null;
     render();
 }
 
 function render() {
-    let d = db[market];
-    let heads = ["MON","TUE","WED","THU","FRI","SAT"].slice(0, colCount);
+    let data = db[curM];
+    let heads = ["MON","TUE","WED","THU","FRI","SAT"].slice(0, curC);
     let h = "<tr>" + heads.map(x => `<th>${x}</th>`).join('') + "</tr>";
     
-    d.forEach((r, ri) => {
+    data.forEach((r, ri) => {
         h += "<tr>";
-        r.slice(0, colCount).forEach((v, ci) => {
+        r.slice(0, curC).forEach((val, ci) => {
             let isM = activeP && ri >= activeP.start && ri < activeP.start + activeP.shape.length && activeP.shape[ri-activeP.start][ci];
-            h += `<td class="${isM?'circle':''}" contenteditable oninput="edit(${ri},${ci},this)" onclick="${v=='**'?'findP('+ri+','+ci+')':'' }">${v}</td>`;
+            h += `<td class="${isM?'circle':''}" contenteditable="true" oninput="upd(${ri},${ci},this)" onclick="${val=='**'?'findPattern('+ri+','+ci+')':'' }">${val}</td>`;
         });
         h += "</tr>";
     });
-    document.getElementById('tbl').innerHTML = h;
+    document.getElementById('mainTbl').innerHTML = h;
     if(activeP) setTimeout(() => drawLines(), 50);
 }
 
-function edit(r,c,e) { db[market][r][c] = e.innerText.trim() || "**"; }
-function addRow() { db[market].push(Array(colCount).fill("**")); render(); }
-function saveData() { localStorage.setItem("PRO_MASTER_DB_V2", JSON.stringify(db)); alert("Saved Successfully!"); }
+function upd(r, c, el) { db[curM][r][c] = el.innerText.trim() || "**"; }
+function addNewRow() { db[curM].push(Array(curC).fill("**")); render(); }
+function saveToLocal() { localStorage.setItem("FINAL_AI_STORAGE", JSON.stringify(db)); alert("Data Saved Successfully!"); }
 
-function loadCSV(input) {
+function importCSV(input) {
     let fr = new FileReader();
     fr.onload = () => {
         let lines = fr.result.split('\n').filter(l => l.trim());
-        db[market] = lines.map(l => l.split(',').map(v => v.trim()).slice(0, colCount));
+        db[curM] = lines.map(l => l.split(',').map(v => v.trim()).slice(0, curC));
         render();
+        alert("CSV Loaded!");
     };
     fr.readAsText(input.files[0]);
 }
 
-function findP(r,c) {
-    let data = db[market], base = "**";
+function findPattern(r, c) {
+    let data = db[curM], base = "**";
     for(let i=r; i>=0; i--) { if(data[i][c]!="**") { base=data[i][c]; break; } }
     if(base=="**") return;
     let shape = [];
     for(let i=Math.max(0,r-3); i<=r; i++) {
         let row = [];
-        for(let j=0; j<colCount; j++) { row.push(data[i][j]!="**" && (data[i][j]===base || famMatch(data[i][j], base))?1:0); }
+        for(let j=0; j<curC; j++) { row.push(data[i][j]!="**" && (data[i][j]===base || isFam(data[i][j], base))?1:0); }
         shape.push(row);
     }
-    scanData(shape, base);
+    scan(shape, base);
 }
 
-function famMatch(v1, v2) {
-    for(let k in families) { if(families[k].includes(v1) && families[k].includes(v2)) return true; }
+function isFam(v1, v2) {
+    for(let k in fams) { if(fams[k].includes(v1) && fams[k].includes(v2)) return true; }
     return false;
 }
 
-function scanData(shape, base) {
-    let d = db[market], matches = [];
+function scan(shape, base) {
+    let d = db[curM], matches = [];
     for(let i=0; i<=d.length-shape.length; i++) {
         let ok = true;
         for(let k=0; k<shape.length; k++) {
-            for(let j=0; j<colCount; j++) { if(shape[k][j] && !(d[i+k][j]===base || famMatch(d[i+k][j], base))) { ok=false; break; } }
+            for(let j=0; j<curC; j++) { if(shape[k][j] && !(d[i+k][j]===base || isFam(d[i+k][j], base))) { ok=false; break; } }
             if(!ok) break;
         }
         if(ok) matches.push(i);
     }
-    let msg = document.getElementById('msg');
-    msg.innerHTML = matches.length ? "" : "No patterns found.";
+    let res = document.getElementById('results');
+    res.innerHTML = matches.length ? "" : "No patterns found in 10-week history.";
     matches.slice(0, 3).forEach(idx => {
-        let div = document.createElement("div");
-        div.style = "background:#222; margin:5px 0; padding:10px; cursor:pointer; border-radius:5px; border-left:4px solid #0084ff;";
-        div.innerHTML = `Pattern Match Week ${idx+1} <span style="float:right">VIEW</span>`;
-        div.onclick = () => { activeP={start:idx, shape:shape}; render(); };
-        msg.appendChild(div);
+        let d = document.createElement("div");
+        d.style = "background:#222; margin:10px 0; padding:12px; cursor:pointer; border-radius:8px; border-left:5px solid #0084ff;";
+        d.innerHTML = `Pattern Match Found at Row ${idx+1} <span style="float:right">CLICK TO VIEW</span>`;
+        d.onclick = () => { activeP={start:idx, shape:shape}; render(); };
+        res.appendChild(d);
     });
 }
 
 function drawLines() {
-    const cvs = document.getElementById('cvs'), ctx = cvs.getContext("2d"), tel = document.getElementById('tbl');
+    const cvs = document.getElementById('mainCvs'), ctx = cvs.getContext("2d"), tel = document.getElementById('mainTbl');
     cvs.width = tel.offsetWidth; cvs.height = tel.offsetHeight;
     const cells = tel.querySelectorAll(".circle");
     if(cells.length < 2) return;
     const rT = tel.getBoundingClientRect();
-    ctx.strokeStyle = "#00ff88"; ctx.lineWidth = 3; ctx.beginPath();
+    ctx.strokeStyle = "#00ff88"; ctx.lineWidth = 4; ctx.beginPath();
     cells.forEach((c, i) => {
         const r = c.getBoundingClientRect();
         const x = r.left - rT.left + r.width/2, y = r.top - rT.top + r.height/2;
