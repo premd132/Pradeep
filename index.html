@@ -3,208 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalyan Pro AI – Master System</title>
+    <title>Kalyan Pro AI – Fixed System</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #ffd700; --blue-circle: #0084ff; --green-line: #00ff88; --bg: #0f172a; --panel: #1e293b; }
+        :root { --gold: #ffd700; --blue: #0084ff; --green: #00ff88; --bg: #0f172a; --panel: #1e293b; }
         * { box-sizing: border-box; font-family: 'Poppins', sans-serif; margin: 0; padding: 0; }
-        body { background: var(--bg); color: #fff; overflow-x: hidden; }
+        body { background: var(--bg); color: #fff; }
 
-        /* --- Home Page Overlay --- */
+        /* --- Simple Home Screen --- */
         #home-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            position: fixed; inset: 0; background: #0f172a;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: #0f172a; z-index: 9999;
+            z-index: 10000;
         }
-        .hero-title { font-size: 3rem; color: var(--gold); margin: 0; text-shadow: 0 0 20px rgba(255,215,0,0.3); }
+        .hero-title { font-size: 3rem; color: var(--gold); font-weight: 800; }
         .enter-btn {
-            background: var(--gold); color: #000; padding: 18px 60px;
-            font-size: 1.3rem; font-weight: 800; border: none; border-radius: 50px;
-            cursor: pointer; margin-top: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            background: var(--gold); color: #000; padding: 15px 50px;
+            font-size: 1.2rem; font-weight: 800; border: none; border-radius: 50px;
+            cursor: pointer; margin-top: 20px;
         }
 
-        /* --- Dashboard UI --- */
-        #main-app { padding: 10px; }
-        .tabs { display: flex; background: #000; padding: 10px; gap: 5px; margin-bottom: 10px; border-radius: 8px; }
-        .tab-btn { flex: 1; padding: 12px 5px; border: none; background: #334155; color: white; border-radius: 8px; font-weight: 800; font-size: 10px; }
+        /* --- Dashboard --- */
+        #main-app { padding: 10px; position: relative; z-index: 1; }
+        .tabs { display: flex; gap: 5px; margin-bottom: 10px; }
+        .tab-btn { flex: 1; padding: 12px; border: none; background: #334155; color: white; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 11px; }
         .tab-btn.active { background: var(--gold); color: #000; }
 
-        .toolbar { background: var(--panel); padding: 12px; border-radius: 12px; margin-bottom: 15px; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
-        .tool-btn { padding: 8px 15px; border-radius: 6px; border: none; font-weight: bold; font-size: 11px; cursor: pointer; color: white; background: #444; }
+        .toolbar { display: flex; gap: 8px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap; }
+        .tool-btn { padding: 10px 15px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; color: white; background: #444; font-size: 11px; }
 
-        /* Table UI */
-        .table-container { position: relative; background: #fff; border-radius: 10px; padding: 5px; display: inline-block; margin-top: 10px; }
-        table { border-collapse: collapse; color: #000; font-size: 14px; position: relative; z-index: 5; }
-        td, th { border: 1px solid #ddd; text-align: center; font-weight: bold; width: 45px; height: 45px; }
+        /* Table */
+        .table-container { position: relative; background: #fff; border-radius: 10px; padding: 5px; display: inline-block; }
+        table { border-collapse: collapse; color: #000; position: relative; z-index: 5; }
+        td, th { border: 1px solid #ddd; width: 45px; height: 45px; text-align: center; font-weight: bold; }
         th { background: #1e293b; color: white; font-size: 10px; }
         
-        .circle { border: 3px solid var(--blue-circle) !important; border-radius: 50% !important; background: rgba(0, 132, 255, 0.15); z-index: 10; }
+        .circle { border: 3px solid var(--blue) !important; border-radius: 50% !important; background: rgba(0, 132, 255, 0.15); }
         canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 4; }
 
-        #popup { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 15px; display: none; z-index: 10000; padding: 15px; color: #000; width: 95%; max-width: 400px; }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; z-index: 9999; }
+        #popup { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 15px; display: none; z-index: 11000; padding: 15px; color: #000; width: 95%; max-width: 400px; }
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; z-index: 10500; }
     </style>
 </head>
 <body>
 
 <div id="home-screen">
     <h1 class="hero-title">Kalyan PRO AI</h1>
-    <p style="color:#8a99af; letter-spacing:2px;">MASTER PATTERN RECOGNITION</p>
-    <button class="enter-btn" onclick="document.getElementById('home-screen').remove()">ENTER SYSTEM</button>
+    <button class="enter-btn" onclick="document.getElementById('home-screen').style.display='none'">ENTER SYSTEM</button>
 </div>
 
 <div id="main-app">
     <div class="tabs">
-        <button class="tab-btn active" onclick="setMarket('KALYAN', 6, this)">KALYAN</button>
-        <button class="tab-btn" onclick="setMarket('MILAN', 6, this)">MILAN</button>
-        <button class="tab-btn" onclick="setMarket('RAJDHANI', 5, this)">RAJDHANI (5D)</button>
+        <button class="tab-btn active" onclick="changeM('KALYAN', 6, this)">KALYAN</button>
+        <button class="tab-btn" onclick="changeM('MILAN', 6, this)">MILAN</button>
+        <button class="tab-btn" onclick="changeM('RAJDHANI', 5, this)">RAJDHANI (5D)</button>
     </div>
 
     <div class="toolbar">
-        <input type="file" id="csv" style="display:none">
-        <button class="tool-btn" onclick="document.getElementById('csv').click()">📂 CSV</button>
+        <input type="file" id="csv-file" style="display:none" onchange="handleCSV(this)">
+        <button class="tool-btn" onclick="document.getElementById('csv-file').click()">📂 LOAD CSV</button>
         <button class="tool-btn" onclick="addRow()">➕ ROW</button>
-        <button class="tool-btn" onclick="saveData()" style="background:#28a745;">💾 SAVE</button>
-        <button class="tool-btn" onclick="clearData()" style="background:#dc3545;">🗑️ CLEAR</button>
+        <button class="tool-btn" onclick="doSave()" style="background:#28a745;">💾 SAVE ALL</button>
+        <button class="tool-btn" onclick="doClear()" style="background:#dc3545;">🗑️ RESET</button>
     </div>
 
     <center>
         <div class="table-container">
-            <canvas id="mainCanvas"></canvas>
-            <table id="tbl"></table>
+            <canvas id="mainCvs"></canvas>
+            <table id="mainTbl"></table>
         </div>
     </center>
 
-    <div style="background:var(--panel); padding:15px; border-radius:12px; margin-top:15px; border-top:3px solid var(--gold);">
-        <h3 style="color:var(--gold); font-size:13px; margin-bottom:10px;">🤖 PATTERN ANALYSIS</h3>
-        <div id="ai-box">Click a blank cell to scan records...</div>
+    <div id="ai-panel" style="background:var(--panel); padding:15px; border-radius:12px; margin-top:15px; border-top:3px solid var(--gold);">
+        <h3 style="color:var(--gold); font-size:13px;">🤖 SYSTEM STATUS: <span id="st">Ready</span></h3>
+        <div id="log" style="font-size:12px; margin-top:10px; color:#ccc;">Click blank cell for pattern...</div>
     </div>
 </div>
 
-<div class="overlay" id="overlay" onclick="closePopup()"></div>
+<div class="overlay" id="ovl" onclick="closePop()"></div>
 <div id="popup">
-    <h3 style="margin-bottom:15px;">History Evidence</h3>
-    <center>
-        <div class="table-container" style="border: 1px solid #ddd;">
-            <canvas id="popCanvas"></canvas>
-            <div id="popData"></div>
-        </div>
-    </center>
-    <button onclick="closePopup()" style="width:100%; margin-top:15px; background:#000; color:#fff; padding:10px; border-radius:8px; font-weight:800;">CLOSE</button>
+    <h3 style="margin-bottom:15px;">Evidence Record</h3>
+    <div id="popContent"></div>
+    <button onclick="closePop()" style="width:100%; margin-top:15px; background:#000; color:#fff; padding:12px; border-radius:8px; font-weight:bold;">CLOSE</button>
 </div>
 
 <script>
-let curM = "KALYAN", cols = 6, activeMark = null, targetCol = 0;
-const families={"12":["12","17","21","26","62","67","71","76"],"13":["13","18","31","36","63","68","81","86"],"14":["14","19","41","46","64","69","91","96"],"15":["01","06","10","15","51","56","60","65"],"23":["23","28","32","37","73","78","82","87"],"24":["24","29","42","47","74","79","92","97"],"25":["02","07","20","25","52","57","70","75"],"34":["34","39","43","48","84","89","93","98"],"35":["03","08","30","35","53","58","80","85"],"45":["04","09","40","45","54","59","90","95"],"HR":["05","16","27","38","49","50","61","72","83","94"],"FR":["00","11","22","33","44","55","66","77","88","99"]};
+let curM = "KALYAN", curC = 6, activeP = null;
+const fams={"12":["12","17","21","26","62","67","71","76"],"13":["13","18","31","36","63","68","81","86"],"14":["14","19","41","46","64","69","91","96"],"15":["01","06","10","15","51","56","60","65"],"23":["23","28","32","37","73","78","82","87"],"24":["24","29","42","47","74","79","92","97"],"25":["02","07","20","25","52","57","70","75"],"34":["34","39","43","48","84","89","93","98"],"35":["03","08","30","35","53","58","80","85"],"45":["04","09","40","45","54","59","90","95"],"HR":["05","16","27","38","49","50","61","72","83","94"],"FR":["00","11","22","33","44","55","66","77","88","99"]};
 
-let db = JSON.parse(localStorage.getItem("PRO_AI_MASTER")) || {
+// Local storage logic [cite: 2026-02-03]
+let db = JSON.parse(localStorage.getItem("KALYAN_V12_FINAL")) || {
     "KALYAN": [["51","91","41","57","19","95"],["05","90","74","06","19","63"],["**","**","**","**","**","**"]],
     "MILAN": [["**","**","**","**","**","**"]],
     "RAJDHANI": [["**","**","**","**","**"]]
 };
 
-function setMarket(name, c, btn) {
-    curM = name; cols = c; [cite: 2026-02-03]
+function changeM(name, c, btn) {
+    curM = name; curC = c; [cite: 2026-02-03]
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    activeMark = null; render();
+    activeP = null;
+    render();
 }
 
 function render() {
-    let data = db[curM];
-    let days = ["MON","TUE","WED","THU","FRI","SAT"].slice(0, cols);
-    let h = "<tr>" + days.map(d => `<th>${d}</th>`).join('') + "</tr>";
-    data.forEach((r, ri) => {
-        h += "<tr>";
-        r.slice(0, cols).forEach((c, ci) => {
-            let isMarked = activeMark && ri >= activeMark.start && ri < activeMark.start + activeMark.shape.length && activeMark.shape[ri-activeMark.start][ci];
-            h += `<td class="${isMarked?'circle':''}" contenteditable oninput="edit(${ri},${ci},this)" onclick="${c=='**'?'makePattern('+ri+','+ci+')':'' }">${c}</td>`;
+    let d = db[curM];
+    let heads = ["MON","TUE","WED","THU","FRI","SAT"].slice(0, curC);
+    let html = "<tr>" + heads.map(h => `<th>${h}</th>`).join('') + "</tr>";
+    d.forEach((r, ri) => {
+        html += "<tr>";
+        r.slice(0, curC).forEach((val, ci) => {
+            let isM = activeP && ri >= activeP.start && ri < activeP.start + activeP.shape.length && activeP.shape[ri-activeP.start][ci];
+            html += `<td class="${isM?'circle':''}" contenteditable="true" oninput="upd(${ri},${ci},this)" onclick="${val=='**'?'findP('+ri+','+ci+')':'' }">${val}</td>`;
         });
-        h += "</tr>";
+        html += "</tr>";
     });
-    document.getElementById("tbl").innerHTML = h;
-    if(activeMark) setTimeout(() => drawLines("mainCanvas", document.getElementById("tbl")), 50);
+    document.getElementById("mainTbl").innerHTML = html;
+    if(activeP) setTimeout(() => drawL("mainCvs", document.getElementById("mainTbl")), 50);
 }
 
-function drawLines(cvsId, tblEl) {
-    const cvs = document.getElementById(cvsId), ctx = cvs.getContext("2d");
-    cvs.width = tblEl.offsetWidth; cvs.height = tblEl.offsetHeight;
-    const cells = tblEl.querySelectorAll(".circle");
-    if(cells.length < 2) return;
-    const tRect = tblEl.getBoundingClientRect();
-    ctx.strokeStyle = "#00ff88"; ctx.lineWidth = 2.5; ctx.beginPath();
-    cells.forEach((c, idx) => {
-        const r = c.getBoundingClientRect();
-        const x = r.left - tRect.left + r.width/2, y = r.top - tRect.top + r.height/2;
-        if(idx === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-    });
-    ctx.stroke();
-}
+function upd(r, c, el) { db[curM][r][c] = el.innerText.trim() || "**"; }
+function addRow() { db[curM].push(Array(curC).fill("**")); render(); }
+function doSave() { localStorage.setItem("KALYAN_V12_FINAL", JSON.stringify(db)); alert("Saved!"); }
+function doClear() { if(confirm("Reset current market?")){ db[curM]=[Array(curC).fill("**")]; render(); }}
 
-function edit(r,c,el){ db[curM][r][c] = el.innerText.trim() || "**"; }
-function addRow(){ db[curM].push(Array(cols).fill("**")); render(); }
-function saveData(){ localStorage.setItem("PRO_AI_MASTER", JSON.stringify(db)); alert("Data Saved!"); }
-function clearData(){ if(confirm("Clear current market?")){ db[curM] = [Array(cols).fill("**")]; render(); }}
-
-function makePattern(r,c){
-    targetCol = c; let data = db[curM], base = "**";
+function findP(r, c) {
+    let data = db[curM], base = "**";
     for(let i=r; i>=0; i--){ if(data[i][c]!="**"){base=data[i][c]; break;}}
     if(base=="**") return;
     let shape = [];
     for(let i=Math.max(0,r-3); i<=r; i++){
         let row=[];
-        for(let j=0; j<cols; j++){ row.push(data[i][j]!="**" && (data[i][j]===base || fam(data[i][j])===fam(base))?1:0); }
+        for(let j=0; j<curC; j++){ row.push(data[i][j]!="**" && (data[i][j]===base || getFam(data[i][j])===getFam(base))?1:0); }
         shape.push(row);
     }
-    searchPattern(shape, base);
+    scan(shape, base);
 }
 
-function fam(v){for(let k in families) if(families[k].includes(v)) return k; return "NA";}
+function getFam(v){for(let k in fams) if(fams[k].includes(v)) return k; return "NA";}
 
-function searchPattern(shape, base){
-    let data = db[curM], matches = [];
-    for(let i=0; i<=data.length-shape.length; i++){
+function scan(shape, base) {
+    let d = db[curM], matches = [];
+    for(let i=0; i<=d.length-shape.length; i++){
         let ok=true;
         for(let k=0; k<shape.length; k++){
-            for(let j=0; j<cols; j++){ if(shape[k][j] && !(data[i+k][j]===base || fam(data[i+k][j])===fam(base))){ok=false; break;}}
+            for(let j=0; j<curC; j++){ if(shape[k][j] && !(d[i+k][j]===base || getFam(d[i+k][j])===getFam(base))){ok=false; break;}}
             if(!ok) break;
         }
-        if(ok) matches.push({index:i});
+        if(ok) matches.push(i);
     }
-    let box = document.getElementById("ai-box");
-    box.innerHTML = matches.length ? "" : "No pattern match found.";
-    matches.slice(0, 3).forEach(m => {
-        let d = document.createElement("div");
-        d.style = "background:#2a2a2a; margin:5px 0; padding:10px; cursor:pointer; border-radius:8px; border-left:4px solid #0084ff;";
-        d.innerHTML = `Pattern Match Row ${m.index + 1} <span style="float:right">View ➔</span>`;
-        d.onclick = () => { activeMark={start:m.index, shape:shape}; render(); showPop(shape, m.index); };
-        box.appendChild(d);
+    let log = document.getElementById("log");
+    log.innerHTML = matches.length ? "" : "No history patterns found.";
+    matches.slice(0, 3).forEach(idx => {
+        let div = document.createElement("div");
+        div.style = "background:#222; margin:5px 0; padding:10px; cursor:pointer; border-radius:5px; border-left:4px solid #0084ff;";
+        div.innerHTML = `Pattern Match found at Week ${idx+1} <span style="float:right">VIEW</span>`;
+        div.onclick = () => { activeP={start:idx, shape:shape}; render(); };
+        log.appendChild(div);
     });
 }
 
-function showPop(shape, idx){
-    let h="<table id='popTbl' style='color:#000'>";
-    for(let i=0; i<shape.length; i++){
-        h+="<tr>";
-        db[curM][idx+i].slice(0, cols).forEach((v,j)=>{ h+=`<td class="${shape[i][j]?'circle':''}">${v}</td>`; });
-        h+="</tr>";
-    }
-    document.getElementById("popData").innerHTML = h+"</table>";
-    document.getElementById("popup").style.display="block";
-    document.getElementById("overlay").style.display="block";
-    setTimeout(()=>drawLines("popCanvas", document.getElementById("popTbl")), 100);
-}
-
-function closePopup(){ document.getElementById("popup").style.display="none"; document.getElementById("overlay").style.display="none"; }
-
-document.getElementById("csv").onchange = e => {
+function handleCSV(input) {
     let fr = new FileReader();
     fr.onload = () => {
-        db[curM] = fr.result.split('\n').filter(l=>l.trim()).map(l => l.split(',').map(v => v.trim()).slice(0, cols));
+        let lines = fr.result.split('\n').filter(l=>l.trim());
+        db[curM] = lines.map(l => l.split(',').map(v => v.trim()).slice(0, curC));
         render();
+        alert("CSV Loaded into " + curM);
     };
-    fr.readAsText(e.target.files[0]);
-};
+    fr.readAsText(input.files[0]);
+}
+
+function drawL(id, tel) {
+    const cvs = document.getElementById(id), ctx = cvs.getContext("2d");
+    cvs.width = tel.offsetWidth; cvs.height = tel.offsetHeight;
+    const cells = tel.querySelectorAll(".circle");
+    if(cells.length < 2) return;
+    const rT = tel.getBoundingClientRect();
+    ctx.strokeStyle = "#00ff88"; ctx.lineWidth = 3; ctx.beginPath();
+    cells.forEach((c, i) => {
+        const r = c.getBoundingClientRect();
+        const x = r.left - rT.left + r.width/2, y = r.top - rT.top + r.height/2;
+        if(i==0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+}
+
+function closePop() { document.getElementById('ovl').style.display='none'; document.getElementById('popup').style.display='none'; }
 
 render();
 </script>
