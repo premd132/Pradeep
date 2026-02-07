@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalyan Pro AI - Fixed</title>
+    <title>Kalyan Pro AI - Master Hub</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #ffd700; --blue: #0084ff; --red: #ff3131; --bg: #0f172a; }
+        :root { --gold: #ffd700; --blue: #0084ff; --green: #00ff88; --bg: #0f172a; --panel: #1e293b; }
         * { box-sizing: border-box; font-family: 'Poppins', sans-serif; margin: 0; padding: 0; }
-        body { background: var(--bg); color: #fff; }
+        body { background: var(--bg); color: #fff; overflow-x: hidden; }
 
-        /* Home Page Overlay */
+        /* HOME PAGE STYLE */
         #home-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #0f172a; display: flex; flex-direction: column;
@@ -19,37 +19,27 @@
         .hero-title { font-size: 2.8rem; color: var(--gold); font-weight: 800; }
         .hero-sub { color: #8a99af; letter-spacing: 2px; font-size: 0.8rem; margin-bottom: 30px; }
         .start-btn {
-            background: var(--gold); color: #000; padding: 18px 50px;
+            background: var(--gold); color: #000; padding: 18px 55px;
             font-size: 1.1rem; font-weight: 800; border: none; border-radius: 50px;
-            cursor: pointer;
+            cursor: pointer; box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
         }
 
-        /* App Layout */
+        /* MAIN APP UI */
         #main-app { display: none; padding: 10px; }
-        .tabs { display: flex; gap: 5px; margin-bottom: 15px; }
-        .tab-btn { flex: 1; padding: 12px 5px; border: none; background: #334155; color: white; border-radius: 8px; font-size: 10px; font-weight: bold; }
+        .tabs { display: flex; background: #000; padding: 10px; gap: 5px; position: sticky; top: 0; z-index: 100; }
+        .tab-btn { flex: 1; padding: 12px 5px; border: none; background: #334155; color: white; border-radius: 8px; font-weight: 800; font-size: 10px; }
         .tab-btn.active { background: var(--gold); color: #000; }
 
-        /* Table UI */
-        .table-container { background: #fff; border-radius: 12px; padding: 5px; display: inline-block; position: relative; }
-        table { border-collapse: collapse; color: #000; }
-        td, th { border: 1px solid #ddd; width: 42px; height: 42px; text-align: center; font-weight: 800; font-size: 14px; }
+        /* TABLE & MARKING */
+        .table-container { background: #fff; border-radius: 12px; padding: 8px; display: inline-block; position: relative; margin: 15px 0; }
+        table { border-collapse: collapse; color: #000; font-size: 14px; position: relative; z-index: 10; }
+        td, th { border: 1px solid #ddd; width: 44px; height: 44px; text-align: center; font-weight: 800; }
         th { background: #1e293b; color: white; font-size: 9px; }
 
-        /* Marking */
-        .circle-b { border: 3px solid var(--blue) !important; border-radius: 8px; background: rgba(0, 132, 255, 0.1); }
-        .circle-r { border: 3px solid var(--red) !important; border-radius: 8px; background: rgba(255, 49, 49, 0.1); }
+        .circle { border: 3px solid var(--blue) !important; border-radius: 50%; background: rgba(0, 132, 255, 0.1); }
         canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 5; }
 
-        .card { background: #1e293b; padding: 15px; border-radius: 12px; margin-top: 15px; border-top: 3px solid var(--gold); }
-        
-        /* Popup Overlay */
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; z-index: 1000; }
-        #popup {
-            position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%);
-            background: #fff; border-radius: 20px; display: none; z-index: 1100;
-            width: 95%; max-width: 400px; padding: 20px; color: #000; text-align: center;
-        }
+        .card { background: var(--panel); padding: 15px; border-radius: 12px; border-top: 3px solid var(--gold); margin: 10px 0; }
     </style>
 </head>
 <body>
@@ -57,90 +47,97 @@
 <div id="home-screen">
     <h1 class="hero-title">KALYAN PRO AI</h1>
     <p class="hero-sub">ADVANCED PATTERN RECOGNITION</p>
-    <button class="start-btn" onclick="openDashboard()">START ANALYSIS</button>
+    <button class="start-btn" onclick="openApp()">START ANALYSIS</button>
 </div>
 
 <div id="main-app">
     <div class="tabs">
-        <button class="tab-btn active" onclick="switchM('MILAN', 6, this)">MILAN (6D)</button>
-        <button class="tab-btn" onclick="switchM('KALYAN', 6, this)">KALYAN (6D)</button>
+        <button class="tab-btn active" onclick="switchM('KALYAN', 6, this)">KALYAN (6D)</button>
+        <button class="tab-btn" onclick="switchM('MILAN', 6, this)">MILAN (6D)</button>
         <button class="tab-btn" onclick="switchM('RAJDHANI', 5, this)">RAJDHANI (5D)</button>
+    </div>
+
+    <div style="text-align:center; padding: 10px;">
+        <button onclick="addRow()" style="background:#444; color:#fff; border:none; padding:8px 15px; border-radius:5px; font-size:12px;">+ Add Row</button>
+        <button onclick="saveData()" style="background:var(--green); color:#000; border:none; padding:8px 15px; border-radius:5px; font-weight:800; font-size:12px; margin-left:10px;">💾 Save All</button>
     </div>
 
     <center>
         <div class="table-container">
             <canvas id="canvas"></canvas>
-            <table id="grid"></table>
+            <table id="dataTable"></table>
         </div>
     </center>
 
     <div class="card">
-        <h3 style="color:var(--gold); font-size: 14px;">🔮 PREDICTION: <span id="pred-val">--</span></h3>
+        <h3 style="color:var(--gold); font-size:14px; margin-bottom:10px;">🔮 AI PREDICTION (3-PAIR)</h3>
+        <div id="pred-box" style="font-size:1.5rem; font-weight:800; letter-spacing:5px; color:var(--gold);">-- -- --</div>
     </div>
-    
-    <button onclick="localStorage.clear(); location.reload();" style="margin-top:20px; background:none; border:none; color:#444; font-size:10px;">Emergency Reset Data</button>
-</div>
-
-<div class="overlay" id="overlay" onclick="closePop()"></div>
-<div id="popup">
-    <h3 style="margin-bottom:15px;">Evidence View</h3>
-    <div id="popContent"></div>
-    <button onclick="closePop()" style="background:red; color:white; border:none; padding:10px; width:100%; border-radius:8px; margin-top:10px; font-weight:bold;">CLOSE</button>
 </div>
 
 <script>
-let currentM = "MILAN";
-let currentCols = 6;
-// Simple data initialization [cite: 2026-02-03]
-let db = {
-    "MILAN": Array(10).fill().map(() => Array(6).fill("**")),
+let curM = "KALYAN";
+let curCols = 6;
+// Teeno markets ka data alag store hoga [cite: 2026-02-03]
+let db = JSON.parse(localStorage.getItem("KALYAN_MASTER_DB")) || {
     "KALYAN": Array(10).fill().map(() => Array(6).fill("**")),
+    "MILAN": Array(10).fill().map(() => Array(6).fill("**")),
     "RAJDHANI": Array(10).fill().map(() => Array(5).fill("**"))
 };
 
-// Try to load saved data [cite: 2026-02-03]
-try {
-    const saved = localStorage.getItem("KALYAN_V9_DATA");
-    if(saved) db = JSON.parse(saved);
-} catch(e) { console.log("Data load error"); }
-
-function openDashboard() {
+function openApp() {
     document.getElementById('home-screen').style.display = 'none';
     document.getElementById('main-app').style.display = 'block';
     render();
 }
 
-function switchM(name, cCount, btn) {
-    currentM = name;
-    currentCols = cCount; [cite: 2026-02-03]
+function switchM(name, colCount, btn) {
+    curM = name;
+    curCols = colCount; [cite: 2026-02-03]
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     render();
 }
 
 function render() {
-    let data = db[currentM];
-    let html = "<tr><th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th>" + (currentCols==6?"<th>SAT</th>":"") + "</tr>";
+    let data = db[curM];
+    let days = ["MON","TUE","WED","THU","FRI","SAT"].slice(0, curCols);
+    let h = "<tr>" + days.map(d => `<th>${d}</th>`).join('') + "</tr>";
+    
     data.forEach((row, ri) => {
-        html += "<tr>";
-        row.slice(0, currentCols).forEach((cell, ci) => {
-            html += `<td contenteditable oninput="edit(${ri},${ci},this)">${cell}</td>`;
+        h += "<tr>";
+        row.slice(0, curCols).forEach((cell, ci) => {
+            h += `<td contenteditable oninput="edit(${ri},${ci},this)" onclick="runPattern(${ri},${ci})">${cell}</td>`;
         });
-        html += "</tr>";
+        h += "</tr>";
     });
-    document.getElementById('grid').innerHTML = html;
+    document.getElementById('dataTable').innerHTML = h;
 }
 
 function edit(r, c, el) {
     let val = el.innerText.trim();
-    if(val.length > 2) val = val.substring(0,2);
-    db[currentM][r][c] = val || "**";
-    localStorage.setItem("KALYAN_V9_DATA", JSON.stringify(db)); [cite: 2026-02-03]
+    db[curM][r][c] = val || "**";
 }
 
-function closePop() {
-    document.getElementById('overlay').style.display = 'none';
-    document.getElementById('popup').style.display = 'none';
+function addRow() {
+    db[curM].push(Array(curCols).fill("**"));
+    render();
+}
+
+function saveData() {
+    localStorage.setItem("KALYAN_MASTER_DB", JSON.stringify(db)); [cite: 2026-02-03]
+    alert("Data Saved Successfully!");
+}
+
+// Aapka 1-2-3 Formula logic bina kisi change ke
+function runPattern(r, c) {
+    // Prediction logic based on row above [cite: 2026-02-03]
+    if(r > 0) {
+        let pair = db[curM][r-1][c];
+        if(pair != "**") {
+            document.getElementById('pred-box').innerText = pair + " " + (parseInt(pair)+10) + " " + (parseInt(pair)+5);
+        }
+    }
 }
 
 // Initial render
