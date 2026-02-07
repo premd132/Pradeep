@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Milan Pro AI</title>
+    <style>
+        :root { --gold: #ffd700; --blue: #0084ff; --bg: #0f172a; --panel: #1e293b; }
+        * { box-sizing: border-box; font-family: sans-serif; margin: 0; padding: 0; }
+        body { background: var(--bg); color: #fff; padding: 10px; }
+        .toolbar { display: flex; gap: 8px; justify-content: center; margin-bottom: 15px; }
+        .tool-btn { padding: 10px 15px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; color: white; background: #334155; }
+        .table-container { position: relative; background: #fff; border-radius: 12px; padding: 8px; display: inline-block; }
+        table { border-collapse: collapse; color: #000; position: relative; z-index: 10; }
+        td, th { border: 1px solid #ddd; width: 45px; height: 45px; text-align: center; font-weight: 800; font-size: 14px; }
+        th { background: #1e293b; color: white; font-size: 10px; }
+        .circle { border: 3px solid var(--blue) !important; border-radius: 50% !important; background: rgba(0, 132, 255, 0.15); }
+        canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 5; }
+        .ai-card { background: var(--panel); padding: 15px; border-radius: 15px; border-top: 4px solid var(--gold); margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h2 style="text-align:center; color:var(--gold); margin-bottom:15px;">MILAN PRO AI</h2>
+    <div class="toolbar">
+        <input type="file" id="csv-m" style="display:none" onchange="loadCSV(this)">
+        <button class="tool-btn" onclick="document.getElementById('csv-m').click()">📂 CSV</button>
+        <button class="tool-btn" onclick="addRow()">➕ ROW</button>
+        <button class="tool-btn" onclick="saveData()" style="background:#28a745;">💾 SAVE</button>
+    </div>
+    <center><div class="table-container"><canvas id="cvs"></canvas><table id="tbl"></table></div></center>
+    <div class="ai-card"><div id="status">Scanning Milan Records...</div></div>
+
+<script>
+// Logic is identical to Kalyan but uses MILAN_FILE_DB
+let activeP = null, col = 6;
+const fams={"12":["12","17","21","26","62","67","71","76"],"13":["13","18","31","36","63","68","81","86"],"14":["14","19","41","46","64","69","91","96"],"15":["01","06","10","15","51","56","60","65"],"23":["23","28","32","37","73","78","82","87"],"24":["24","29","42","47","74","79","92","97"],"25":["02","07","20","25","52","57","70","75"],"34":["34","39","43","48","84","89","93","98"],"35":["03","08","30","35","53","58","80","85"],"45":["04","09","40","45","54","59","90","95"],"HR":["05","16","27","38","49","50","61","72","83","94"],"FR":["00","11","22","33","44","55","66","77","88","99"]};
+let data = JSON.parse(localStorage.getItem("MILAN_FILE_DB")) || [["**","**","**","**","**","**"]];
+function render() {
+    let h = "<tr><th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th><th>SAT</th></tr>";
+    data.forEach((r, ri) => { h += "<tr>"; r.forEach((v, ci) => {
+        let isM = activeP && ri >= activeP.start && ri < activeP.start + activeP.shape.length && activeP.shape[ri-activeP.start][ci];
+        h += `<td class="${isM?'circle':''}" contenteditable="true" oninput="upd(${ri},${ci},this)" onclick="${v=='**'?'findP('+ri+','+ci+')':'' }">${v}</td>`;
+    }); h += "</tr>"; });
+    document.getElementById('tbl').innerHTML = h; if(activeP) setTimeout(drawL, 50);
+}
+function upd(r, c, el) { data[r][c] = el.innerText.trim(); }
+function addRow() { data.push(Array(col).fill("**")); render(); }
+function saveData() { localStorage.setItem("MILAN_FILE_DB", JSON.stringify(data)); alert("Milan Saved!"); }
+function loadCSV(input) { let fr = new FileReader(); fr.onload = () => { data = fr.result.split('\n').filter(l=>l.trim()).map(l=>l.split(',').slice(0,col)); render(); }; fr.readAsText(input.files[0]); }
+function findP(r, c) {
+    let base = "**"; for(let i=r; i>=0; i--) { if(data[i][c]!="**") { base=data[i][c]; break; } }
+    if(base=="**") return;
+    let shape = []; for(let i=Math.max(0,r-3); i<=r; i++) {
+        let row = []; for(let j=0; j<col; j++) { row.push(data[i][j]!="**" && (data[i][j]===base || checkF(data[i][j], base))?1:0); }
+        shape.push(row);
+    }
+    let matches = []; for(let i=0; i<=data.length-shape.length; i++) {
+        let ok = true; for(let k=0; k<shape.length; k++) { for(let j=0; j<col; j++) { if(shape[k][j] && !(data[i+k][j]===base || checkF(data[i+k][j], base))) {ok=false; break;} } if(!ok) break; }
+        if(ok) matches.push(i);
+    }
+    let box = document.getElementById('status'); box.innerHTML = "";
+    matches.slice(0, 3).forEach(idx => {
+        let d = document.createElement("div"); d.style = "background:#222; margin:5px; padding:10px; cursor:pointer; border-left:4px solid #ffd700;";
+        d.innerHTML = `Match Week ${idx+1} ➔`; d.onclick = () => { activeP={start:idx, shape:shape}; render(); };
+        box.appendChild(d);
+    });
+}
+function checkF(v1, v2) { for(let k in fams) { if(fams[k].includes(v1) && fams[k].includes(v2)) return true; } return false; }
+function drawL() {
+    const cvs = document.getElementById('cvs'), ctx = cvs.getContext("2d"), tbl = document.getElementById('tbl');
+    cvs.width = tbl.offsetWidth; cvs.height = tbl.offsetHeight;
+    const cells = tbl.querySelectorAll(".circle"), rT = tbl.getBoundingClientRect();
+    ctx.strokeStyle = "#ffd700"; ctx.lineWidth = 3; ctx.beginPath();
+    cells.forEach((c, i) => { const r = c.getBoundingClientRect(); const x = r.left - rT.left + r.width/2, y = r.top - rT.top + r.height/2; if(i==0) ctx.moveTo(x,y); else ctx.lineTo(x,y); });
+    ctx.stroke();
+}
+render();
+</script>
+</body>
+</html>
