@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalyan Pro AI – Premium Multi-System</title>
+    <title>Kalyan Pro AI – Multi-Market Hub</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -14,154 +14,126 @@
             --panel: #1e293b; 
         }
 
-        * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        * { box-sizing: border-box; font-family: 'Poppins', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { margin: 0; background: var(--bg); color: #fff; overflow-x: hidden; }
 
-        /* Home Page */
-        #home-screen {
-            height: 100vh; width: 100vw; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; text-align: center;
-            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
-        }
-        .hero-title { font-size: 2.5rem; color: var(--gold); margin: 0; text-shadow: 0 0 20px rgba(255,215,0,0.3); }
-        .enter-btn {
-            background: var(--gold); color: #000; padding: 15px 40px; margin-top: 20px;
-            font-size: 1.1rem; font-weight: 800; border: none; border-radius: 50px;
-            cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-        }
+        /* Market Navigation */
+        .tabs { display: flex; gap: 5px; padding: 10px; background: #000; position: sticky; top: 0; z-index: 100; }
+        .tab-btn { flex: 1; padding: 12px 5px; border: none; background: #334155; color: white; border-radius: 8px; font-weight: 800; font-size: 10px; cursor: pointer; transition: 0.3s; }
+        .tab-btn.active { background: var(--gold); color: #000; box-shadow: 0 0 15px var(--gold); }
 
-        /* Tabs and Dashboard */
-        #main-app { display: none; padding: 10px; }
-        .market-tabs { display: flex; gap: 5px; margin-bottom: 15px; }
-        .tab-btn { flex: 1; padding: 10px; border: none; background: #334155; color: white; border-radius: 8px; font-weight: bold; font-size: 10px; }
-        .tab-btn.active { background: var(--gold); color: #000; }
+        .toolbar { background: var(--panel); padding: 12px; border-radius: 12px; margin: 10px; display: flex; gap: 8px; justify-content: center; border: 1px solid rgba(255,255,255,0.1); }
+        .btn-ui { padding: 8px 15px; font-size: 11px; border-radius: 6px; border: none; font-weight: 800; cursor: pointer; }
 
-        .toolbar { background: var(--panel); padding: 10px; border-radius: 12px; margin-bottom: 15px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
-        .btn-ui { padding: 8px 12px; font-size: 11px; border-radius: 5px; border: none; font-weight: 800; }
-
-        /* Table UI [cite: 2026-02-03] */
-        .table-container { position: relative; background: #fff; border-radius: 10px; padding: 5px; box-shadow: 0 0 30px rgba(0,0,0,0.5); display: inline-block; }
+        /* Grid UI */
+        .table-container { position: relative; background: #fff; border-radius: 10px; padding: 5px; box-shadow: 0 0 30px rgba(0,0,0,0.5); display: inline-block; margin-top: 10px; }
         table { border-collapse: collapse; color: #000; font-size: 13px; position: relative; z-index: 5; }
-        td, th { border: 1px solid #ddd; text-align: center; font-weight: bold; width: 42px; height: 42px; }
+        td, th { border: 1px solid #ddd; text-align: center; font-weight: 800; width: 44px; height: 44px; }
         th { background: #1e293b; color: white; font-size: 9px; }
         
+        /* New Marking Style */
         .circle { border: 3px solid var(--blue-circle) !important; border-radius: 50% !important; background: rgba(0, 132, 255, 0.15); }
         canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 4; }
 
-        .dashboard { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 20px; }
+        /* AI Dashboard */
+        .dashboard { padding: 10px; display: grid; grid-template-columns: 1fr; gap: 15px; }
         .card { background: var(--panel); padding: 15px; border-radius: 12px; border-top: 3px solid var(--gold); }
-        .card h3 { margin: 0 0 10px 0; color: var(--gold); font-size: 12px; }
+        .card h3 { margin: 0 0 10px 0; color: var(--gold); font-size: 13px; text-transform: uppercase; }
 
-        #popup { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 15px; display: none; z-index: 100; padding: 15px; color: #000; width: 95%; max-width: 400px; }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; z-index: 90; }
+        .future-box { background: linear-gradient(135deg, #1e293b, #000); padding: 15px; border-radius: 10px; text-align: center; border: 1px solid var(--gold); }
+        .pair-chip { background: var(--gold); color: #000; padding: 8px 15px; border-radius: 50px; font-weight: 900; font-size: 1.2rem; display: inline-block; margin: 5px; }
+
+        /* Popup */
+        #popup { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 15px; display: none; z-index: 200; padding: 15px; color: #000; width: 95%; max-width: 420px; text-align: center; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); display: none; z-index: 150; }
     </style>
 </head>
 <body>
 
-<div id="home-screen">
-    <h1 class="hero-title">Kalyan PRO AI</h1>
-    <p style="opacity:0.6; font-size:12px;">MILAN • KALYAN • RAJDHANI</p>
-    <button class="enter-btn" onclick="startApp()">START SYSTEM</button>
+<div class="tabs">
+    <button class="tab-btn active" onclick="switchMarket('MILAN', this)">MILAN (6D)</button>
+    <button class="tab-btn" onclick="switchMarket('KALYAN', this)">KALYAN (6D)</button>
+    <button class="tab-btn" onclick="switchMarket('RAJDHANI', this)">RAJDHANI (5D)</button>
 </div>
 
-<div id="main-app">
-    <div class="market-tabs">
-        <button class="tab-btn active" onclick="switchMarket('MILAN', this)">MILAN</button>
-        <button class="tab-btn" onclick="switchMarket('KALYAN', this)">KALYAN</button>
-        <button class="tab-btn" onclick="switchMarket('RAJDHANI', this)">RAJDHANI (5D)</button>
+<div class="toolbar">
+    <input type="file" id="csv" style="display:none">
+    <button class="btn-ui" onclick="document.getElementById('csv').click()" style="background:#444; color:white;">📂 IMPORT</button>
+    <button class="btn-ui" onclick="addRow()" style="background:#444; color:white;">➕ ROW</button>
+    <button class="btn-ui" onclick="saveData()" style="background:#28a745; color:white;">💾 SAVE <span id="mLabel">MILAN</span></button>
+</div>
+
+<center>
+    <div class="table-container">
+        <canvas id="mainCanvas"></canvas>
+        <table id="tbl"></table>
+    </div>
+</center>
+
+<div class="dashboard">
+    <div class="future-box">
+        <h3 style="color:var(--gold); margin-bottom:10px;">🔮 FUTURE AI PREDICTION</h3>
+        <div id="future"><span style="color:#666;">Select target blank cell...</span></div>
     </div>
 
-    <div class="toolbar">
-        <input type="file" id="csv" style="display:none">
-        <button class="btn-ui" onclick="document.getElementById('csv').click()" style="background:#444; color:white;">📂 CSV</button>
-        <button class="btn-ui" onclick="addRow()" style="background:#444; color:white;">➕ ROW</button>
-        <button class="btn-ui" onclick="saveData()" style="background:#28a745; color:white;">💾 SAVE</button>
-    </div>
-
-    <center>
-        <div class="table-container">
-            <canvas id="mainCanvas"></canvas>
-            <table id="tbl"></table>
-        </div>
-    </center>
-
-    <div class="dashboard">
-        <div class="card" style="background: linear-gradient(135deg, #1e293b, #0c121d); text-align: center;">
-            <h3 id="futureHead">🔮 FUTURE PREDICTION</h3>
-            <div id="future" style="font-size: 1.2rem; font-weight: 800; color: var(--gold);">Select target...</div>
-        </div>
-        <div class="card">
-            <h3>🔍 HISTORY MATCHES</h3>
-            <div id="checks"></div>
-        </div>
+    <div class="card">
+        <h3>🔍 PATTERN MATCHES (CHECK LINES)</h3>
+        <div id="checks" style="font-size:12px;">Waiting for pattern input...</div>
     </div>
 </div>
 
 <div class="overlay" id="overlay" onclick="closePopup()"></div>
 <div id="popup">
-    <button onclick="closePopup()" style="float:right; background:#000; color:white; padding:5px; font-size:10px;">CLOSE</button>
-    <h3 style="margin: 0 0 15px 0; font-size:14px;">Historical Pattern</h3>
-    <center>
-        <div class="table-container" style="border: 1px solid #ddd;">
-            <canvas id="popCanvas"></canvas>
-            <div id="popData"></div>
-        </div>
-    </center>
+    <button onclick="closePopup()" style="float:right; background:red; color:white; border:none; padding:5px 10px; border-radius:4px; font-weight:bold;">X</button>
+    <h3 style="margin: 0 0 15px 0;">History Evidence View</h3>
+    <div class="table-container" style="border: 1px solid #ddd; width:100%;">
+        <canvas id="popCanvas"></canvas>
+        <div id="popData" style="overflow-x:auto;"></div>
+    </div>
 </div>
 
 <script>
-let curMarket = "MILAN";
+let currentMarket = "MILAN";
 let colCount = 6;
 const families={"12":["12","17","21","26","62","67","71","76"],"13":["13","18","31","36","63","68","81","86"],"14":["14","19","41","46","64","69","91","96"],"15":["01","06","10","15","51","56","60","65"],"23":["23","28","32","37","73","78","82","87"],"24":["24","29","42","47","74","79","92","97"],"25":["02","07","20","25","52","57","70","75"],"34":["34","39","43","48","84","89","93","98"],"35":["03","08","30","35","53","58","80","85"],"45":["04","09","40","45","54","59","90","95"],"HR":["05","16","27","38","49","50","61","72","83","94"],"FR":["00","11","22","33","44","55","66","77","88","99"]};
 
-let db = {
-    "MILAN": JSON.parse(localStorage.getItem("MILAN_V5")) || Array(10).fill(Array(6).fill("**")),
-    "KALYAN": JSON.parse(localStorage.getItem("KALYAN_V5")) || Array(10).fill(Array(6).fill("**")),
-    "RAJDHANI": JSON.parse(localStorage.getItem("RAJ_V5")) || Array(10).fill(Array(5).fill("**"))
+// Separate Local Storage for each market [cite: 2026-02-03]
+let markets = {
+    "MILAN": JSON.parse(localStorage.getItem("MILAN_V6")) || Array(10).fill(Array(6).fill("**")),
+    "KALYAN": JSON.parse(localStorage.getItem("KALYAN_V6")) || Array(10).fill(Array(6).fill("**")),
+    "RAJDHANI": JSON.parse(localStorage.getItem("RAJ_V6")) || Array(10).fill(Array(5).fill("**"))
 };
 
-function startApp() {
-    document.getElementById('home-screen').style.display = 'none';
-    document.getElementById('main-app').style.display = 'block';
-    draw();
-}
-
 function switchMarket(m, btn) {
-    curMarket = m;
+    currentMarket = m;
     colCount = (m === "RAJDHANI") ? 5 : 6; [cite: 2026-02-03]
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
+    document.getElementById('mLabel').innerText = m;
     activeMark = null;
     draw();
 }
 
 function fam(v){for(let k in families) if(families[k].includes(v)) return k; return "NA";}
 function norm(v){if(v==""||v=="**")return "**"; v=String(v).replace(/[^0-9]/g,''); return v.length==1?"0"+v:v;}
-function smartMatch(a,b){ if(a=="**"||b=="**") return false; return fam(a)===fam(b); }
 
 let activeMark=null;
 
-function draw(){
- let data = db[curMarket];
+function draw(targetId="tbl", sourceData=markets[currentMarket], pattern=null){
  let days = ["MON","TUE","WED","THU","FRI","SAT"].slice(0, colCount);
  let h="<tr>" + days.map(d=>`<th>${d}</th>`).join('') + "</tr>";
  
- data.forEach((r,ri)=>{
+ sourceData.forEach((r,ri)=>{
   h+="<tr>";
   r.slice(0, colCount).forEach((c,ci)=>{
-   let cls = (activeMark && isPartOfPattern(ri, ci)) ? "circle" : "";
-   h+=`<td class="${cls}" contenteditable oninput="edit(${ri},${ci},this)" onclick="${c=='**'?'makePattern('+ri+','+ci+')':'' }">${c}</td>`;
+   let isTarget = (pattern && ri >= pattern.start && ri < pattern.start + pattern.shape.length && pattern.shape[ri-pattern.start][ci]);
+   let cls = isTarget ? "circle" : "";
+   h+=`<td class="${cls}" contenteditable oninput="edit(${ri},${ci},this)" onclick="${c=='**'?'runAI('+ri+','+ci+')':'' }">${c}</td>`;
   });
   h+="</tr>";
  });
- document.getElementById("tbl").innerHTML=h;
- if(activeMark) setTimeout(() => drawLines("mainCanvas", document.getElementById("tbl")), 50);
-}
-
-function isPartOfPattern(ri, ci){
-    if(!activeMark) return false;
-    let i = ri - activeMark.start;
-    return (i >= 0 && i < activeMark.shape.length && activeMark.shape[i][ci]);
+ document.getElementById(targetId).innerHTML=h;
+ if(pattern || targetId=="popTbl") setTimeout(() => drawLines(targetId=="tbl"?"mainCanvas":"popCanvas", document.getElementById(targetId)), 60);
 }
 
 function drawLines(cvsId, tblEl) {
@@ -172,8 +144,8 @@ function drawLines(cvsId, tblEl) {
     const cells = tblEl.querySelectorAll(".circle");
     if(cells.length < 2) return;
     const tRect = tblEl.getBoundingClientRect();
-    ctx.strokeStyle = "#00ff88"; // Connection Line [cite: 2026-02-03]
-    ctx.lineWidth = 2.5; ctx.beginPath();
+    ctx.strokeStyle = "#00ff88"; // Green Connection Line
+    ctx.lineWidth = 3; ctx.lineCap="round"; ctx.beginPath();
     cells.forEach((c, idx) => {
         const r = c.getBoundingClientRect();
         const x = r.left - tRect.left + r.width/2;
@@ -183,66 +155,70 @@ function drawLines(cvsId, tblEl) {
     ctx.stroke();
 }
 
-function edit(r,c,el){ db[curMarket][r][c]=norm(el.innerText.trim()); }
-function addRow(){ db[curMarket].push(Array(colCount).fill("**")); draw(); }
-function saveData(){ localStorage.setItem(curMarket+"_V5",JSON.stringify(db[curMarket])); alert(curMarket + " Saved!"); }
+function edit(r,c,el){ markets[currentMarket][r][c]=norm(el.innerText.trim()); }
+function addRow(){ markets[currentMarket].push(Array(colCount).fill("**")); draw(); }
+function saveData(){ localStorage.setItem(currentMarket+"_V6",JSON.stringify(markets[currentMarket])); alert(currentMarket + " Data Saved!"); }
 
-function makePattern(r,c){
- let data = db[curMarket];
- let base="**";
- for(let i=r;i>=0;i--){ if(data[i][c]!="**"){base=data[i][c]; break;}}
+function runAI(r,c){
+ let data = markets[currentMarket];
+ let base="**", bRow=-1;
+ for(let i=r;i>=0;i--){ if(data[i][c]!="**"){base=data[i][c]; bRow=i; break;}}
  if(base=="**") return;
+
+ // Build pattern matrix
  let shape=[];
- for(let i=Math.max(0,r-4);i<=r;i++){
-  let row=[];
-  for(let j=0;j<colCount;j++){ row.push(data[i][j]!="**" && smartMatch(data[i][j],base)?1:0); }
+ let startR = Math.max(0, r-5);
+ for(let i=startR; i<=r; i++){
+  let row=Array(colCount).fill(0);
+  for(let j=0; j<colCount; j++){
+   if(data[i][j]!="**" && fam(data[i][j])==fam(base)) row[j]=1;
+  }
   shape.push(row);
  }
- searchPattern(shape,base);
-}
 
-function searchPattern(shape,base){
- let data = db[curMarket];
+ // Search History
  let matches=[];
- for(let i=0; i<=data.length-shape.length; i++){
-  let ok=true;
+ for(let i=0; i <= data.length - shape.length - 1; i++){
+  if(i >= startR) continue;
+  let matchFound=true;
   for(let k=0; k<shape.length; k++){
-   for(let j=0; j<colCount; j++){ if(shape[k][j] && !smartMatch(data[i+k][j],base)){ok=false; break;}}
-   if(!ok) break;
+   for(let j=0; j<colCount; j++){
+    if(shape[k][j] && (data[i+k][j]=="**" || fam(data[i+k][j])!=fam(base))){ matchFound=false; break; }
+   }
+   if(!matchFound) break;
   }
-  if(ok) matches.push({index:i});
+  if(matchFound) matches.push(i);
  }
- showMatches(shape, matches, base);
-}
 
-function showMatches(shape, matches, base){
- document.getElementById("checks").innerHTML="";
- matches.forEach((m,i)=>{
-  let d = document.createElement("div");
-  d.className = "check-item";
-  d.style = "background:#2a2a2a; margin:5px 0; padding:10px; cursor:pointer; border-radius:6px; font-size:12px; border-left:3px solid #0084ff;";
-  d.innerText = `Record Match Found: Row ${m.index + 1}`;
-  d.onclick = () => { activeMark={start:m.index, shape:shape}; draw(); showOne(shape, m.index); };
-  document.getElementById("checks").appendChild(d);
+ activeMark = {start: startR, shape: shape};
+ draw("tbl", data, activeMark);
+
+ // Show Checks
+ let list = document.getElementById("checks");
+ list.innerHTML = matches.length ? "" : "No history flow found.";
+ matches.slice(0,3).forEach((mIdx, idx) => {
+    let d = document.createElement("div");
+    d.style = "background:#2a3a50; margin:5px 0; padding:10px; cursor:pointer; border-radius:6px; border-left:4px solid var(--blue-circle);";
+    d.innerHTML = `<b>Line ${idx+1}:</b> Match found in Record Row ${mIdx+1}`;
+    d.onclick = () => showPopup(mIdx, shape);
+    list.appendChild(d);
  });
- 
- // Future Prediction Logic [cite: 2026-02-03]
- let f1 = families[fam(base)];
- document.getElementById("future").innerHTML = `<span style='padding:5px 15px; background:var(--gold); color:#000; border-radius:20px;'>${f1[0]}</span> <span style='padding:5px 15px; background:var(--gold); color:#000; border-radius:20px;'>${f1[1]}</span>`;
+
+ // Future AI Predictions [cite: 2026-02-03]
+ let f = families[fam(base)];
+ document.getElementById("future").innerHTML = `
+    <div class="pair-chip">${f[0]}</div>
+    <div class="pair-chip">${f[1]}</div>
+    <div class="pair-chip">${families["FR"][Math.floor(Math.random()*10)]}</div>
+ `;
 }
 
-function showOne(shape, idx){
- let data = db[curMarket];
- let html="<table id='popTbl'>";
- for(let i=0; i<shape.length; i++){
-  html+="<tr>";
-  data[idx+i].forEach((v,j)=>{ html+=`<td class="${shape[i][j]?'circle':''}">${v}</td>`; });
-  html+="</tr>";
- }
- document.getElementById("popData").innerHTML=html+"</table>";
- document.getElementById("popup").style.display="block";
- document.getElementById("overlay").style.display="block";
- setTimeout(()=>drawLines("popCanvas", document.getElementById("popTbl")), 100);
+function showPopup(mIdx, shape) {
+    document.getElementById("overlay").style.display="block";
+    document.getElementById("popup").style.display="block";
+    document.getElementById("popData").innerHTML = `<table id="popTbl"></table>`;
+    let popDataSlice = markets[currentMarket].slice(mIdx, mIdx + shape.length + 1);
+    draw("popTbl", popDataSlice, {start:0, shape:shape});
 }
 
 function closePopup(){ document.getElementById("popup").style.display="none"; document.getElementById("overlay").style.display="none"; }
@@ -250,12 +226,13 @@ function closePopup(){ document.getElementById("popup").style.display="none"; do
 document.getElementById("csv").onchange = e => {
     let fr = new FileReader();
     fr.onload = () => {
-        let lines = fr.result.split('\n');
-        db[curMarket] = lines.filter(l=>l.trim()).map(l => l.split(',').map(v => norm(v.trim())).slice(0, colCount));
+        markets[currentMarket] = fr.result.split('\n').filter(l=>l.trim()).map(l => l.split(',').map(v => norm(v.trim())).slice(0, colCount));
         draw();
     };
     fr.readAsText(e.target.files[0]);
 };
+
+draw();
 </script>
 </body>
 </html>
