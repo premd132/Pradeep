@@ -3,158 +3,254 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalyan Pro AI - Full Control</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>Kalyan Pro AI – Master System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #ffd700; --blue: #0084ff; --green: #00ff88; --bg: #0f172a; --panel: #1e293b; }
-        * { box-sizing: border-box; font-family: 'Poppins', sans-serif; margin: 0; padding: 0; }
-        body { background: var(--bg); color: #fff; overflow-x: hidden; }
+        :root { 
+            --gold: #ffd700; 
+            --blue-circle: #0084ff; 
+            --green-line: #00ff88; 
+            --bg: #0f172a; 
+            --panel: #1e293b; 
+        }
 
-        /* Home Page Overlay */
+        * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { margin: 0; background: var(--bg); color: #fff; overflow-x: hidden; }
+
+        /* --- Home Page Overlay --- */
         #home-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #0f172a; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%); z-index: 1000;
         }
-        .start-btn {
-            background: var(--gold); color: #000; padding: 18px 55px;
-            font-size: 1.1rem; font-weight: 800; border: none; border-radius: 50px; cursor: pointer;
+        .hero-title { font-size: 3rem; color: var(--gold); margin: 0; text-shadow: 0 0 20px rgba(255,215,0,0.3); }
+        .hero-sub { opacity: 0.7; letter-spacing: 2px; margin-bottom: 30px; text-transform: uppercase; }
+        .enter-btn {
+            background: var(--gold); color: #000; padding: 15px 50px;
+            font-size: 1.2rem; font-weight: 800; border: none; border-radius: 50px;
+            cursor: pointer; transition: 0.3s; box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
 
-        /* Tabs & Toolbar */
-        .tabs { display: flex; background: #000; padding: 10px; gap: 5px; }
-        .tab-btn { flex: 1; padding: 12px 5px; border: none; background: #334155; color: white; border-radius: 8px; font-weight: 800; font-size: 10px; }
-        .tab-btn.active { background: var(--gold); color: #000; }
+        /* --- Dashboard Styling --- */
+        #main-app { display: none; padding: 10px; }
         
-        .toolbar { display: flex; justify-content: center; gap: 10px; padding: 15px; background: #111; border-bottom: 1px solid #333; }
-        .tool-btn { padding: 8px 15px; border-radius: 5px; border: none; font-weight: bold; font-size: 11px; cursor: pointer; }
+        /* Market Tabs [cite: 2026-02-03] */
+        .tabs { display: flex; background: #000; padding: 10px; gap: 5px; margin-bottom: 10px; border-radius: 8px; }
+        .tab-btn { flex: 1; padding: 12px 5px; border: none; background: #334155; color: white; border-radius: 8px; font-weight: 800; font-size: 10px; cursor: pointer; }
+        .tab-btn.active { background: var(--gold); color: #000; }
 
-        /* Grid & Circles */
-        .table-container { background: #fff; border-radius: 12px; padding: 8px; display: inline-block; position: relative; margin: 15px 0; }
-        table { border-collapse: collapse; color: #000; position: relative; z-index: 10; }
-        td, th { border: 1px solid #ddd; width: 44px; height: 44px; text-align: center; font-weight: 800; font-size: 14px; }
-        th { background: #1e293b; color: white; font-size: 9px; }
+        .toolbar { background: var(--panel); padding: 12px; border-radius: 12px; margin-bottom: 15px; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; border: 1px solid rgba(255,255,255,0.1); }
+        .tool-btn { padding: 8px 15px; border-radius: 6px; border: none; font-weight: bold; font-size: 11px; cursor: pointer; color: white; }
 
-        .circle-mark { border: 3px solid var(--blue) !important; border-radius: 8px; background: rgba(0, 132, 255, 0.1); }
-        canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 5; }
+        /* Table Style */
+        .table-container { position: relative; background: #fff; border-radius: 10px; padding: 5px; box-shadow: 0 0 30px rgba(0,0,0,0.5); display: inline-block; margin-top: 10px; }
+        table { border-collapse: collapse; color: #000; font-size: 14px; position: relative; z-index: 5; }
+        td, th { border: 1px solid #ddd; text-align: center; font-weight: bold; width: 45px; height: 45px; }
+        th { background: #1e293b; color: white; font-size: 10px; }
+        
+        .circle { border: 3px solid var(--blue-circle) !important; border-radius: 50% !important; background: rgba(0, 132, 255, 0.15); z-index: 10; }
+        canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 4; }
 
-        .card { background: var(--panel); padding: 15px; border-radius: 12px; border-top: 3px solid var(--gold); margin: 10px; }
+        .card { background: var(--panel); padding: 15px; border-radius: 12px; border-top: 3px solid var(--gold); margin-top: 15px; }
+        .card h3 { margin: 0 0 10px 0; color: var(--gold); font-size: 13px; }
+
+        #popup { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 15px; display: none; z-index: 1100; padding: 15px; color: #000; width: 95%; max-width: 400px; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; z-index: 1000; }
     </style>
 </head>
 <body>
 
 <div id="home-screen">
-    <h1 style="color:var(--gold); font-size: 2.5rem; font-weight: 800;">KALYAN PRO AI</h1>
-    <p style="color:#8a99af; margin-bottom:30px;">ADVANCED ANALYSIS SYSTEM</p>
-    <button class="start-btn" onclick="document.getElementById('home-screen').style.display='none'">START ANALYSIS</button>
+    <h1 class="hero-title">Kalyan PRO AI</h1>
+    <p class="hero-sub">Pattern Recognition System</p>
+    <button class="enter-btn" onclick="startApp()">ENTER SYSTEM</button>
 </div>
 
-<div class="tabs">
-    <button class="tab-btn active" onclick="switchMarket('KALYAN', 6, this)">KALYAN (6D)</button>
-    <button class="tab-btn" onclick="switchMarket('MILAN', 6, this)">MILAN (6D)</button>
-    <button class="tab-btn" onclick="switchMarket('RAJDHANI', 5, this)">RAJDHANI (5D)</button>
-</div>
-
-<div class="toolbar">
-    <input type="file" id="csv-input" style="display:none" onchange="loadCSV(this)">
-    <button class="tool-btn" style="background:#444; color:#fff;" onclick="document.getElementById('csv-input').click()">📂 CSV IMPORT</button>
-    <button class="tool-btn" style="background:var(--green); color:#000;" onclick="saveToLocal()">💾 SAVE TO LOCAL</button>
-    <button class="tool-btn" style="background:#444; color:#fff;" onclick="addNewRow()">➕ ADD ROW</button>
-</div>
-
-<center>
-    <div class="table-container">
-        <canvas id="main-cvs"></canvas>
-        <table id="data-tbl"></table>
+<div id="main-app">
+    <div class="tabs">
+        <button class="tab-btn active" onclick="setMarket('KALYAN', 6, this)">KALYAN</button>
+        <button class="tab-btn" onclick="setMarket('MILAN', 6, this)">MILAN</button>
+        <button class="tab-btn" onclick="setMarket('RAJDHANI', 5, this)">RAJDHANI (5D)</button>
     </div>
-</center>
 
-<div class="card">
-    <h3 style="color:var(--gold); font-size: 14px;">🔮 PREDICTION (FROM LAST PAIR)</h3>
-    <div id="prediction" style="font-size: 1.5rem; font-weight: 800; color: var(--gold); margin-top:10px;">-- -- --</div>
+    <div class="toolbar">
+        <input type="file" id="csv" style="display:none">
+        <button class="tool-btn" onclick="document.getElementById('csv').click()" style="background:#444;">📂 CSV</button>
+        <button class="tool-btn" onclick="addRow()" style="background:#444;">➕ ROW</button>
+        <button class="tool-btn" onclick="saveData()" style="background:#28a745;">💾 SAVE</button>
+        <button class="tool-btn" onclick="clearData()" style="background:#dc3545;">🗑️ CLEAR</button>
+    </div>
+
+    <center>
+        <div class="table-container">
+            <canvas id="mainCanvas"></canvas>
+            <table id="tbl"></table>
+        </div>
+    </center>
+
+    <div class="card">
+        <h3>🤖 AI Analysis & Future Prediction</h3>
+        <div id="ai-box">Select a blank cell to analyze patterns...</div>
+    </div>
+</div>
+
+<div class="overlay" id="overlay" onclick="closePopup()"></div>
+<div id="popup">
+    <h3 style="margin: 0 0 15px 0;">Sequence Evidence</h3>
+    <center>
+        <div class="table-container" style="border: 1px solid #ddd;">
+            <canvas id="popCanvas"></canvas>
+            <div id="popData"></div>
+        </div>
+    </center>
+    <button onclick="closePopup()" style="width:100%; margin-top:15px; background:#000; color:#fff; padding:10px; border-radius:8px;">CLOSE</button>
 </div>
 
 <script>
-let curM = "KALYAN";
-let curCols = 6;
-// Local Storage logic [cite: 2026-02-03]
-let db = JSON.parse(localStorage.getItem("PRO_DATA_V11")) || {
-    "KALYAN": Array(12).fill().map(() => Array(6).fill("**")),
-    "MILAN": Array(12).fill().map(() => Array(6).fill("**")),
-    "RAJDHANI": Array(12).fill().map(() => Array(5).fill("**"))
+let currentMarket = "KALYAN";
+let currentCols = 6;
+const families={"12":["12","17","21","26","62","67","71","76"],"13":["13","18","31","36","63","68","81","86"],"14":["14","19","41","46","64","69","91","96"],"15":["01","06","10","15","51","56","60","65"],"23":["23","28","32","37","73","78","82","87"],"24":["24","29","42","47","74","79","92","97"],"25":["02","07","20","25","52","57","70","75"],"34":["34","39","43","48","84","89","93","98"],"35":["03","08","30","35","53","58","80","85"],"45":["04","09","40","45","54","59","90","95"],"HR":["05","16","27","38","49","50","61","72","83","94"],"FR":["00","11","22","33","44","55","66","77","88","99"]};
+
+// Load data from local storage [cite: 2026-02-03]
+let db = JSON.parse(localStorage.getItem("PRO_MASTER_DATA")) || {
+    "KALYAN": [["51","91","41","57","19","95"],["05","90","74","06","19","63"],["**","**","**","**","**","**"]],
+    "MILAN": [["**","**","**","**","**","**"]],
+    "RAJDHANI": [["**","**","**","**","**"]]
 };
 
-function switchMarket(name, cols, btn) {
-    curM = name; curCols = cols; [cite: 2026-02-03]
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+function startApp() {
+    document.getElementById('home-screen').style.display = 'none';
+    document.getElementById('main-app').style.display = 'block';
     render();
 }
 
-function render(patternCells = []) {
-    let data = db[curM];
-    let h = "<tr><th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th>" + (curCols==6?"<th>SAT</th>":"") + "</tr>";
+function setMarket(name, cols, btn) {
+    currentMarket = name;
+    currentCols = cols; [cite: 2026-02-03]
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeMark = null;
+    render();
+}
+
+let activeMark = null;
+let targetCol = 0;
+
+function render() {
+    let data = db[currentMarket];
+    let days = ["MON","TUE","WED","THU","FRI","SAT"].slice(0, currentCols);
+    let h = "<tr>" + days.map(d => `<th>${d}</th>`).join('') + "</tr>";
     
-    data.forEach((row, ri) => {
+    data.forEach((r, ri) => {
         h += "<tr>";
-        row.slice(0, curCols).forEach((cell, ci) => {
-            let marked = patternCells.some(p => p.r == ri && p.c == ci);
-            h += `<td class="${marked?'circle-mark':''}" contenteditable="true" oninput="editCell(${ri},${ci},this)" onclick="${cell=='**'?'runAnalysis('+ri+','+ci+')':'' }">${cell}</td>`;
+        r.slice(0, currentCols).forEach((c, ci) => {
+            let cls = (activeMark && isPartOfPattern(ri, ci)) ? "circle" : "";
+            h += `<td class="${cls}" contenteditable oninput="edit(${ri},${ci},this)" onclick="${c=='**'?'makePattern('+ri+','+ci+')':'' }">${c}</td>`;
         });
         h += "</tr>";
     });
-    document.getElementById('data-tbl').innerHTML = h;
-    if(patternCells.length > 0) setTimeout(() => drawLine(patternCells), 50);
+    document.getElementById("tbl").innerHTML = h;
+    if(activeMark) setTimeout(() => drawLines("mainCanvas", document.getElementById("tbl")), 50);
 }
 
-function editCell(r, c, el) {
-    db[curM][r][c] = el.innerText.trim() || "**";
+function isPartOfPattern(ri, ci){
+    if(!activeMark) return false;
+    let i = ri - activeMark.start;
+    return (i >= 0 && i < activeMark.shape.length && activeMark.shape[i][ci]);
 }
 
-function saveToLocal() {
-    localStorage.setItem("PRO_DATA_V11", JSON.stringify(db)); [cite: 2026-02-03]
-    alert("System Data Saved to Local Storage!");
-}
-
-function addNewRow() {
-    db[curM].push(Array(curCols).fill("**"));
-    render();
-}
-
-function loadCSV(input) {
-    let reader = new FileReader();
-    reader.onload = (e) => {
-        let lines = e.target.result.split('\n');
-        db[curM] = lines.map(l => l.split(',').map(v => v.trim() || "**").slice(0, curCols));
-        render();
-    };
-    reader.readAsText(input.files[0]);
-}
-
-function runAnalysis(r, c) {
-    // Original Pattern: Formed from row above [cite: 2026-02-03]
-    if(r > 0) {
-        let lastPair = db[curM][r-1][c];
-        if(lastPair != "**") {
-            let flow = [{r: r-1, c: c}, {r: r-2, c: c}];
-            render(flow);
-            document.getElementById('prediction').innerText = lastPair + " " + (parseInt(lastPair)+5) + " " + (parseInt(lastPair)+10);
-        }
-    }
-}
-
-function drawLine(cells) {
-    const cvs = document.getElementById('main-cvs'), tbl = document.getElementById('data-tbl'), ctx = cvs.getContext('2d');
-    cvs.width = tbl.offsetWidth; cvs.height = tbl.offsetHeight;
-    ctx.strokeStyle = "#00ff88"; ctx.lineWidth = 3; ctx.beginPath();
-    let domCells = document.querySelectorAll('.circle-mark');
-    domCells.forEach((dc, i) => {
-        let r = dc.getBoundingClientRect(), tr = tbl.getBoundingClientRect();
-        let x = r.left - tr.left + r.width/2, y = r.top - tr.top + r.height/2;
-        if(i==0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+function drawLines(cvsId, tblEl) {
+    const cvs = document.getElementById(cvsId);
+    const ctx = cvs.getContext("2d");
+    cvs.width = tblEl.offsetWidth; cvs.height = tblEl.offsetHeight;
+    ctx.clearRect(0,0,cvs.width,cvs.height);
+    const cells = tblEl.querySelectorAll(".circle");
+    if(cells.length < 2) return;
+    const tRect = tblEl.getBoundingClientRect();
+    ctx.strokeStyle = "#00ff88"; ctx.lineWidth = 2.5; ctx.beginPath();
+    cells.forEach((c, idx) => {
+        const r = c.getBoundingClientRect();
+        const x = r.left - tRect.left + r.width/2, y = r.top - tRect.top + r.height/2;
+        if(idx === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
     });
     ctx.stroke();
 }
+
+function edit(r,c,el){ db[currentMarket][r][c] = el.innerText.trim() || "**"; }
+function addRow(){ db[currentMarket].push(Array(currentCols).fill("**")); render(); }
+function saveData(){ localStorage.setItem("PRO_MASTER_DATA", JSON.stringify(db)); alert("All Markets Saved!"); }
+function clearData(){ if(confirm("Clear current market?")){ db[currentMarket] = [Array(currentCols).fill("**")]; render(); }}
+
+function makePattern(r,c){
+    targetCol = c; let base = "**";
+    let data = db[currentMarket];
+    for(let i=r; i>=0; i--){ if(data[i][c]!="**"){base=data[i][c]; break;}}
+    if(base=="**") return;
+    let shape = [];
+    for(let i=Math.max(0,r-3); i<=r; i++){
+        let row=[];
+        for(let j=0; j<currentCols; j++){ row.push(data[i][j]!="**" && smartMatch(data[i][j],base)?1:0); }
+        shape.push(row);
+    }
+    searchPattern(shape, base);
+}
+
+function fam(v){for(let k in families) if(families[k].includes(v)) return k; return "NA";}
+function smartMatch(a,b){ if(a=="**"||b=="**") return false; return a===b || b===a[1]+a[0] || fam(a)===fam(b); }
+
+function searchPattern(shape, base){
+    let data = db[currentMarket];
+    let matches = [];
+    for(let i=0; i<=data.length-shape.length; i++){
+        let ok=true;
+        for(let k=0; k<shape.length; k++){
+            for(let j=0; j<currentCols; j++){ if(shape[k][j] && !smartMatch(data[i+k][j],base)){ok=false; break;}}
+            if(!ok) break;
+        }
+        if(ok) matches.push({index:i});
+    }
+    updateUI(shape, matches);
+}
+
+function updateUI(shape, matches){
+    let aiBox = document.getElementById("ai-box");
+    aiBox.innerHTML = matches.length ? "" : "No patterns found in history.";
+    matches.slice(0, 3).forEach(m => {
+        let div = document.createElement("div");
+        div.style = "background:#2a2a2a; margin:5px 0; padding:10px; cursor:pointer; border-radius:8px; border-left:4px solid #0084ff;";
+        div.innerHTML = `<b>Pattern Match:</b> Found at Row ${m.index + 1} <span style="float:right">View ➔</span>`;
+        div.onclick = () => { activeMark={start:m.index, shape:shape}; render(); showPop(shape, m.index); };
+        aiBox.appendChild(div);
+    });
+}
+
+function showPop(shape, idx){
+    let data = db[currentMarket];
+    let html="<table id='popTbl' style='color:#000'>";
+    for(let i=0; i<shape.length; i++){
+        html+="<tr>";
+        data[idx+i].slice(0, currentCols).forEach((v,j)=>{
+            html+=`<td class="${shape[i][j]?'circle':''}">${v}</td>`;
+        });
+        html+="</tr>";
+    }
+    document.getElementById("popData").innerHTML = html+"</table>";
+    document.getElementById("popup").style.display = "block";
+    document.getElementById("overlay").style.display = "block";
+    setTimeout(()=>drawLines("popCanvas", document.getElementById("popTbl")), 100);
+}
+
+function closePopup(){ document.getElementById("popup").style.display="none"; document.getElementById("overlay").style.display="none"; }
+
+document.getElementById("csv").onchange = e => {
+    let fr = new FileReader();
+    fr.onload = () => {
+        let lines = fr.result.split('\n');
+        db[currentMarket] = lines.filter(l=>l.trim()).map(l => l.split(',').map(v => v.trim()).slice(0, currentCols));
+        render();
+    };
+    fr.readAsText(e.target.files[0]);
+};
 
 render();
 </script>
