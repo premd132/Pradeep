@@ -2,146 +2,127 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalyan Pro AI - Master Hub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalyan Pro AI - Pradeep Kumar</title>
     <style>
-        :root { --gold: #ffd700; --blue: #0084ff; --green: #00ff88; --bg: #0f172a; --panel: #1e293b; }
-        * { box-sizing: border-box; font-family: 'Poppins', sans-serif; margin: 0; padding: 0; }
-        body { background: var(--bg); color: #fff; overflow-x: hidden; }
+        :root { --gold: #ffd700; --bg: #0f172a; --card: #1e293b; }
+        body { background: var(--bg); color: #fff; font-family: sans-serif; margin: 0; padding: 0; text-align: center; }
+        
+        /* Heading */
+        .header { padding: 20px; background: #000; border-bottom: 2px solid var(--gold); }
+        h1 { color: var(--gold); margin: 0; font-size: 24px; }
 
-        /* HOME PAGE STYLE */
-        #home-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #0f172a; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; z-index: 9999;
-        }
-        .hero-title { font-size: 2.8rem; color: var(--gold); font-weight: 800; }
-        .hero-sub { color: #8a99af; letter-spacing: 2px; font-size: 0.8rem; margin-bottom: 30px; }
-        .start-btn {
-            background: var(--gold); color: #000; padding: 18px 55px;
-            font-size: 1.1rem; font-weight: 800; border: none; border-radius: 50px;
-            cursor: pointer; box-shadow: 0 5px 20px rgba(255, 215, 0, 0.4);
-        }
-
-        /* MAIN APP UI */
-        #main-app { display: none; padding: 10px; }
-        .tabs { display: flex; background: #000; padding: 10px; gap: 5px; position: sticky; top: 0; z-index: 100; }
-        .tab-btn { flex: 1; padding: 12px 5px; border: none; background: #334155; color: white; border-radius: 8px; font-weight: 800; font-size: 10px; }
+        /* Market Selector Tabs */
+        .tabs { display: flex; background: #111; padding: 10px; gap: 5px; }
+        .tab-btn { flex: 1; padding: 12px; border: none; background: #334155; color: #fff; font-weight: bold; border-radius: 5px; cursor: pointer; }
         .tab-btn.active { background: var(--gold); color: #000; }
 
-        /* TABLE & MARKING */
-        .table-container { background: #fff; border-radius: 12px; padding: 8px; display: inline-block; position: relative; margin: 15px 0; }
-        table { border-collapse: collapse; color: #000; font-size: 14px; position: relative; z-index: 10; }
-        td, th { border: 1px solid #ddd; width: 44px; height: 44px; text-align: center; font-weight: 800; }
-        th { background: #1e293b; color: white; font-size: 9px; }
+        /* Table Style from your screenshot */
+        .container { padding: 15px; overflow-x: auto; }
+        table { background: #fff; color: #000; margin: 0 auto; border-collapse: collapse; border-radius: 8px; overflow: hidden; }
+        th, td { border: 1px solid #ccc; width: 45px; height: 45px; font-weight: bold; text-align: center; }
+        th { background: #1e293b; color: #fff; font-size: 11px; }
 
-        .circle { border: 3px solid var(--blue) !important; border-radius: 50%; background: rgba(0, 132, 255, 0.1); }
-        canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 5; }
+        /* Controls */
+        .controls { padding: 15px; display: flex; justify-content: center; gap: 10px; }
+        .btn { padding: 10px 20px; border-radius: 5px; border: none; font-weight: bold; cursor: pointer; }
+        .save-btn { background: #28a745; color: #fff; }
+        .add-btn { background: #444; color: #fff; }
 
-        .card { background: var(--panel); padding: 15px; border-radius: 12px; border-top: 3px solid var(--gold); margin: 10px 0; }
+        /* Prediction Card */
+        .card { background: var(--card); margin: 15px; padding: 20px; border-radius: 12px; border-top: 3px solid var(--gold); }
+        .pred-text { font-size: 24px; color: var(--gold); font-weight: 800; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-<div id="home-screen">
-    <h1 class="hero-title">KALYAN PRO AI</h1>
-    <p class="hero-sub">ADVANCED PATTERN RECOGNITION</p>
-    <button class="start-btn" onclick="openApp()">START ANALYSIS</button>
-</div>
+    <div class="header">
+        <h1>KALYAN PRO AI</h1>
+        <p style="font-size: 10px; color: #8a99af;">SYSTEM ACTIVE</p>
+    </div>
 
-<div id="main-app">
     <div class="tabs">
-        <button class="tab-btn active" onclick="switchM('KALYAN', 6, this)">KALYAN (6D)</button>
-        <button class="tab-btn" onclick="switchM('MILAN', 6, this)">MILAN (6D)</button>
-        <button class="tab-btn" onclick="switchM('RAJDHANI', 5, this)">RAJDHANI (5D)</button>
+        <button class="tab-btn active" onclick="switchMarket('KALYAN', 6, this)">Kalyan</button>
+        <button class="tab-btn" onclick="switchMarket('MILAN', 6, this)">Milan</button>
+        <button class="tab-btn" onclick="switchMarket('RAJDHANI', 5, this)">Rajdhani</button>
     </div>
 
-    <div style="text-align:center; padding: 10px;">
-        <button onclick="addRow()" style="background:#444; color:#fff; border:none; padding:8px 15px; border-radius:5px; font-size:12px;">+ Add Row</button>
-        <button onclick="saveData()" style="background:var(--green); color:#000; border:none; padding:8px 15px; border-radius:5px; font-weight:800; font-size:12px; margin-left:10px;">💾 Save All</button>
+    <div class="controls">
+        <button class="btn add-btn" onclick="addRow()">+ ADD ROW</button>
+        <button class="btn save-btn" onclick="saveData()">SAVE DATA</button>
     </div>
 
-    <center>
-        <div class="table-container">
-            <canvas id="canvas"></canvas>
-            <table id="dataTable"></table>
-        </div>
-    </center>
+    <div class="container">
+        <table id="mainTable">
+            </table>
+    </div>
 
     <div class="card">
-        <h3 style="color:var(--gold); font-size:14px; margin-bottom:10px;">🔮 AI PREDICTION (3-PAIR)</h3>
-        <div id="pred-box" style="font-size:1.5rem; font-weight:800; letter-spacing:5px; color:var(--gold);">-- -- --</div>
+        <h3 style="font-size: 14px;">🔮 AI 3-PAIR PREDICTION</h3>
+        <div id="prediction" class="pred-text">-- -- --</div>
     </div>
-</div>
 
 <script>
-let curM = "KALYAN";
-let curCols = 6;
-// Teeno markets ka data alag store hoga [cite: 2026-02-03]
-let db = JSON.parse(localStorage.getItem("KALYAN_MASTER_DB")) || {
-    "KALYAN": Array(10).fill().map(() => Array(6).fill("**")),
-    "MILAN": Array(10).fill().map(() => Array(6).fill("**")),
-    "RAJDHANI": Array(10).fill().map(() => Array(5).fill("**"))
-};
+    let currentM = "KALYAN";
+    let currentCols = 6;
 
-function openApp() {
-    document.getElementById('home-screen').style.display = 'none';
-    document.getElementById('main-app').style.display = 'block';
-    render();
-}
+    // Data structure for 3 markets [cite: 2026-02-03]
+    let appData = JSON.parse(localStorage.getItem("PRO_AI_DATA")) || {
+        "KALYAN": [["**","**","**","**","**","**"], ["**","**","**","**","**","**"]],
+        "MILAN": [["**","**","**","**","**","**"], ["**","**","**","**","**","**"]],
+        "RAJDHANI": [["**","**","**","**","**"], ["**","**","**","**","**"]]
+    };
 
-function switchM(name, colCount, btn) {
-    curM = name;
-    curCols = colCount; [cite: 2026-02-03]
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    render();
-}
+    function switchMarket(name, cols, btn) {
+        currentM = name;
+        currentCols = cols; // Rajdhani will set to 5 [cite: 2026-02-03]
+        
+        // UI updates
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        render();
+    }
 
-function render() {
-    let data = db[curM];
-    let days = ["MON","TUE","WED","THU","FRI","SAT"].slice(0, curCols);
-    let h = "<tr>" + days.map(d => `<th>${d}</th>`).join('') + "</tr>";
-    
-    data.forEach((row, ri) => {
-        h += "<tr>";
-        row.slice(0, curCols).forEach((cell, ci) => {
-            h += `<td contenteditable oninput="edit(${ri},${ci},this)" onclick="runPattern(${ri},${ci})">${cell}</td>`;
+    function render() {
+        let data = appData[currentM];
+        let header = "<tr><th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th>" + (currentCols === 6 ? "<th>SAT</th>" : "") + "</tr>";
+        
+        let rows = "";
+        data.forEach((row, ri) => {
+            rows += "<tr>";
+            row.forEach((cell, ci) => {
+                rows += `<td contenteditable="true" oninput="updateCell(${ri}, ${ci}, this)">${cell}</td>`;
+            });
+            rows += "</tr>";
         });
-        h += "</tr>";
-    });
-    document.getElementById('dataTable').innerHTML = h;
-}
+        
+        document.getElementById('mainTable').innerHTML = header + rows;
+    }
 
-function edit(r, c, el) {
-    let val = el.innerText.trim();
-    db[curM][r][c] = val || "**";
-}
-
-function addRow() {
-    db[curM].push(Array(curCols).fill("**"));
-    render();
-}
-
-function saveData() {
-    localStorage.setItem("KALYAN_MASTER_DB", JSON.stringify(db)); [cite: 2026-02-03]
-    alert("Data Saved Successfully!");
-}
-
-// Aapka 1-2-3 Formula logic bina kisi change ke
-function runPattern(r, c) {
-    // Prediction logic based on row above [cite: 2026-02-03]
-    if(r > 0) {
-        let pair = db[curM][r-1][c];
-        if(pair != "**") {
-            document.getElementById('pred-box').innerText = pair + " " + (parseInt(pair)+10) + " " + (parseInt(pair)+5);
+    function updateCell(r, c, el) {
+        let val = el.innerText.trim();
+        appData[currentM][r][c] = val || "**";
+        
+        // Simple Logic: If cell updated, show pair prediction [cite: 2026-02-03]
+        if(val !== "**") {
+            document.getElementById('prediction').innerText = val + " " + (parseInt(val)+5) + " " + (parseInt(val)+10);
         }
     }
-}
 
-// Initial render
-render();
+    function addRow() {
+        let newRow = Array(currentCols).fill("**");
+        appData[currentM].push(newRow);
+        render();
+    }
+
+    function saveData() {
+        localStorage.setItem("PRO_AI_DATA", JSON.stringify(appData));
+        alert(currentM + " Data Saved!");
+    }
+
+    // Load first time
+    render();
 </script>
 </body>
 </html>
