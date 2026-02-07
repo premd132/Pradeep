@@ -3,33 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalyan Pro AI – Fixed System</title>
+    <title>Kalyan Pro AI – Pradeep Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #ffd700; --blue: #0084ff; --green: #00ff88; --bg: #0f172a; --panel: #1e293b; }
         * { box-sizing: border-box; font-family: 'Poppins', sans-serif; margin: 0; padding: 0; }
         body { background: var(--bg); color: #fff; }
 
-        /* --- Simple Home Screen --- */
+        /* --- HOME SCREEN FIXED --- */
         #home-screen {
-            position: fixed; inset: 0; background: #0f172a;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 10000;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #0f172a; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; z-index: 99999;
         }
-        .hero-title { font-size: 3rem; color: var(--gold); font-weight: 800; }
+        .hero-title { font-size: 2.5rem; color: var(--gold); font-weight: 800; }
         .enter-btn {
-            background: var(--gold); color: #000; padding: 15px 50px;
+            background: var(--gold); color: #000; padding: 18px 60px;
             font-size: 1.2rem; font-weight: 800; border: none; border-radius: 50px;
             cursor: pointer; margin-top: 20px;
         }
 
-        /* --- Dashboard --- */
-        #main-app { padding: 10px; position: relative; z-index: 1; }
-        .tabs { display: flex; gap: 5px; margin-bottom: 10px; }
-        .tab-btn { flex: 1; padding: 12px; border: none; background: #334155; color: white; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 11px; }
+        /* --- MAIN APP --- */
+        #main-app { padding: 10px; display: none; } /* Hidden by default */
+        
+        .tabs { display: flex; gap: 5px; margin-bottom: 10px; position: relative; z-index: 10; }
+        .tab-btn { flex: 1; padding: 12px 5px; border: none; background: #334155; color: white; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 11px; }
         .tab-btn.active { background: var(--gold); color: #000; }
 
-        .toolbar { display: flex; gap: 8px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap; }
+        .toolbar { display: flex; gap: 8px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap; position: relative; z-index: 10; }
         .tool-btn { padding: 10px 15px; border-radius: 6px; border: none; font-weight: bold; cursor: pointer; color: white; background: #444; font-size: 11px; }
 
         /* Table */
@@ -40,142 +41,140 @@
         
         .circle { border: 3px solid var(--blue) !important; border-radius: 50% !important; background: rgba(0, 132, 255, 0.15); }
         canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 4; }
-
-        #popup { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 15px; display: none; z-index: 11000; padding: 15px; color: #000; width: 95%; max-width: 400px; }
-        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); display: none; z-index: 10500; }
     </style>
 </head>
 <body>
 
 <div id="home-screen">
     <h1 class="hero-title">Kalyan PRO AI</h1>
-    <button class="enter-btn" onclick="document.getElementById('home-screen').style.display='none'">ENTER SYSTEM</button>
+    <p style="color:#8a99af; letter-spacing:2px;">MASTER SYSTEM</p>
+    <button class="enter-btn" onclick="openSystem()">ENTER SYSTEM</button>
 </div>
 
 <div id="main-app">
     <div class="tabs">
-        <button class="tab-btn active" onclick="changeM('KALYAN', 6, this)">KALYAN</button>
-        <button class="tab-btn" onclick="changeM('MILAN', 6, this)">MILAN</button>
-        <button class="tab-btn" onclick="changeM('RAJDHANI', 5, this)">RAJDHANI (5D)</button>
+        <button class="tab-btn active" onclick="setM('KALYAN', 6, this)">KALYAN</button>
+        <button class="tab-btn" onclick="setM('MILAN', 6, this)">MILAN</button>
+        <button class="tab-btn" onclick="setM('RAJDHANI', 5, this)">RAJDHANI (5D)</button>
     </div>
 
     <div class="toolbar">
-        <input type="file" id="csv-file" style="display:none" onchange="handleCSV(this)">
-        <button class="tool-btn" onclick="document.getElementById('csv-file').click()">📂 LOAD CSV</button>
+        <input type="file" id="csv-input" style="display:none" onchange="loadCSV(this)">
+        <button class="tool-btn" onclick="document.getElementById('csv-input').click()">📂 CSV LOAD</button>
         <button class="tool-btn" onclick="addRow()">➕ ROW</button>
-        <button class="tool-btn" onclick="doSave()" style="background:#28a745;">💾 SAVE ALL</button>
-        <button class="tool-btn" onclick="doClear()" style="background:#dc3545;">🗑️ RESET</button>
+        <button class="tool-btn" onclick="saveData()" style="background:#28a745;">💾 SAVE</button>
     </div>
 
     <center>
         <div class="table-container">
-            <canvas id="mainCvs"></canvas>
-            <table id="mainTbl"></table>
+            <canvas id="cvs"></canvas>
+            <table id="tbl"></table>
         </div>
     </center>
 
-    <div id="ai-panel" style="background:var(--panel); padding:15px; border-radius:12px; margin-top:15px; border-top:3px solid var(--gold);">
-        <h3 style="color:var(--gold); font-size:13px;">🤖 SYSTEM STATUS: <span id="st">Ready</span></h3>
-        <div id="log" style="font-size:12px; margin-top:10px; color:#ccc;">Click blank cell for pattern...</div>
+    <div style="background:var(--panel); padding:15px; border-radius:12px; margin-top:15px; border-top:3px solid var(--gold);">
+        <h3 style="color:var(--gold); font-size:13px;">🤖 SYSTEM STATUS</h3>
+        <div id="msg" style="font-size:12px; margin-top:5px;">Select a blank cell to begin...</div>
     </div>
 </div>
 
-<div class="overlay" id="ovl" onclick="closePop()"></div>
-<div id="popup">
-    <h3 style="margin-bottom:15px;">Evidence Record</h3>
-    <div id="popContent"></div>
-    <button onclick="closePop()" style="width:100%; margin-top:15px; background:#000; color:#fff; padding:12px; border-radius:8px; font-weight:bold;">CLOSE</button>
-</div>
-
 <script>
-let curM = "KALYAN", curC = 6, activeP = null;
-const fams={"12":["12","17","21","26","62","67","71","76"],"13":["13","18","31","36","63","68","81","86"],"14":["14","19","41","46","64","69","91","96"],"15":["01","06","10","15","51","56","60","65"],"23":["23","28","32","37","73","78","82","87"],"24":["24","29","42","47","74","79","92","97"],"25":["02","07","20","25","52","57","70","75"],"34":["34","39","43","48","84","89","93","98"],"35":["03","08","30","35","53","58","80","85"],"45":["04","09","40","45","54","59","90","95"],"HR":["05","16","27","38","49","50","61","72","83","94"],"FR":["00","11","22","33","44","55","66","77","88","99"]};
+let market = "KALYAN", colCount = 6, activeP = null;
+const families = {"12":["12","17","21","26","62","67","71","76"],"13":["13","18","31","36","63","68","81","86"],"14":["14","19","41","46","64","69","91","96"],"15":["01","06","10","15","51","56","60","65"],"23":["23","28","32","37","73","78","82","87"],"24":["24","29","42","47","74","79","92","97"],"25":["02","07","20","25","52","57","70","75"],"34":["34","39","43","48","84","89","93","98"],"35":["03","08","30","35","53","58","80","85"],"45":["04","09","40","45","54","59","90","95"],"HR":["05","16","27","38","49","50","61","72","83","94"],"FR":["00","11","22","33","44","55","66","77","88","99"]};
 
-// Local storage logic [cite: 2026-02-03]
-let db = JSON.parse(localStorage.getItem("KALYAN_V12_FINAL")) || {
+// Storage logic [cite: 2026-02-03]
+let db = JSON.parse(localStorage.getItem("PRO_MASTER_DB_V2")) || {
     "KALYAN": [["51","91","41","57","19","95"],["05","90","74","06","19","63"],["**","**","**","**","**","**"]],
     "MILAN": [["**","**","**","**","**","**"]],
     "RAJDHANI": [["**","**","**","**","**"]]
 };
 
-function changeM(name, c, btn) {
-    curM = name; curC = c; [cite: 2026-02-03]
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+function openSystem() {
+    document.getElementById('home-screen').remove(); // Poora parda delete
+    document.getElementById('main-app').style.display = 'block'; // Dashboard show
+    render();
+}
+
+function setM(n, c, b) {
+    market = n; colCount = c; [cite: 2026-02-03]
+    document.querySelectorAll('.tab-btn').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
     activeP = null;
     render();
 }
 
 function render() {
-    let d = db[curM];
-    let heads = ["MON","TUE","WED","THU","FRI","SAT"].slice(0, curC);
-    let html = "<tr>" + heads.map(h => `<th>${h}</th>`).join('') + "</tr>";
+    let d = db[market];
+    let heads = ["MON","TUE","WED","THU","FRI","SAT"].slice(0, colCount);
+    let h = "<tr>" + heads.map(x => `<th>${x}</th>`).join('') + "</tr>";
+    
     d.forEach((r, ri) => {
-        html += "<tr>";
-        r.slice(0, curC).forEach((val, ci) => {
+        h += "<tr>";
+        r.slice(0, colCount).forEach((v, ci) => {
             let isM = activeP && ri >= activeP.start && ri < activeP.start + activeP.shape.length && activeP.shape[ri-activeP.start][ci];
-            html += `<td class="${isM?'circle':''}" contenteditable="true" oninput="upd(${ri},${ci},this)" onclick="${val=='**'?'findP('+ri+','+ci+')':'' }">${val}</td>`;
+            h += `<td class="${isM?'circle':''}" contenteditable oninput="edit(${ri},${ci},this)" onclick="${v=='**'?'findP('+ri+','+ci+')':'' }">${v}</td>`;
         });
-        html += "</tr>";
+        h += "</tr>";
     });
-    document.getElementById("mainTbl").innerHTML = html;
-    if(activeP) setTimeout(() => drawL("mainCvs", document.getElementById("mainTbl")), 50);
+    document.getElementById('tbl').innerHTML = h;
+    if(activeP) setTimeout(() => drawLines(), 50);
 }
 
-function upd(r, c, el) { db[curM][r][c] = el.innerText.trim() || "**"; }
-function addRow() { db[curM].push(Array(curC).fill("**")); render(); }
-function doSave() { localStorage.setItem("KALYAN_V12_FINAL", JSON.stringify(db)); alert("Saved!"); }
-function doClear() { if(confirm("Reset current market?")){ db[curM]=[Array(curC).fill("**")]; render(); }}
+function edit(r,c,e) { db[market][r][c] = e.innerText.trim() || "**"; }
+function addRow() { db[market].push(Array(colCount).fill("**")); render(); }
+function saveData() { localStorage.setItem("PRO_MASTER_DB_V2", JSON.stringify(db)); alert("Saved Successfully!"); }
 
-function findP(r, c) {
-    let data = db[curM], base = "**";
-    for(let i=r; i>=0; i--){ if(data[i][c]!="**"){base=data[i][c]; break;}}
-    if(base=="**") return;
-    let shape = [];
-    for(let i=Math.max(0,r-3); i<=r; i++){
-        let row=[];
-        for(let j=0; j<curC; j++){ row.push(data[i][j]!="**" && (data[i][j]===base || getFam(data[i][j])===getFam(base))?1:0); }
-        shape.push(row);
-    }
-    scan(shape, base);
-}
-
-function getFam(v){for(let k in fams) if(fams[k].includes(v)) return k; return "NA";}
-
-function scan(shape, base) {
-    let d = db[curM], matches = [];
-    for(let i=0; i<=d.length-shape.length; i++){
-        let ok=true;
-        for(let k=0; k<shape.length; k++){
-            for(let j=0; j<curC; j++){ if(shape[k][j] && !(d[i+k][j]===base || getFam(d[i+k][j])===getFam(base))){ok=false; break;}}
-            if(!ok) break;
-        }
-        if(ok) matches.push(i);
-    }
-    let log = document.getElementById("log");
-    log.innerHTML = matches.length ? "" : "No history patterns found.";
-    matches.slice(0, 3).forEach(idx => {
-        let div = document.createElement("div");
-        div.style = "background:#222; margin:5px 0; padding:10px; cursor:pointer; border-radius:5px; border-left:4px solid #0084ff;";
-        div.innerHTML = `Pattern Match found at Week ${idx+1} <span style="float:right">VIEW</span>`;
-        div.onclick = () => { activeP={start:idx, shape:shape}; render(); };
-        log.appendChild(div);
-    });
-}
-
-function handleCSV(input) {
+function loadCSV(input) {
     let fr = new FileReader();
     fr.onload = () => {
-        let lines = fr.result.split('\n').filter(l=>l.trim());
-        db[curM] = lines.map(l => l.split(',').map(v => v.trim()).slice(0, curC));
+        let lines = fr.result.split('\n').filter(l => l.trim());
+        db[market] = lines.map(l => l.split(',').map(v => v.trim()).slice(0, colCount));
         render();
-        alert("CSV Loaded into " + curM);
     };
     fr.readAsText(input.files[0]);
 }
 
-function drawL(id, tel) {
-    const cvs = document.getElementById(id), ctx = cvs.getContext("2d");
+function findP(r,c) {
+    let data = db[market], base = "**";
+    for(let i=r; i>=0; i--) { if(data[i][c]!="**") { base=data[i][c]; break; } }
+    if(base=="**") return;
+    let shape = [];
+    for(let i=Math.max(0,r-3); i<=r; i++) {
+        let row = [];
+        for(let j=0; j<colCount; j++) { row.push(data[i][j]!="**" && (data[i][j]===base || famMatch(data[i][j], base))?1:0); }
+        shape.push(row);
+    }
+    scanData(shape, base);
+}
+
+function famMatch(v1, v2) {
+    for(let k in families) { if(families[k].includes(v1) && families[k].includes(v2)) return true; }
+    return false;
+}
+
+function scanData(shape, base) {
+    let d = db[market], matches = [];
+    for(let i=0; i<=d.length-shape.length; i++) {
+        let ok = true;
+        for(let k=0; k<shape.length; k++) {
+            for(let j=0; j<colCount; j++) { if(shape[k][j] && !(d[i+k][j]===base || famMatch(d[i+k][j], base))) { ok=false; break; } }
+            if(!ok) break;
+        }
+        if(ok) matches.push(i);
+    }
+    let msg = document.getElementById('msg');
+    msg.innerHTML = matches.length ? "" : "No patterns found.";
+    matches.slice(0, 3).forEach(idx => {
+        let div = document.createElement("div");
+        div.style = "background:#222; margin:5px 0; padding:10px; cursor:pointer; border-radius:5px; border-left:4px solid #0084ff;";
+        div.innerHTML = `Pattern Match Week ${idx+1} <span style="float:right">VIEW</span>`;
+        div.onclick = () => { activeP={start:idx, shape:shape}; render(); };
+        msg.appendChild(div);
+    });
+}
+
+function drawLines() {
+    const cvs = document.getElementById('cvs'), ctx = cvs.getContext("2d"), tel = document.getElementById('tbl');
     cvs.width = tel.offsetWidth; cvs.height = tel.offsetHeight;
     const cells = tel.querySelectorAll(".circle");
     if(cells.length < 2) return;
@@ -188,10 +187,6 @@ function drawL(id, tel) {
     });
     ctx.stroke();
 }
-
-function closePop() { document.getElementById('ovl').style.display='none'; document.getElementById('popup').style.display='none'; }
-
-render();
 </script>
 </body>
 </html>
