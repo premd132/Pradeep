@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Rajdhani 5-Day Pro AI</title>
+    <title>Rajdhani Pro AI – 5 Day System</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -22,50 +22,59 @@
             align-items: center; justify-content: center; text-align: center;
             background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
         }
-        .hero-title { font-size: 2.5rem; color: var(--gold); margin: 0; }
+        .hero-title { font-size: 3rem; color: var(--gold); margin: 0; text-shadow: 0 0 20px rgba(255,215,0,0.3); }
+        .hero-sub { opacity: 0.7; letter-spacing: 2px; margin-bottom: 30px; }
         .enter-btn {
             background: var(--gold); color: #000; padding: 15px 40px;
             font-size: 1.2rem; font-weight: 800; border: none; border-radius: 50px;
-            cursor: pointer; margin-top: 20px; transition: 0.3s;
+            cursor: pointer; transition: 0.3s; box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
 
-        #main-app { display: none; padding: 10px; }
-        .toolbar { background: var(--panel); padding: 12px; border-radius: 12px; margin-bottom: 15px; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+        #main-app { display: none; padding: 15px; }
+        .toolbar { background: var(--panel); padding: 12px; border-radius: 12px; margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; border: 1px solid rgba(255,255,255,0.1); }
         
-        .table-container { position: relative; background: #fff; border-radius: 10px; padding: 5px; display: inline-block; box-shadow: 0 0 20px rgba(0,0,0,0.5); }
+        .table-container { position: relative; background: #fff; border-radius: 10px; padding: 5px; box-shadow: 0 0 30px rgba(0,0,0,0.5); display: inline-block; }
         table { border-collapse: collapse; color: #000; font-size: 14px; position: relative; z-index: 5; }
-        td, th { border: 1px solid #ddd; text-align: center; font-weight: bold; width: 55px; height: 50px; cursor: pointer; }
-        th { background: #1e293b; color: white; font-size: 12px; }
+        td, th { border: 1px solid #ddd; padding: 8px 4px; text-align: center; font-weight: bold; width: 50px; height: 50px; }
+        th { background: #1e293b; color: white; font-size: 11px; }
         
-        .circle { border: 3px solid var(--blue-circle) !important; border-radius: 50% !important; background: rgba(0, 132, 255, 0.15); }
-        .selected-base { background: rgba(255, 215, 0, 0.4) !important; border: 2px solid var(--gold) !important; }
+        .circle { 
+            border: 3px solid var(--blue-circle) !important; 
+            border-radius: 50% !important; 
+            background: rgba(0, 132, 255, 0.15); 
+            z-index: 10;
+        }
         canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 4; }
 
-        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 10px; margin-top: 20px; }
+        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 20px; }
         .card { background: var(--panel); padding: 15px; border-radius: 12px; border-top: 3px solid var(--gold); }
-        .card h3 { margin: 0 0 10px 0; color: var(--gold); font-size: 14px; }
+        .card h3 { margin: 0 0 10px 0; color: var(--gold); font-size: 14px; text-transform: uppercase; }
 
-        .match-btn { background: #2a2a2a; border-left: 4px solid var(--blue-circle); padding: 10px; margin: 5px 0; border-radius: 4px; cursor: pointer; font-size: 13px; display: flex; justify-content: space-between; }
-        
-        #popup { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 15px; display: none; z-index: 100; padding: 15px; color: #000; width: 95%; max-width: 450px; box-shadow: 0 0 50px #000; }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; z-index: 90; }
+        #popup { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 15px; display: none; z-index: 100; padding: 15px; color: #000; width: 90%; max-width: 400px; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; z-index: 90; }
+        button { cursor: pointer; border-radius: 6px; border: none; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div id="home-screen">
-    <h1 class="hero-title">Rajdhani 5-Day AI</h1>
-    <p style="opacity:0.7">MON-FRI PATTERN SCANNER</p>
+    <h1 class="hero-title">Rajdhani PRO AI</h1>
+    <p class="hero-sub">MON-FRI PATTERN SYSTEM</p>
     <button class="enter-btn" onclick="startApp()">START ANALYSIS</button>
 </div>
 
 <div id="main-app">
+    <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom:10px;">
+        <h2 style="color:var(--gold); margin:0;">Rajdhani</h2>
+        <button onclick="location.reload()" style="background:none; color:white; border:1px solid #444; padding:5px 10px;">Logout</button>
+    </div>
+
     <div class="toolbar">
-        <input type="file" id="csv" style="display:none" onchange="loadCSV(this)">
-        <button onclick="document.getElementById('csv').click()" style="background:#444; color:white; padding:8px 15px; border-radius:5px;">📂 CSV</button>
-        <button onclick="addRow()" style="background:#444; color:white; padding:8px 15px; border-radius:5px;">➕ ROW</button>
-        <button onclick="saveData()" style="background:#28a745; color:white; padding:8px 15px; border-radius:5px;">💾 SAVE</button>
-        <button onclick="resetAll()" style="background:#dc3545; color:white; padding:8px 15px; border-radius:5px;">🔄 RESET</button>
+        <input type="file" id="csv" style="display:none">
+        <button onclick="document.getElementById('csv').click()" style="background:#444; color:white;">📂 CSV</button>
+        <button onclick="addRow()" style="background:#444; color:white;">➕ ROW</button>
+        <button onclick="saveData()" style="background:#28a745; color:white;">💾 SAVE DATA</button>
+        <button onclick="clearData()" style="background:#dc3545; color:white;">🗑️ CLEAR</button>
     </div>
 
     <center>
@@ -76,145 +85,50 @@
     </center>
 
     <div class="dashboard">
-        <div class="card">
-            <h3>✔ CHECK LINES (1.2.3)</h3>
-            <div id="checks">Click a Jodi, then a Blank cell.</div>
-        </div>
-        <div class="card" id="future-card" style="display:none;">
-            <h3>🚀 FUTURE AI: 3-PAIR</h3>
-            <div id="future-list" style="display:flex; gap:10px; justify-content:center;"></div>
-        </div>
+        <div class="card"><h3>✔ Matches Found</h3><div id="checks"></div></div>
+        <div class="card"><h3>🤖 AI Analysis</h3><div id="ai">Wait for input...</div></div>
+        <div class="card"><h3>🔮 Future Prediction</h3><div id="future">Select a match...</div></div>
     </div>
 </div>
 
 <div class="overlay" id="overlay" onclick="closePopup()"></div>
 <div id="popup">
-    <button onclick="closePopup()" style="float:right; background:#dc3545; color:white; border:none; padding:5px 10px; border-radius:4px;">X</button>
-    <h3 id="popTitle" style="margin: 0 0 15px 0; font-size:16px;">Sequence View</h3>
-    <center>
-        <div class="table-container" style="border: 1px solid #ddd;">
-            <canvas id="popCanvas"></canvas>
-            <div id="popData"></div>
-        </div>
-    </center>
+    <button onclick="closePopup()" style="float:right; background:#000; color:white; padding:5px 10px;">CLOSE</button>
+    <h3 style="margin: 0 0 15px 0;">Sequence View</h3>
+    <center><div class="table-container" style="border: 1px solid #ddd;"><canvas id="popCanvas"></canvas><div id="popData"></div></div></center>
 </div>
 
 <script>
-let colCount = 5; // Rajdhani MON-FRI
-const STORAGE_KEY = "rajdhani_ai_5day";
+const STORAGE_KEY="pdata_Rajdhani_5Day";
+let targetCol=null, activeMark=null;
 const families={"12":["12","17","21","26","62","67","71","76"],"13":["13","18","31","36","63","68","81","86"],"14":["14","19","41","46","64","69","91","96"],"15":["01","06","10","15","51","56","60","65"],"23":["23","28","32","37","73","78","82","87"],"24":["24","29","42","47","74","79","92","97"],"25":["02","07","20","25","52","57","70","75"],"34":["34","39","43","48","84","89","93","98"],"35":["03","08","30","35","53","58","80","85"],"45":["04","09","40","45","54","59","90","95"],"HR":["05","16","27","38","49","50","61","72","83","94"],"FR":["00","11","22","33","44","55","66","77","88","99"]};
 
-let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [["10","20","30","40","50"],["**","**","**","**","**"]];
-let selectedBase = null;
-let activePattern = null;
+let data=JSON.parse(localStorage.getItem(STORAGE_KEY)) || [["10","20","30","40","50"],["**","**","**","**","**"]];
 
-function startApp() {
-    document.getElementById('home-screen').style.display = 'none';
-    document.getElementById('main-app').style.display = 'block';
-    render();
+function startApp() { document.getElementById('home-screen').style.display = 'none'; document.getElementById('main-app').style.display = 'block'; draw(); }
+function fam(v){for(let k in families) if(families[k].includes(v)) return k; return "NA";}
+function palti(v){return v[1]+v[0];}
+function norm(v){if(v==""||v=="**")return "**"; v=String(v); return v.length==1?"0"+v:v;}
+function smartMatch(a,b){ if(a=="**"||b=="**") return false; return a===b || palti(a)===b || fam(a)===fam(b); }
+
+function draw(){
+ let h="<tr><th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th></tr>";
+ data.forEach((r,ri)=>{
+  h+="<tr>";
+  r.forEach((c,ci)=>{
+   let cls = (activeMark && isPartOfPattern(ri, ci)) ? "circle" : "";
+   h+=`<td class="${cls}" contenteditable oninput="edit(${ri},${ci},this)" onclick="${c=='**'?'makePattern('+ri+','+ci+')':'' }">${c}</td>`;
+  });
+  h+="</tr>";
+ });
+ document.getElementById("tbl").innerHTML=h;
+ if(activeMark) setTimeout(() => drawLines("mainCanvas", document.getElementById("tbl")), 50);
 }
 
-function render() {
-    let h = "<tr><th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th></tr>";
-    data.forEach((r, ri) => {
-        h += "<tr>";
-        r.forEach((v, ci) => {
-            let isCircle = activePattern && ri >= activePattern.start && ri < activePattern.start + activePattern.shape.length && activePattern.shape[ri-activePattern.start][ci];
-            let isBase = selectedBase && selectedBase.r === ri && selectedBase.c === ci;
-            h += `<td class="${isCircle?'circle':''} ${isBase?'selected-base':''}" onclick="handleCell(${ri},${ci},'${v}')" contenteditable="${v!=='**'}" oninput="data[${ri}][${ci}]=this.innerText">${v}</td>`;
-        });
-        h += "</tr>";
-    });
-    document.getElementById('tbl').innerHTML = h;
-    if(activePattern) setTimeout(() => drawLines("mainCanvas", document.getElementById('tbl')), 50);
-}
-
-function handleCell(r, c, val) {
-    if (val !== "**") {
-        selectedBase = { r, c, val };
-        activePattern = null;
-        render();
-    } else {
-        if (!selectedBase) return;
-        processLogic(r, c);
-    }
-}
-
-function processLogic(blankR, blankC) {
-    let startRow = Math.max(0, blankR - 8);
-    let shape = Array.from({length: blankR - startRow + 1}, () => Array(colCount).fill(0));
-    let points = [];
-
-    // Har blank cell ke upar ke 3-4 matches dhoondein (Base Jodi ki family ke)
-    for(let i = blankR; i >= startRow; i--) {
-        for(let j = 0; j < colCount; j++) {
-            if (points.length < 4 && data[i][j] !== "**" && checkFam(data[i][j], selectedBase.val)) {
-                shape[i-startRow][j] = 1;
-                points.push({relR: i - blankR, relC: j - blankC});
-            }
-        }
-    }
-
-    activePattern = { start: startRow, shape: shape };
-    render();
-
-    // History Scan
-    let matches = [], predictions = [];
-    for(let i = 0; i < data.length - 10; i++) {
-        if (data[i][blankC] === "**") continue;
-        let matchScore = 0;
-        points.forEach(p => {
-            let histV = data[i+p.relR]?.[blankC+p.relC];
-            if (histV && checkFam(histV, selectedBase.val)) matchScore++;
-        });
-
-        if (matchScore >= 3) {
-            matches.push(i);
-            predictions.push(data[i][blankC]); // Agla potential result
-        }
-    }
-
-    updateResults(matches, predictions, points);
-}
-
-function updateResults(matches, predictions, points) {
-    let checkDiv = document.getElementById('checks');
-    checkDiv.innerHTML = matches.length ? "" : "No history found.";
-    
-    matches.slice(0, 3).forEach((idx, i) => {
-        let d = document.createElement("div");
-        d.className = "match-btn";
-        d.innerHTML = `<span>#${i+1} Match Week ${idx+1}</span> <span>👁 VIEW</span>`;
-        d.onclick = () => showPopup(idx, points);
-        checkDiv.appendChild(d);
-    });
-
-    let fCard = document.getElementById('future-card');
-    if (predictions.length) {
-        fCard.style.display = "block";
-        let unique = [...new Set(predictions)].slice(0, 3);
-        document.getElementById('future-list').innerHTML = unique.map(p => `<div style="background:black; color:var(--green-line); padding:10px; border:1px solid; border-radius:5px; font-weight:bold; font-size:18px;">${p}</div>`).join("");
-    } else { fCard.style.display = "none"; }
-}
-
-function showPopup(idx, points) {
-    let html = "<table><tr><th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th></tr>";
-    let popupShape = Array.from({length: 9}, () => Array(colCount).fill(0));
-    
-    for(let r = idx-8; r <= idx; r++) {
-        if (!data[r]) continue;
-        html += "<tr>";
-        for(let c = 0; c < colCount; c++) {
-            let isPoint = points.some(p => (idx + p.relR) === r && (selectedBase.c + p.relC) === c); // This is simplified for the view
-            html += `<td class="${isPoint?'circle':''}">${data[r][c]}</td>`;
-        }
-        html += "</tr>";
-    }
-    document.getElementById('popData').innerHTML = html + "</table>";
-    document.getElementById('popup').style.display = "block";
-    document.getElementById('overlay').style.display = "block";
-    document.getElementById('popTitle').innerText = `History Record: Week ${idx+1}`;
-    setTimeout(() => drawLines("popCanvas", document.getElementById('popData').querySelector('table')), 50);
+function isPartOfPattern(ri, ci){
+    if(!activeMark) return false;
+    let i = ri - activeMark.start;
+    return (i >= 0 && i < activeMark.shape.length && activeMark.shape[i][ci]);
 }
 
 function drawLines(cvsId, tblEl) {
@@ -226,35 +140,102 @@ function drawLines(cvsId, tblEl) {
     if(cells.length < 2) return;
     const tRect = tblEl.getBoundingClientRect();
     ctx.strokeStyle = "#00ff88"; ctx.lineWidth = 2.5; ctx.beginPath();
-    cells.forEach((c, i) => {
+    cells.forEach((c, idx) => {
         const r = c.getBoundingClientRect();
         const x = r.left - tRect.left + r.width/2;
         const y = r.top - tRect.top + r.height/2;
-        if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+        if(idx === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
     });
     ctx.stroke();
 }
 
-function checkFam(v1, v2) {
-    if(!v1 || !v2 || v1=="**") return false;
-    if(v1===v2) return true;
-    for(let k in families) { if(families[k].includes(v1) && families[k].includes(v2)) return true; }
-    return false;
+function edit(r,c,el){ data[r][c]=norm(el.innerText.trim()); }
+function addRow(){ data.push(["**","**","**","**","**"]); draw(); }
+function saveData(){ localStorage.setItem(STORAGE_KEY,JSON.stringify(data)); alert("Saved!"); }
+function clearData(){ if(confirm("Clear all?")){ localStorage.clear(); location.reload(); }}
+
+function makePattern(r,c){
+ targetCol=c; let base="**";
+ for(let i=r;i>=0;i--){ if(data[i][c]!="**"){base=data[i][c]; break;}}
+ if(base=="**") return;
+ let shape=[];
+ for(let i=Math.max(0,r-3);i<=r;i++){
+  let row=[];
+  for(let j=0;j<5;j++){ row.push(data[i][j]!="**" && smartMatch(data[i][j],base)?1:0); }
+  shape.push(row);
+ }
+ searchPattern(shape,base);
 }
 
-function closePopup() { document.getElementById('popup').style.display="none"; document.getElementById('overlay').style.display="none"; }
-function addRow() { data.push(Array(colCount).fill("**")); render(); }
-function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); alert("Data Saved!"); }
-function resetAll() { selectedBase = null; activePattern = null; render(); }
-function loadCSV(input) {
+function searchPattern(shape,base){
+ let lastMatches=[];
+ for(let i=0; i<=data.length-shape.length; i++){
+  let ok=true;
+  for(let k=0; k<shape.length; k++){
+   for(let j=0; j<5; j++){ if(shape[k][j] && !smartMatch(data[i+k][j],base)){ok=false; break;}}
+   if(!ok) break;
+  }
+  if(ok) lastMatches.push({index:i});
+ }
+ showChecks(shape, lastMatches);
+}
+
+function showChecks(shape, matches){
+ document.getElementById("checks").innerHTML="";
+ matches.forEach((m,i)=>{
+  let d = document.createElement("div");
+  d.style = "background:#2a2a2a; margin:5px 0; padding:8px; cursor:pointer; border-radius:6px; font-size:12px; border-left:3px solid #0084ff;";
+  d.innerText = `Pattern Match at Row ${m.index + 1}`;
+  d.onclick = () => { activeMark={start:m.index, shape:shape}; draw(); showOne(shape, m.index); };
+  document.getElementById("checks").appendChild(d);
+ });
+ updateAI(shape, matches);
+}
+
+function showOne(shape, idx){
+ let html="<table id='popTbl' style='color:#000'>";
+ for(let i=0; i<shape.length; i++){
+  html+="<tr>";
+  data[idx+i].forEach((v,j)=>{ html+=`<td class="${shape[i][j]?'circle':''}">${v}</td>`; });
+  html+="</tr>";
+ }
+ document.getElementById("popData").innerHTML=html+"</table>";
+ document.getElementById("popup").style.display="block";
+ document.getElementById("overlay").style.display="block";
+ setTimeout(()=>drawLines("popCanvas", document.getElementById("popTbl")), 100);
+}
+
+function updateAI(shape, matches){
+ let jc={}, dc={};
+ matches.forEach(m=>{
+  for(let i=0; i<shape.length; i++){
+   for(let j=0; j<5; j++){
+    if(shape[i][j]){
+     let v = data[m.index+i][j];
+     jc[v]=(jc[v]||0)+1; dc[v[0]]=(dc[v[0]]||0)+1; dc[v[1]]=(dc[v[1]]||0)+1;
+    }
+   }
+  }
+ });
+ document.getElementById("ai").innerHTML = `<b>Top Jodi:</b> ${Object.keys(jc).slice(0,3).join(", ")}`;
+ let pool = [];
+ matches.forEach(m => {
+  let nextR = m.index + shape.length;
+  if(nextR < data.length && data[nextR][targetCol] != "**") pool.push(data[nextR][targetCol]);
+ });
+ document.getElementById("future").innerHTML = pool.length ? `<b>Probable:</b> ${[...new Set(pool)].join(", ")}` : "Analyzing...";
+}
+
+function closePopup(){ document.getElementById("popup").style.display="none"; document.getElementById("overlay").style.display="none"; }
+
+document.getElementById("csv").onchange = e => {
     let fr = new FileReader();
     fr.onload = () => {
-        data = fr.result.split('\n').filter(l=>l.trim()).map(l => l.split(',').map(v => v.trim()).slice(0,5));
-        render();
+        data = fr.result.split('\n').filter(l=>l.trim()).map(l => l.split(',').map(v => norm(v.trim())).slice(0,5));
+        draw();
     };
-    fr.readAsText(input.files[0]);
-}
-render();
+    fr.readAsText(e.target.files[0]);
+};
 </script>
 </body>
 </html>
