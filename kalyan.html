@@ -139,7 +139,7 @@ function startApp() {
     draw();
 }
 
-function fam(v){for(let k in families) if(families[k].includes(v)) return k; return "NA";}
+function fam(v){for(let k in FAMILY) if(FAMILY[k].includes(v)) return k; return "NA";}
 function palti(v){return v[1]+v[0];}
 function norm(v){if(v==""||v=="**")return "**"; v=String(v); return v.length==1?"0"+v:v;}
 function smartMatch(a,b){ if(a=="**"||b=="**") return false; return a===b || palti(a)===b || fam(a)===fam(b); }
