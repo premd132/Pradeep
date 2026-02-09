@@ -8,16 +8,14 @@
     <style>
         :root { 
             --gold: #ffd700; 
-            --blue-circle: #0084ff; /* Blue Circle */
-            --green-line: #00ff88; /* Green Connection Line */
+            --blue-circle: #0084ff; 
+            --green-line: #00ff88; 
             --bg: #0f172a; 
             --panel: #1e293b; 
         }
-
         * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { margin: 0; background: var(--bg); color: #fff; overflow-x: hidden; }
 
-        /* --- Home Page Styling --- */
         #home-screen {
             height: 100vh; width: 100vw; display: flex; flex-direction: column;
             align-items: center; justify-content: center; text-align: center;
@@ -30,19 +28,15 @@
             font-size: 1.2rem; font-weight: 800; border: none; border-radius: 50px;
             cursor: pointer; transition: 0.3s; box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
-        .enter-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(255,215,0,0.2); }
 
-        /* --- Dashboard Styling --- */
         #main-app { display: none; padding: 15px; }
         .toolbar { background: var(--panel); padding: 12px; border-radius: 12px; margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; border: 1px solid rgba(255,255,255,0.1); }
         
-        /* Table Styling */
         .table-container { position: relative; background: #fff; border-radius: 10px; padding: 5px; box-shadow: 0 0 30px rgba(0,0,0,0.5); display: inline-block; }
         table { border-collapse: collapse; color: #000; font-size: 14px; position: relative; z-index: 5; }
         td, th { border: 1px solid #ddd; padding: 8px 4px; text-align: center; font-weight: bold; width: 45px; height: 45px; }
         th { background: #1e293b; color: white; font-size: 11px; }
         
-        /* --- NEW MARKING STYLE --- */
         .circle { 
             border: 3px solid var(--blue-circle) !important; 
             border-radius: 50% !important; 
@@ -90,18 +84,9 @@
     </center>
 
     <div class="dashboard">
-        <div class="card">
-            <h3>✔ Matches Found</h3>
-            <div id="checks"></div>
-        </div>
-        <div class="card">
-            <h3>🤖 AI Analysis</h3>
-            <div id="ai">Wait for input...</div>
-        </div>
-        <div class="card">
-            <h3>🔮 Future Prediction</h3>
-            <div id="future">Select a match...</div>
-        </div>
+        <div class="card"><h3>✔ Matches Found</h3><div id="checks"></div></div>
+        <div class="card"><h3>🤖 AI Analysis</h3><div id="ai">Wait for input...</div></div>
+        <div class="card"><h3>🔮 Future Prediction</h3><div id="future">Select a match...</div></div>
     </div>
 </div>
 
@@ -109,52 +94,32 @@
 <div id="popup">
     <button onclick="closePopup()" style="float:right; background:#000; color:white; padding:5px 10px;">CLOSE</button>
     <h3 style="margin: 0 0 15px 0;">Sequence View</h3>
-    <center>
-        <div class="table-container" style="border: 1px solid #ddd;">
-            <canvas id="popCanvas"></canvas>
-            <div id="popData"></div>
-        </div>
-    </center>
+    <center><div class="table-container" style="border: 1px solid #ddd;"><canvas id="popCanvas"></canvas><div id="popData"></div></div></center>
 </div>
 
 <script>
-// --- CORE LOGIC (UNTOUCHED) ---
+// --- FIXED LOGIC ---
 const STORAGE_KEY="pdata_Rajdhani_v2";
-let targetCol=null;
-    
+let targetCol=null, activeMark=null;
+
+// Aapka original FAMILY object
 const FAMILY = {
- "22":["22","27","72","77"],
- "11":["11","61","66","16"],
- "33":["33","83","88","38"],
- "99":["99","44","49","94"],
- "55":["50","00","05","55"],
- "12":["12","17","21","26","62","67","71","76"],  
- "13":["13","18","31","36","63","68","81","86"],  
- "14":["14","19","41","46","64","69","91","96"],  
- "15":["01","06","10","15","51","56","60","65"],  
- "23":["23","28","32","37","73","78","82","87"],  
- "24":["24","29","42","47","74","79","92","97"],  
- "25":["02","07","20","25","52","57","70","75"],  
- "34":["34","39","43","48","84","89","93","98"],  
- "35":["03","08","30","35","53","58","80","85"],  
+ "22":["22","27","72","77"], "11":["11","61","66","16"], "33":["33","83","88","38"], "99":["99","44","49","94"], "55":["50","00","05","55"],
+ "12":["12","17","21","26","62","67","71","76"], "13":["13","18","31","36","63","68","81","86"], "14":["14","19","41","46","64","69","91","96"],  
+ "15":["01","06","10","15","51","56","60","65"], "23":["23","28","32","37","73","78","82","87"], "24":["24","29","42","47","74","79","92","97"],  
+ "25":["02","07","20","25","52","57","70","75"], "34":["34","39","43","48","84","89","93","98"], "35":["03","08","30","35","53","58","80","85"],  
  "45":["04","09","40","45","54","59","90","95"]
 };
 
-const table=document.getElementById("chart");
-let data=JSON.parse(localStorage.getItem(STORAGE_KEY)) || [["51","91","41","57","19","95"],["05","90","74","06","19","63"],["90","34","82","09","28","19"],["**","**","**","**","**","**"]];
+let data=JSON.parse(localStorage.getItem(STORAGE_KEY)) || [["10","20","30","40","50"],["**","**","**","**","**"]];
 
-function startApp() {
-    document.getElementById('home-screen').style.display = 'none';
-    document.getElementById('main-app').style.display = 'block';
-    draw();
-}
+function startApp() { document.getElementById('home-screen').style.display = 'none'; document.getElementById('main-app').style.display = 'block'; draw(); }
 
-function fam(v){for(let k in families) if(families[k].includes(v)) return k; return "NA";}
-function palti(v){return v[1]+v[0];}
-function norm(v){if(v==""||v=="**")return "**"; v=String(v); return v.length==1?"0"+v:v;}
+// Fixed: Calling FAMILY correctly
+function fam(v){for(let k in FAMILY) if(FAMILY[k].includes(v)) return k; return "NA";}
+function palti(v){return (v.length==2) ? v[1]+v[0] : v;}
+function norm(v){if(!v||v=="**")return "**"; v=String(v); return v.length==1?"0"+v:v;}
 function smartMatch(a,b){ if(a=="**"||b=="**") return false; return a===b || palti(a)===b || fam(a)===fam(b); }
-
-let activeMark=null;
 
 function draw(){
  let h="<tr><th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th></tr>";
@@ -162,7 +127,6 @@ function draw(){
   h+="<tr>";
   r.forEach((c,ci)=>{
    let cls = (activeMark && isPartOfPattern(ri, ci)) ? "circle" : "";
-   if(c=="**") cls += " blank";
    h+=`<td class="${cls}" contenteditable oninput="edit(${ri},${ci},this)" onclick="${c=='**'?'makePattern('+ri+','+ci+')':'' }">${c}</td>`;
   });
   h+="</tr>";
@@ -177,7 +141,6 @@ function isPartOfPattern(ri, ci){
     return (i >= 0 && i < activeMark.shape.length && activeMark.shape[i][ci]);
 }
 
-// --- UPDATED VISUALS: GREEN LINES ---
 function drawLines(cvsId, tblEl) {
     const cvs = document.getElementById(cvsId);
     const ctx = cvs.getContext("2d");
@@ -185,27 +148,21 @@ function drawLines(cvsId, tblEl) {
     ctx.clearRect(0,0,cvs.width,cvs.height);
     const cells = tblEl.querySelectorAll(".circle");
     if(cells.length < 2) return;
-    
     const tRect = tblEl.getBoundingClientRect();
-    ctx.strokeStyle = "#00ff88"; // GREEN LINE
-    ctx.lineWidth = 2.5;
-    ctx.lineCap = "round";
-    
-    ctx.beginPath();
+    ctx.strokeStyle = "#00ff88"; ctx.lineWidth = 2.5; ctx.beginPath();
     cells.forEach((c, idx) => {
         const r = c.getBoundingClientRect();
         const x = r.left - tRect.left + r.width/2;
         const y = r.top - tRect.top + r.height/2;
-        if(idx === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
+        if(idx === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
     });
     ctx.stroke();
 }
 
 function edit(r,c,el){ data[r][c]=norm(el.innerText.trim()); }
-function addRow(){ data.push(["**","**","**","**","**","**"]); draw(); }
-function saveData(){ localStorage.setItem(STORAGE_KEY,JSON.stringify(data)); alert("Saved Successfully!"); }
-function clearData(){ if(confirm("Permanently clear all data?")){ localStorage.clear(); location.reload(); }}
+function addRow(){ data.push(["**","**","**","**","**"]); draw(); }
+function saveData(){ localStorage.setItem(STORAGE_KEY,JSON.stringify(data)); alert("Saved!"); }
+function clearData(){ if(confirm("Clear All?")){ localStorage.clear(); location.reload(); }}
 
 function makePattern(r,c){
  targetCol=c; let base="**";
@@ -249,9 +206,7 @@ function showOne(shape, idx){
  let html="<table id='popTbl' style='color:#000'>";
  for(let i=0; i<shape.length; i++){
   html+="<tr>";
-  data[idx+i].forEach((v,j)=>{
-   html+=`<td class="${shape[i][j]?'circle':''}">${v}</td>`;
-  });
+  data[idx+i].forEach((v,j)=>{ html+=`<td class="${shape[i][j]?'circle':''}">${v}</td>`; });
   html+="</tr>";
  }
  document.getElementById("popData").innerHTML=html+"</table>";
@@ -261,25 +216,21 @@ function showOne(shape, idx){
 }
 
 function updateAI(shape, matches){
- let jc={}, dc={};
+ let jc={};
  matches.forEach(m=>{
   for(let i=0; i<shape.length; i++){
    for(let j=0; j<5; j++){
-    if(shape[i][j]){
-     let v = data[m.index+i][j];
-     jc[v]=(jc[v]||0)+1; dc[v[0]]=(dc[v[0]]||0)+1; dc[v[1]]=(dc[v[1]]||0)+1;
-    }
+    if(shape[i][j]){ let v = data[m.index+i][j]; jc[v]=(jc[v]||0)+1; }
    }
   }
  });
- document.getElementById("ai").innerHTML = `<b>Top Jodi:</b> ${Object.keys(jc).slice(0,3).join(", ")}<br><b>Common Ank:</b> ${Object.keys(dc).slice(0,3).join(", ")}`;
- 
+ document.getElementById("ai").innerHTML = `<b>Top Pairs:</b> ${Object.keys(jc).slice(0,3).join(", ")}`;
  let pool = [];
  matches.forEach(m => {
   let nextR = m.index + shape.length;
   if(nextR < data.length && data[nextR][targetCol] != "**") pool.push(data[nextR][targetCol]);
  });
- document.getElementById("future").innerHTML = pool.length ? `<b>Probable Next:</b> ${[...new Set(pool)].join(" , ")}` : "Analyzing patterns...";
+ document.getElementById("future").innerHTML = pool.length ? `<b>Probable:</b> ${[...new Set(pool)].join(", ")}` : "Analyzing...";
 }
 
 function closePopup(){ document.getElementById("popup").style.display="none"; document.getElementById("overlay").style.display="none"; }
@@ -287,8 +238,7 @@ function closePopup(){ document.getElementById("popup").style.display="none"; do
 document.getElementById("csv").onchange = e => {
     let fr = new FileReader();
     fr.onload = () => {
-        let lines = fr.result.split('\n');
-        data = lines.filter(l=>l.trim()).map(l => l.split(',').map(v => norm(v.trim())));
+        data = fr.result.split('\n').filter(l=>l.trim()).map(l => l.split(',').map(v => norm(v.trim())).slice(0,5));
         draw();
     };
     fr.readAsText(e.target.files[0]);
