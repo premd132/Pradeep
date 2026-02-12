@@ -3,202 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Rajdhani Pro AI – Advanced System</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <title>Rajdhani Pro AI – Live Pattern Fix</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { 
-            --gold: #ffd700; --blue: #0084ff; --green: #00ff88; 
-            --bg: #0f172a; --panel: #1e293b; 
-        }
+        :root { --gold: #ffd700; --blue: #0084ff; --bg: #0f172a; --panel: #1e293b; }
         * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { margin: 0; background: var(--bg); color: #fff; overflow-x: hidden; }
-
-        #home-screen {
-            height: 100vh; width: 100vw; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; text-align: center;
-            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
-        }
-        .hero-title { font-size: 3rem; color: var(--gold); margin: 0; text-shadow: 0 0 20px rgba(255,215,0,0.3); }
-        .enter-btn {
-            background: var(--gold); color: #000; padding: 15px 40px;
-            font-size: 1.2rem; font-weight: 800; border: none; border-radius: 50px;
-            cursor: pointer; margin-top: 20px;
-        }
-
-        #main-app { display: none; padding: 15px; }
-        .toolbar { background: var(--panel); padding: 12px; border-radius: 12px; margin-bottom: 15px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        body { margin: 0; background: var(--bg); color: #fff; }
         
-        .table-container { position: relative; background: #fff; border-radius: 10px; padding: 5px; box-shadow: 0 0 30px rgba(0,0,0,0.5); display: inline-block; }
+        .toolbar { background: var(--panel); padding: 15px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; border-bottom: 2px solid var(--gold); }
+        .table-container { position: relative; background: #fff; border-radius: 8px; padding: 5px; margin: 20px auto; display: inline-block; }
         table { border-collapse: collapse; color: #000; font-size: 14px; position: relative; z-index: 5; }
-        td, th { border: 1px solid #ddd; padding: 8px 4px; text-align: center; font-weight: bold; width: 45px; height: 45px; cursor: pointer; }
-        th { background: #1e293b; color: white; font-size: 11px; }
+        td, th { border: 1px solid #ddd; padding: 8px; text-align: center; font-weight: bold; width: 48px; height: 48px; cursor: pointer; }
+        th { background: #1e293b; color: white; }
         
-        .circle { border: 3px solid var(--blue) !important; border-radius: 50% !important; background: rgba(0, 132, 255, 0.15); }
+        .circle { border: 3px solid var(--blue) !important; border-radius: 50% !important; background: rgba(0, 132, 255, 0.2); }
         canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 4; }
 
-        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 20px; }
-        .card { background: var(--panel); padding: 15px; border-radius: 12px; border-top: 3px solid var(--gold); }
-        .card h3 { margin: 0 0 10px 0; color: var(--gold); font-size: 14px; }
+        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; padding: 20px; }
+        .card { background: var(--panel); padding: 15px; border-radius: 12px; border-top: 4px solid var(--gold); min-height: 100px; }
+        .card h3 { margin: 0 0 10px 0; color: var(--gold); font-size: 14px; text-transform: uppercase; }
 
-        #popup { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 15px; display: none; z-index: 100; padding: 15px; color: #000; width: 90%; max-width: 400px; box-shadow: 0 0 50px #000; }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; z-index: 90; }
-        .check-line { background: #2a2a2a; margin: 5px 0; padding: 10px; cursor: pointer; border-radius: 6px; border-left: 4px solid var(--blue); transition: 0.3s; }
-        .check-line:hover { background: #3a3a3a; }
+        .check-line { background: rgba(255,255,255,0.05); padding: 10px; margin: 5px 0; border-radius: 6px; border-left: 4px solid var(--blue); cursor: pointer; display: flex; justify-content: space-between; }
+        
+        #popup { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 15px; display: none; z-index: 100; padding: 20px; color: #000; width: 90%; max-width: 450px; box-shadow: 0 0 100px #000; }
+        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; z-index: 95; }
+        button { cursor: pointer; font-weight: bold; border: none; border-radius: 6px; padding: 10px 15px; }
     </style>
 </head>
 <body>
 
-<div id="home-screen">
-    <h1 class="hero-title">Rajdhani PRO AI</h1>
-    <button class="enter-btn" onclick="startApp()">START ANALYSIS</button>
+<div class="toolbar">
+    <input type="file" id="csv" style="display:none" accept=".csv">
+    <button onclick="document.getElementById('csv').click()" style="background:#444; color:white;">📂 UPLOAD CSV</button>
+    <button onclick="addRow()" style="background:#444; color:white;">➕ ADD ROW</button>
+    <button onclick="saveData()" style="background:#28a745; color:white;">💾 SAVE</button>
+    <button onclick="clearData()" style="background:#dc3545; color:white;">🗑️ RESET</button>
 </div>
 
-<div id="main-app">
-    <div class="toolbar">
-        <input type="file" id="csv" style="display:none" accept=".csv">
-        <button onclick="document.getElementById('csv').click()" style="background:#444; color:white; padding:8px 15px; border-radius:5px;">📂 CSV</button>
-        <button onclick="addRow()" style="background:#444; color:white; padding:8px 15px; border-radius:5px;">➕ ROW</button>
-        <button onclick="saveData()" style="background:#28a745; color:white; padding:8px 15px; border-radius:5px;">💾 SAVE</button>
-        <button onclick="clearData()" style="background:#dc3545; color:white; padding:8px 15px; border-radius:5px;">🗑️ CLEAR</button>
+<center>
+    <div class="table-container" id="mainTableWrapper">
+        <canvas id="mainCanvas"></canvas>
+        <table id="tbl"></table>
     </div>
+</center>
 
-    <center>
-        <div class="table-container">
-            <canvas id="mainCanvas"></canvas>
-            <table id="tbl"></table>
-        </div>
-    </center>
-
-    <div class="dashboard">
-        <div class="card"><h3>✔ Check Lines (Matches)</h3><div id="checks">Click blank cell...</div></div>
-        <div class="card"><h3>🤖 AI Analysis</h3><div id="ai">Ready...</div></div>
-        <div class="card"><h3>🔮 Future Prediction (Max 4)</h3><div id="future">...</div></div>
+<div class="dashboard">
+    <div class="card">
+        <h3>✔ Check Lines (Click to View)</h3>
+        <div id="checks">Click any blank cell (**) to start</div>
+    </div>
+    <div class="card">
+        <h3>🤖 AI Prediction (Strict 4 Jodi)</h3>
+        <div id="future" style="font-size: 24px; color: #00ff88; font-weight: 800; letter-spacing: 2px;">...</div>
     </div>
 </div>
 
 <div class="overlay" id="overlay" onclick="closePopup()"></div>
 <div id="popup">
-    <button onclick="closePopup()" style="float:right; background:red; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">X</button>
-    <h3 style="margin-top:0;">Pattern Trace View</h3>
-    <center>
-        <div class="table-container" style="border:1px solid #ddd;">
+    <button onclick="closePopup()" style="float:right; background:black; color:white;">CLOSE</button>
+    <h3 style="margin-top:0;">Pattern History Match</h3>
+    <div style="overflow: auto; max-height: 300px;">
+        <div class="table-container" style="border:1px solid #ddd; margin: 10px auto; display: block;">
             <canvas id="popCanvas"></canvas>
             <div id="popData"></div>
         </div>
-    </center>
+    </div>
 </div>
 
 <script>
 const FAMILY = {"22":["22","27","72","77"],"11":["11","61","66","16"],"33":["33","83","88","38"],"99":["99","44","49","94"],"55":["50","00","05","55"],"12":["12","17","21","26","62","67","71","76"],"13":["13","18","31","36","63","68","81","86"],"14":["14","19","41","46","64","69","91","96"],"15":["01","06","10","15","51","56","60","65"],"23":["23","28","32","37","73","78","82","87"],"24":["24","29","42","47","74","79","92","97"],"25":["02","07","20","25","52","57","70","75"],"34":["34","39","43","48","84","89","93","98"],"35":["03","08","30","35","53","58","80","85"],"45":["04","09","40","45","54","59","90","95"]};
 
-let data = JSON.parse(localStorage.getItem("Rajdhani_Pro_v4")) || Array(15).fill().map(()=>Array(5).fill("**"));
-let activeMark = null, targetCol = 0;
+let data = JSON.parse(localStorage.getItem("Pradeep_Rajdhani_Fix")) || Array(15).fill().map(()=>Array(5).fill("**"));
+let activeMark = null;
 
-function startApp() { document.getElementById('home-screen').style.display = 'none'; document.getElementById('main-app').style.display = 'block'; draw(); }
-function fam(v){for(let k in FAMILY) if(FAMILY[k].includes(v)) return k; return "NA";}
-function smartMatch(a,b){ if(a=="**"||b=="**") return false; return fam(a)===fam(b); }
+function fam(v){ v=String(v).padStart(2,'0'); for(let k in FAMILY) if(FAMILY[k].includes(v)) return k; return "NA";}
+function smartMatch(a,b){ if(a=="**"||b=="**"||!a||!b) return false; return fam(a)===fam(b); }
 
-function draw(){
+function draw() {
     let h="<tr><th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th></tr>";
-    data.forEach((r,ri)=>{
-        h+="<tr>";
-        r.forEach((c,ci)=>{
-            let cls = (activeMark && isPart(ri, ci)) ? "circle" : "";
-            h+=`<td class="${cls}" contenteditable oninput="updateCell(${ri},${ci},this)" onclick="handleCell(${ri},${ci})">${c}</td>`;
+    data.forEach((r, ri) => {
+        h += "<tr>";
+        r.forEach((c, ci) => {
+            let isMarked = activeMark && activeMark.shape[ri - activeMark.start] && activeMark.shape[ri - activeMark.start][ci];
+            h += `<td class="${isMarked ? 'circle' : ''}" 
+                     contenteditable="true" 
+                     oninput="data[${ri}][${ci}]=this.innerText.trim()" 
+                     onclick="handleCellClick(${ri}, ${ci})">${c}</td>`;
         });
-        h+="</tr>";
+        h += "</tr>";
     });
-    document.getElementById("tbl").innerHTML=h;
-    if(activeMark) setTimeout(() => drawLines("mainCanvas", "tbl"), 50);
+    document.getElementById("tbl").innerHTML = h;
+    if(activeMark) setTimeout(() => drawLines("mainCanvas", "tbl"), 60);
 }
 
-function updateCell(r,c,el){ data[r][c] = el.innerText.trim(); }
-function isPart(ri, ci){ if(!activeMark) return false; let i = ri - activeMark.start; return (i >= 0 && i < activeMark.shape.length && activeMark.shape[i][ci]); }
+function handleCellClick(r, c) {
+    if (data[r][c] === "**" || data[r][c] === "") {
+        // Reset everything for new cell
+        activeMark = null;
+        document.getElementById("checks").innerHTML = "Scanning...";
+        document.getElementById("future").innerHTML = "...";
+        
+        // Find base pair from last 10 weeks in same column
+        let base = "**";
+        for(let i=r-1; i>=Math.max(0, r-10); i--) {
+            if(data[i][c] !== "**") { base = data[i][c]; break; }
+        }
 
-function handleCell(r, c){
-    if(data[r][c] === "**" || data[r][c] === ""){
-        targetCol = c;
-        makePattern(r, c);
+        if(base === "**") {
+            alert("Upar data nahi hai!");
+            return;
+        }
+
+        // Create new shape
+        let start = Math.max(0, r-5);
+        let shape = [];
+        for(let i=start; i<=r; i++) {
+            let row = [];
+            for(let j=0; j<5; j++) {
+                row.push(data[i][j] !== "**" && smartMatch(data[i][j], base) ? 1 : 0);
+            }
+            shape.push(row);
+        }
+
+        activeMark = { start: start, shape: shape, col: c };
+        searchAndDisplay(base);
     }
 }
 
-function makePattern(r, c) {
-    let base = "**";
-    // Blank cell ke upar ki 10 rows mein last available jodi dhoondhna
-    for(let i=r-1; i>=Math.max(0, r-10); i--){ if(data[i][c]!="**"){ base=data[i][c]; break; }}
-    if(base=="**") return alert("Upar koi data nahi hai pattern banane ke liye!");
-
-    let shape = [];
-    let startRow = Math.max(0, r-5); // Pichle 5 din ka saancha
-    for(let i=startRow; i<=r; i++){
-        let row = [];
-        for(let j=0; j<5; j++){ row.push(data[i][j]!="**" && smartMatch(data[i][j], base) ? 1 : 0); }
-        shape.push(row);
-    }
-    
-    // Poore data mein search karna
+function searchAndDisplay(base) {
     let matches = [];
-    for(let i=0; i<=data.length - shape.length; i++){
+    let shape = activeMark.shape;
+    let targetCol = activeMark.col;
+
+    for(let i=0; i <= data.length - shape.length; i++) {
         let ok = true;
-        for(let k=0; k<shape.length; k++){
-            for(let j=0; j<5; j++){ if(shape[k][j] && !smartMatch(data[i+k][j], base)){ ok=false; break; }}
+        for(let k=0; k < shape.length; k++) {
+            for(let j=0; j < 5; j++) {
+                if(shape[k][j] && !smartMatch(data[i+k][j], base)) { ok = false; break; }
+            }
             if(!ok) break;
         }
-        if(ok && i !== startRow) matches.push({index: i});
+        if(ok && i !== activeMark.start) matches.push({ index: i });
     }
 
-    activeMark = {start: startRow, shape: shape};
-    draw();
-    displayResults(shape, matches);
-}
-
-function displayResults(shape, matches){
-    let checksBox = document.getElementById("checks");
-    checksBox.innerHTML = "";
-    let pool = [];
-
+    // Update UI
+    let results = [];
+    let checksHtml = "";
     matches.forEach(m => {
-        let div = document.createElement("div");
-        div.className = "check-line";
-        div.innerText = `Line Match: Row ${m.index + 1} to ${m.index + shape.length}`;
-        div.onclick = () => showPopupView(shape, m.index);
-        checksBox.appendChild(div);
-
-        let nextRow = m.index + shape.length;
-        if(nextRow < data.length && data[nextRow][targetCol] != "**") pool.push(data[nextRow][targetCol]);
+        let nextVal = (data[m.index + shape.length]) ? data[m.index + shape.length][targetCol] : "**";
+        if(nextVal !== "**") results.push(nextVal);
+        
+        checksHtml += `<div class="check-line" onclick="showPopupView(${m.index})">
+            <span>Match at Row ${m.index+1}</span>
+            <b style="color:var(--gold)">➔ ${nextVal}</b>
+        </div>`;
     });
 
-    // AI Box Update
-    document.getElementById("ai").innerHTML = `Found ${matches.length} similar patterns in history.`;
+    document.getElementById("checks").innerHTML = checksHtml || "No historical match found.";
     
-    // Future Box Update (Strictly 4 jodi)
-    let uniquePool = [...new Set(pool)].slice(0, 4);
-    document.getElementById("future").innerHTML = uniquePool.length ? 
-        `<b style="font-size:1.5rem; color:var(--green)">${uniquePool.join(" - ")}</b>` : "No results found.";
-}
-
-function showPopupView(shape, idx){
-    let h = "<table id='popTbl' style='color:#000'>";
-    for(let i=0; i<shape.length; i++){
-        h += "<tr>";
-        data[idx+i].forEach((v,j)=>{ h += `<td class="${shape[i][j]?'circle':''}">${v}</td>`; });
-        h += "</tr>";
-    }
-    document.getElementById("popData").innerHTML = h + "</table>";
-    document.getElementById("popup").style.display = "block";
-    document.getElementById("overlay").style.display = "block";
-    setTimeout(() => drawLines("popCanvas", "popTbl"), 100);
+    // Future Prediction - Strict 4 Jodi
+    let uniqueRes = [...new Set(results)].slice(0, 4);
+    document.getElementById("future").innerHTML = uniqueRes.length ? uniqueRes.join(" - ") : "N/A";
+    
+    draw();
 }
 
 function drawLines(cvId, tblId) {
-    let cv = document.getElementById(cvId), ctx = cv.getContext("2d"), tbl = (typeof tblId === 'string') ? document.getElementById(tblId) : tblId;
+    let cv = document.getElementById(cvId), ctx = cv.getContext("2d"), tbl = document.getElementById(tblId);
     if(!tbl) return;
     cv.width = tbl.offsetWidth; cv.height = tbl.offsetHeight;
     ctx.clearRect(0,0,cv.width,cv.height);
     let cells = tbl.querySelectorAll(".circle");
     if(cells.length < 2) return;
     let rect = tbl.getBoundingClientRect();
-    ctx.strokeStyle = "#0084ff"; ctx.lineWidth = 2.5; ctx.beginPath();
+    ctx.strokeStyle = "#0084ff"; ctx.lineWidth = 3; ctx.beginPath();
     cells.forEach((c, i) => {
         let r = c.getBoundingClientRect();
         let x = r.left - rect.left + r.width/2;
@@ -208,19 +186,37 @@ function drawLines(cvId, tblId) {
     ctx.stroke();
 }
 
+function showPopupView(idx) {
+    let shape = activeMark.shape;
+    let h = "<table>";
+    for(let i=0; i<shape.length; i++) {
+        h += "<tr>";
+        data[idx+i].forEach((v, j) => {
+            h += `<td class="${shape[i][j] ? 'circle' : ''}">${v}</td>`;
+        });
+        h += "</tr>";
+    }
+    document.getElementById("popData").innerHTML = h + "</table>";
+    document.getElementById("popup").style.display = "block";
+    document.getElementById("overlay").style.display = "block";
+    setTimeout(() => drawLines("popCanvas", "popData"), 100);
+}
+
 function addRow(){ data.push(["**","**","**","**","**"]); draw(); }
-function saveData(){ localStorage.setItem("Rajdhani_Pro_v4", JSON.stringify(data)); alert("Data Saved!"); }
-function clearData(){ if(confirm("Sab delete karein?")){ localStorage.clear(); location.reload(); }}
+function saveData(){ localStorage.setItem("Pradeep_Rajdhani_Fix", JSON.stringify(data)); alert("Data Saved!"); }
+function clearData(){ if(confirm("Clear Everything?")){ localStorage.clear(); location.reload(); }}
 function closePopup(){ document.getElementById("popup").style.display="none"; document.getElementById("overlay").style.display="none"; }
 
 document.getElementById("csv").onchange = e => {
-    let fr = new FileReader();
-    fr.onload = () => {
-        data = fr.result.split('\n').filter(l=>l.trim()).map(l => l.split(',').map(v => v.trim()).slice(0,5));
+    let reader = new FileReader();
+    reader.onload = (event) => {
+        data = event.target.result.split('\n').filter(l=>l.trim()).map(l => l.split(',').map(v => v.trim()).slice(0,5));
         draw();
     };
-    fr.readAsText(e.target.files[0]);
+    reader.readAsText(e.target.files[0]);
 };
+
+window.onload = draw;
 </script>
 </body>
 </html>
