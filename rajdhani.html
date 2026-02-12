@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Rajdhani Pro AI – Live Pattern Fix</title>
+    <title>Rajdhani Pro AI – Ultimate Fix</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { --gold: #ffd700; --blue: #0084ff; --bg: #0f172a; --panel: #1e293b; }
@@ -13,17 +13,18 @@
         .toolbar { background: var(--panel); padding: 15px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; border-bottom: 2px solid var(--gold); }
         .table-container { position: relative; background: #fff; border-radius: 8px; padding: 5px; margin: 20px auto; display: inline-block; }
         table { border-collapse: collapse; color: #000; font-size: 14px; position: relative; z-index: 5; }
-        td, th { border: 1px solid #ddd; padding: 8px; text-align: center; font-weight: bold; width: 48px; height: 48px; cursor: pointer; }
+        td, th { border: 1px solid #ddd; padding: 8px; text-align: center; font-weight: bold; width: 45px; height: 45px; cursor: pointer; }
         th { background: #1e293b; color: white; }
         
         .circle { border: 3px solid var(--blue) !important; border-radius: 50% !important; background: rgba(0, 132, 255, 0.2); }
         canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 4; }
 
-        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; padding: 20px; }
-        .card { background: var(--panel); padding: 15px; border-radius: 12px; border-top: 4px solid var(--gold); min-height: 100px; }
+        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; padding: 20px; }
+        .card { background: var(--panel); padding: 15px; border-radius: 12px; border-top: 4px solid var(--gold); }
         .card h3 { margin: 0 0 10px 0; color: var(--gold); font-size: 14px; text-transform: uppercase; }
 
-        .check-line { background: rgba(255,255,255,0.05); padding: 10px; margin: 5px 0; border-radius: 6px; border-left: 4px solid var(--blue); cursor: pointer; display: flex; justify-content: space-between; }
+        .check-line { background: #262f3f; padding: 12px; margin: 8px 0; border-radius: 8px; border-left: 5px solid var(--blue); cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
+        .check-line:hover { background: #334155; }
         
         #popup { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 15px; display: none; z-index: 100; padding: 20px; color: #000; width: 90%; max-width: 450px; box-shadow: 0 0 100px #000; }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; z-index: 95; }
@@ -34,14 +35,14 @@
 
 <div class="toolbar">
     <input type="file" id="csv" style="display:none" accept=".csv">
-    <button onclick="document.getElementById('csv').click()" style="background:#444; color:white;">📂 UPLOAD CSV</button>
+    <button onclick="document.getElementById('csv').click()" style="background:#0084ff; color:white;">📂 UPLOAD CSV</button>
     <button onclick="addRow()" style="background:#444; color:white;">➕ ADD ROW</button>
     <button onclick="saveData()" style="background:#28a745; color:white;">💾 SAVE</button>
-    <button onclick="clearData()" style="background:#dc3545; color:white;">🗑️ RESET</button>
+    <button onclick="clearData()" style="background:#dc3545; color:white;">🗑️ RESET ALL</button>
 </div>
 
 <center>
-    <div class="table-container" id="mainTableWrapper">
+    <div class="table-container">
         <canvas id="mainCanvas"></canvas>
         <table id="tbl"></table>
     </div>
@@ -49,31 +50,29 @@
 
 <div class="dashboard">
     <div class="card">
-        <h3>✔ Check Lines (Click to View)</h3>
-        <div id="checks">Click any blank cell (**) to start</div>
+        <h3>✔ Historical Matches</h3>
+        <div id="checks">Click any blank cell (**)</div>
     </div>
     <div class="card">
-        <h3>🤖 AI Prediction (Strict 4 Jodi)</h3>
-        <div id="future" style="font-size: 24px; color: #00ff88; font-weight: 800; letter-spacing: 2px;">...</div>
+        <h3>🔮 AI Future Prediction (4 Jodi Only)</h3>
+        <div id="future" style="font-size: 28px; color: #00ff88; font-weight: 800; text-align: center;">...</div>
     </div>
 </div>
 
 <div class="overlay" id="overlay" onclick="closePopup()"></div>
 <div id="popup">
-    <button onclick="closePopup()" style="float:right; background:black; color:white;">CLOSE</button>
-    <h3 style="margin-top:0;">Pattern History Match</h3>
-    <div style="overflow: auto; max-height: 300px;">
-        <div class="table-container" style="border:1px solid #ddd; margin: 10px auto; display: block;">
-            <canvas id="popCanvas"></canvas>
-            <div id="popData"></div>
-        </div>
+    <button onclick="closePopup()" style="float:right; background:red; color:white;">X</button>
+    <h3 style="margin-top:0;">Pattern Trace View</h3>
+    <div class="table-container" style="border:1px solid #ddd; display: block;">
+        <canvas id="popCanvas"></canvas>
+        <div id="popData"></div>
     </div>
 </div>
 
 <script>
-const FAMILY = {"22":["22","27","72","77"],"11":["11","61","66","16"],"33":["33","83","88","38"],"99":["99","44","49","94"],"55":["50","00","05","55"],"12":["12","17","21","26","62","67","71","76"],"13":["13","18","31","36","63","68","81","86"],"14":["14","19","41","46","64","69","91","96"],"15":["01","06","10","15","51","56","60","65"],"23":["23","28","32","37","73","78","82","87"],"24":["24","29","42","47","74","79","92","97"],"25":["02","07","20","25","52","57","70","75"],"34":["34","39","43","48","84","89","93","98"],"35":["03","08","30","35","53","58","80","85"],"45":["04","09","40","45","54","59","90","95"]};
+const FAMILY = {"22":["22","27","72","77"],"11":["11","61","66","16"],"33":["33","83","88","38"],"99":["99","44","49","94"],"55":["00","05","50","55"],"12":["12","17","21","26","62","67","71","76"],"13":["13","18","31","36","63","68","81","86"],"14":["14","19","41","46","64","69","91","96"],"15":["01","06","10","15","51","56","60","65"],"23":["23","28","32","37","73","78","82","87"],"24":["24","29","42","47","74","79","92","97"],"25":["02","07","20","25","52","57","70","75"],"34":["34","39","43","48","84","89","93","98"],"35":["03","08","30","35","53","58","80","85"],"45":["04","09","40","45","54","59","90","95"]};
 
-let data = JSON.parse(localStorage.getItem("Pradeep_Rajdhani_Fix")) || Array(15).fill().map(()=>Array(5).fill("**"));
+let data = JSON.parse(localStorage.getItem("Pradeep_Raj_Final")) || Array(15).fill().map(()=>Array(5).fill("**"));
 let activeMark = null;
 
 function fam(v){ v=String(v).padStart(2,'0'); for(let k in FAMILY) if(FAMILY[k].includes(v)) return k; return "NA";}
@@ -85,56 +84,44 @@ function draw() {
         h += "<tr>";
         r.forEach((c, ci) => {
             let isMarked = activeMark && activeMark.shape[ri - activeMark.start] && activeMark.shape[ri - activeMark.start][ci];
-            h += `<td class="${isMarked ? 'circle' : ''}" 
-                     contenteditable="true" 
-                     oninput="data[${ri}][${ci}]=this.innerText.trim()" 
-                     onclick="handleCellClick(${ri}, ${ci})">${c}</td>`;
+            h += `<td class="${isMarked ? 'circle' : ''}" contenteditable="true" oninput="data[${ri}][${ci}]=this.innerText.trim()" onclick="handleCell(${ri}, ${ci})">${c}</td>`;
         });
         h += "</tr>";
     });
     document.getElementById("tbl").innerHTML = h;
-    if(activeMark) setTimeout(() => drawLines("mainCanvas", "tbl"), 60);
+    if(activeMark) setTimeout(() => drawLines("mainCanvas", "tbl"), 50);
 }
 
-function handleCellClick(r, c) {
-    if (data[r][c] === "**" || data[r][c] === "") {
-        // Reset everything for new cell
-        activeMark = null;
-        document.getElementById("checks").innerHTML = "Scanning...";
-        document.getElementById("future").innerHTML = "...";
-        
-        // Find base pair from last 10 weeks in same column
-        let base = "**";
-        for(let i=r-1; i>=Math.max(0, r-10); i--) {
-            if(data[i][c] !== "**") { base = data[i][c]; break; }
-        }
+function handleCell(r, c) {
+    if (data[r][c] !== "**" && data[r][c] !== "") return;
 
-        if(base === "**") {
-            alert("Upar data nahi hai!");
-            return;
-        }
+    // Reset Old States
+    activeMark = null;
+    document.getElementById("future").innerHTML = "...";
+    document.getElementById("checks").innerHTML = "Searching...";
 
-        // Create new shape
-        let start = Math.max(0, r-5);
-        let shape = [];
-        for(let i=start; i<=r; i++) {
-            let row = [];
-            for(let j=0; j<5; j++) {
-                row.push(data[i][j] !== "**" && smartMatch(data[i][j], base) ? 1 : 0);
-            }
-            shape.push(row);
-        }
-
-        activeMark = { start: start, shape: shape, col: c };
-        searchAndDisplay(base);
+    // 1. Get Base Pair (Last 10 weeks same column)
+    let base = "**";
+    for(let i=r-1; i>=Math.max(0, r-10); i--) {
+        if(data[i][c] !== "**") { base = data[i][c]; break; }
     }
-}
+    if(base === "**") return alert("Pattern ke liye upar data hona chahiye!");
 
-function searchAndDisplay(base) {
+    // 2. Build 5-row Pattern Shape
+    let startRow = Math.max(0, r-5);
+    let shape = [];
+    for(let i=startRow; i<=r; i++) {
+        let row = [];
+        for(let j=0; j<5; j++) {
+            row.push(data[i][j] !== "**" && smartMatch(data[i][j], base) ? 1 : 0);
+        }
+        shape.push(row);
+    }
+
+    activeMark = { start: startRow, shape: shape, col: c };
+
+    // 3. Search Historical Matches
     let matches = [];
-    let shape = activeMark.shape;
-    let targetCol = activeMark.col;
-
     for(let i=0; i <= data.length - shape.length; i++) {
         let ok = true;
         for(let k=0; k < shape.length; k++) {
@@ -143,47 +130,33 @@ function searchAndDisplay(base) {
             }
             if(!ok) break;
         }
-        if(ok && i !== activeMark.start) matches.push({ index: i });
+        if(ok && i !== startRow) matches.push({ index: i });
     }
 
-    // Update UI
-    let results = [];
-    let checksHtml = "";
+    // 4. Update Predictions & Check Lines
+    let futurePool = [];
+    let checksBox = document.getElementById("checks");
+    checksBox.innerHTML = "";
+
     matches.forEach(m => {
-        let nextVal = (data[m.index + shape.length]) ? data[m.index + shape.length][targetCol] : "**";
-        if(nextVal !== "**") results.push(nextVal);
-        
-        checksHtml += `<div class="check-line" onclick="showPopupView(${m.index})">
-            <span>Match at Row ${m.index+1}</span>
-            <b style="color:var(--gold)">➔ ${nextVal}</b>
-        </div>`;
+        let resRow = m.index + shape.length;
+        let resVal = (data[resRow]) ? data[resRow][c] : "**";
+        if(resVal !== "**") futurePool.push(resVal);
+
+        let line = document.createElement("div");
+        line.className = "check-line";
+        line.innerHTML = `<span>Row ${m.index+1} Pattern Match</span><b>➔ ${resVal}</b>`;
+        line.onclick = () => showPopupView(m.index);
+        checksBox.appendChild(line);
     });
 
-    document.getElementById("checks").innerHTML = checksHtml || "No historical match found.";
-    
-    // Future Prediction - Strict 4 Jodi
-    let uniqueRes = [...new Set(results)].slice(0, 4);
-    document.getElementById("future").innerHTML = uniqueRes.length ? uniqueRes.join(" - ") : "N/A";
-    
+    if(!matches.length) checksBox.innerHTML = "No historical match found.";
+
+    // 5. Strict 4-Jodi Result
+    let top4 = [...new Set(futurePool)].slice(0, 4);
+    document.getElementById("future").innerHTML = top4.length ? top4.join(" - ") : "N/A";
+
     draw();
-}
-
-function drawLines(cvId, tblId) {
-    let cv = document.getElementById(cvId), ctx = cv.getContext("2d"), tbl = document.getElementById(tblId);
-    if(!tbl) return;
-    cv.width = tbl.offsetWidth; cv.height = tbl.offsetHeight;
-    ctx.clearRect(0,0,cv.width,cv.height);
-    let cells = tbl.querySelectorAll(".circle");
-    if(cells.length < 2) return;
-    let rect = tbl.getBoundingClientRect();
-    ctx.strokeStyle = "#0084ff"; ctx.lineWidth = 3; ctx.beginPath();
-    cells.forEach((c, i) => {
-        let r = c.getBoundingClientRect();
-        let x = r.left - rect.left + r.width/2;
-        let y = r.top - rect.top + r.height/2;
-        if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-    });
-    ctx.stroke();
 }
 
 function showPopupView(idx) {
@@ -202,16 +175,35 @@ function showPopupView(idx) {
     setTimeout(() => drawLines("popCanvas", "popData"), 100);
 }
 
+function drawLines(cvId, tblId) {
+    let cv = document.getElementById(cvId), ctx = cv.getContext("2d"), tbl = (typeof tblId === 'string' ? document.getElementById(tblId) : tblId);
+    if(!tbl) return;
+    cv.width = tbl.offsetWidth; cv.height = tbl.offsetHeight;
+    ctx.clearRect(0,0,cv.width,cv.height);
+    let cells = tbl.querySelectorAll(".circle");
+    if(cells.length < 2) return;
+    let rect = tbl.getBoundingClientRect();
+    ctx.strokeStyle = "#0084ff"; ctx.lineWidth = 3; ctx.beginPath();
+    cells.forEach((c, i) => {
+        let r = c.getBoundingClientRect();
+        let x = r.left - rect.left + r.width/2;
+        let y = r.top - rect.top + r.height/2;
+        if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+}
+
 function addRow(){ data.push(["**","**","**","**","**"]); draw(); }
-function saveData(){ localStorage.setItem("Pradeep_Rajdhani_Fix", JSON.stringify(data)); alert("Data Saved!"); }
-function clearData(){ if(confirm("Clear Everything?")){ localStorage.clear(); location.reload(); }}
+function saveData(){ localStorage.setItem("Pradeep_Raj_Final", JSON.stringify(data)); alert("Saved!"); }
+function clearData(){ if(confirm("Clear All?")){ localStorage.clear(); location.reload(); }}
 function closePopup(){ document.getElementById("popup").style.display="none"; document.getElementById("overlay").style.display="none"; }
 
 document.getElementById("csv").onchange = e => {
     let reader = new FileReader();
-    reader.onload = (event) => {
-        data = event.target.result.split('\n').filter(l=>l.trim()).map(l => l.split(',').map(v => v.trim()).slice(0,5));
+    reader.onload = (ev) => {
+        data = ev.target.result.split('\n').filter(l=>l.trim()).map(l => l.split(',').map(v => v.trim()).slice(0,5));
         draw();
+        alert("CSV Loaded!");
     };
     reader.readAsText(e.target.files[0]);
 };
