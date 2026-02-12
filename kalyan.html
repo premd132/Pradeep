@@ -204,7 +204,7 @@ function makePattern(r,c){
  let shape=[];
  for(let i=Math.max(0,r-4);i<=r;i++){
   let row=[];
-  for(let j=0;j<6;j++){ row.push(data[i][j]!="**" && smartMatch(data[i][j],base)?1:0); }
+  for(let j=0;j<3;j++){ row.push(data[i][j]!="**" && smartMatch(data[i][j],base)?1:0); }
   shape.push(row);
  }
  searchPattern(shape,base);
@@ -215,7 +215,7 @@ function searchPattern(shape,base){
  for(let i=0; i<=data.length-shape.length; i++){
   let ok=true;
   for(let k=0; k<shape.length; k++){
-   for(let j=0; j<6; j++){ if(shape[k][j] && !smartMatch(data[i+k][j],base)){ok=false; break;}}
+   for(let j=0; j<3; j++){ if(shape[k][j] && !smartMatch(data[i+k][j],base)){ok=false; break;}}
    if(!ok) break;
   }
   if(ok) lastMatches.push({index:i});
@@ -254,7 +254,7 @@ function updateAI(shape, matches){
  let jc={}, dc={};
  matches.forEach(m=>{
   for(let i=0; i<shape.length; i++){
-   for(let j=0; j<6; j++){
+   for(let j=0; j<3; j++){
     if(shape[i][j]){
      let v = data[m.index+i][j];
      jc[v]=(jc[v]||0)+1; dc[v[0]]=(dc[v[0]]||0)+1; dc[v[1]]=(dc[v[1]]||0)+1;
