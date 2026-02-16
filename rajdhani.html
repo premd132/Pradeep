@@ -154,9 +154,9 @@ function addRow(){ data.push(["**","**","**","**","**"]); draw(); }
 function saveData(){ localStorage.setItem(STORAGE_KEY,JSON.stringify(data)); alert("Saved!"); }
 function clearData(){ if(confirm("Clear all?")){ localStorage.clear(); location.reload(); }}
 
-function makePattern(r,c){
+function makePattern(ri,ci){
  targetCol=c; let base="**";
- for(let i=r;i>=0;i--){ if(data[i][c]!="**"){base=data[i][c]; break;}}
+ for(let i=ri;i>=0;i--){ if(data[i][c]!="**"){base=data[i][c]; break;}}
  if(base=="**") return;
  let shape=[];
  for(let i=Math.max(0,r-3);i<=r;i++){
