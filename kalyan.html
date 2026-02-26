@@ -199,7 +199,7 @@ function clearData(){ if(confirm("Permanently clear all data?")){ localStorage.c
 
 function makePattern(r,c){
  targetCol=c; let base="**";
- for(let i=r;i>=0;i--){ if(data[i][c]!="**"){base=data[i][c]; break;}}
+ for(let i=r;i>=0;i-){ if(data[i][c]!="**"){base=data[i][c]; break;}}
  if(base=="**") return;
  let shape=[];
  for(let i=Math.max(0,r-7);i<=r;i+){
@@ -215,7 +215,7 @@ function searchPattern(shape,base){
  for(let i=0; i<=data.length-shape.length; i+){
   let ok=true;
   for(let k=0; k<shape.length; k+){
-   for(let j=0; j<6; j++){ if(shape[k][j] && !smartMatch(data[i+k][j],base)){ok=false; break;}}
+   for(let j=0; j<6; j+){ if(shape[k][j] && !smartMatch(data[i+k][j],base)){ok=false; break;}}
    if(!ok) break;
   }
   if(ok) lastMatches.push({index:i});
