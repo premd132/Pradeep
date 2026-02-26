@@ -142,7 +142,7 @@ function startApp() {
 function fam(v){for(let k in FAMILY) if(FAMILY[k].includes(v)) return k; return "NA";}
 function palti(v){return v[1]+v[0];}
 function norm(v){if(v==""||v=="**")return "**"; v=String(v); return v.length==1?"0"+v:v;}
-function smartMatch(a,b){ if(a=="**"||b=="**") return false; return a===b || palti(a)===b || fam(a)===fam(b); }
+function smartMatch(a2,b2){ if(a2=="**"||b2=="**") return false; return a2===b2 || palti(a2)===b2 || fam(a2)===fam(b2); }
 
 let activeMark=null;
 
@@ -199,12 +199,12 @@ function clearData(){ if(confirm("Permanently clear all data?")){ localStorage.c
 
 function makePattern(r,c){
  targetCol=c; let base="**";
- for(let i=r;i>=0;i-){ if(data[i][c]!="**"){base=data[i][c]; break;}}
+ for(let i=r;i>=0;i--){ if(data[i][c]!="**"){base=data[i][c]; break;}}
  if(base=="**") return;
  let shape=[];
- for(let i=Math.max(0,r-7);i<=r;i+){
+ for(let i=Math.max(0,r-7);i<=r;i++){
   let row=[];
-  for(let j=0;j<6;j+){ row.push(data[i][j]!="**" && smartMatch(data[i][j],base)?1:0); }
+  for(let j=0;j<6;j++){ row.push(data[i][j]!="**" && smartMatch(data[i][j],base)?1:0); }
   shape.push(row);
  }
  searchPattern(shape,base);
@@ -212,10 +212,10 @@ function makePattern(r,c){
 
 function searchPattern(shape,base){
  let lastMatches=[];
- for(let i=0; i<=data.length-shape.length; i+){
+ for(let i=0; i<=data.length-shape.length; i++){
   let ok=true;
-  for(let k=0; k<shape.length; k+){
-   for(let j=0; j<6; j+){ if(shape[k][j] && !smartMatch(data[i+k][j],base)){ok=false; break;}}
+  for(let k=0; k<shape.length; k++){
+   for(let j=0; j<6; j++){ if(shape[k][j] && !smartMatch(data[i+k][j],base)){ok=false; break;}}
    if(!ok) break;
   }
   if(ok) lastMatches.push({index:i});
@@ -237,7 +237,7 @@ function showChecks(shape, matches){
 
 function showOne(shape, idx){
  let html="<table id='popTbl' style='color:#000'>";
- for(let i=0; i<shape.length; i+){
+ for(let i=0; i<shape.length; i++){
   html+="<tr>";
   data[idx+i].forEach((v,j)=>{
    html+=`<td class="${shape[i][j]?'circle':''}">${v}</td>`;
@@ -253,8 +253,8 @@ function showOne(shape, idx){
 function updateAI(shape, matches){
  let jc={}, dc={};
  matches.forEach(m=>{
-  for(let i=0; i<shape.length; i+){
-   for(let j=0; j<6; j+){
+  for(let i=0; i<shape.length; i++){
+   for(let j=0; j<6; j++){
     if(shape[i][j]){
      let v = data[m.index+i][j];
      jc[v]=(jc[v]||0)+1; dc[v[0]]=(dc[v[0]]||0)+1; dc[v[1]]=(dc[v[1]]||0)+1;
