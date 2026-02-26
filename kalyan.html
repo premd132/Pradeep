@@ -142,7 +142,7 @@ function startApp() {
 function fam(v){for(let k in FAMILY) if(FAMILY[k].includes(v)) return k; return "NA";}
 function palti(v){return v[1]+v[0];}
 function norm(v){if(v==""||v=="**")return "**"; v=String(v); return v.length==1?"0"+v:v;}
-function smartMatch(a2,b2){ if(a2=="**"||b2=="**") return false; return a2===b2 || palti(a2)===b2 || fam(a2)===fam(b2); }
+function smartMatch(a1,b1){ if(a1=="**"||b1=="**") return false; return a1===b1 || palti(a1)===b1 || fam(a1)===fam(b1); }
 
 let activeMark=null;
 
