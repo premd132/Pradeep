@@ -134,63 +134,43 @@ function handleCellClick(r, c) {
     }
 }
 
-function findPatterns(targetR, targetC) {
-    // 1, 2, 3 Pattern Logic: Look at rows directly above within 10 weeks
-    let matches = [];
-    let lookback = 10;
-    let startRow = Math.max(0, targetR - lookback);
-    
-    // Capture the 'Seed' from the row above
-    let seedR = targetR - 1;
-    if(seedR < 0) return;
+// --- UPDATED CROSS PATTERN LOGIC ---
 
-    for(let i = 0; i < seedR; i++) {
-        // Logic to find if same sequence of 1, 2, or 3 Jodis exist
-        if(smartMatch(data[i][targetC], data[seedR][targetC])) {
-            matches.push({ row: i, targetCol: targetC });
+function findPatterns(targetR, targetC) {
+    let matches = [];
+    let lookback = 60; // 10 weeks approx (6 days * 10)
+    
+    // Seed: Row directly above (Straight, Left Cross, Right Cross)
+    let seeds = [
+        { r: targetR - 1, c: targetC - 1, type: "Left Cross" },
+        { r: targetR - 1, c: targetC,     type: "Straight" },
+        { r: targetR - 1, c: targetC + 1, type: "Right Cross" }
+    ];
+
+    seeds.forEach(s => {
+        if (s.r >= 0 && s.c >= 0 && s.c < 6 && data[s.r][s.c] !== "**") {
+            let seedValue = data[s.r][s.c];
+            
+            // Search old records for this seed
+            for (let i = 0; i < s.r; i++) {
+                for (let j = 0; j < 6; j++) {
+                    if (smartMatch(data[i][j], seedValue)) {
+                        matches.push({ 
+                            row: i, 
+                            col: j, 
+                            type: s.type,
+                            val: seedValue 
+                        });
+                    }
+                }
+            }
         }
-    }
+    });
 
     displayMatches(matches, targetR, targetC);
 }
 
-function displayMatches(matches, tr, tc) {
-    let container = document.getElementById("checks");
-    container.innerHTML = "";
-    matches.forEach((m, i) => {
-        let btn = document.createElement("div");
-        btn.style = "background:#334155; padding:10px; margin:5px 0; border-radius:8px; cursor:pointer; border-left:4px solid var(--blue-circle)";
-        btn.innerHTML = `Match Found at Row ${m.row + 1} <span style="float:right">➔</span>`;
-        btn.onclick = () => showPopupPattern(m.row, m.targetCol);
-        container.appendChild(btn);
-    });
-
-    // AI Prediction for the blank cell
-    let predictions = matches.map(m => data[m.row + 1] ? data[m.row + 1][tc] : null).filter(v => v && v !== "**");
-    document.getElementById("ai-advanced").innerHTML = `<b>Top Pattern Jodi:</b> ${predictions[0] || 'N/A'}<br><b>Sequence:</b> 1-2-3 Match`;
-    document.getElementById("future-ai").innerHTML = predictions.slice(0,3).join(" | ") || "TC 00, 05, 50";
-}
-
-function showPopupPattern(startR, col) {
-    let h = "";
-    let patternCoords = [];
-    // Show 3 rows for context
-    for(let i = -1; i <= 1; i++) {
-        let currR = startR + i;
-        if(data[currR]) {
-            h += "<tr>";
-            data[currR].forEach((v, j) => {
-                let isMatch = (i === 0 && j === col);
-                h += `<td class="${isMatch ? 'circle' : ''}">${v}</td>`;
-            });
-            h += "</tr>";
-        }
-    }
-    document.getElementById("popTbl").innerHTML = h;
-    document.getElementById("popup").style.display = "block";
-    document.getElementById("overlay").style.display = "block";
-    setTimeout(() => drawLines("popCanvas", "popTbl"), 100);
-}
+// --- UPDATED DRAWING FOR CROSS CONNECTIONS ---
 
 function drawLines(canvasId, tableId) {
     const canvas = document.getElementById(canvasId);
@@ -198,43 +178,28 @@ function drawLines(canvasId, tableId) {
     const ctx = canvas.getContext("2d");
     canvas.width = table.offsetWidth;
     canvas.height = table.offsetHeight;
-    ctx.clearRect(0,0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     
     const circles = table.querySelectorAll(".circle");
-    if(circles.length < 2) return;
+    if (circles.length < 2) return;
 
-    ctx.strokeStyle = "#00ff88";
-    ctx.lineWidth = 3;
+    ctx.strokeStyle = "#00ff88"; // Green Connection Line
+    ctx.lineWidth = 2.5;
+    ctx.setLineDash([5, 3]); // Cross patterns ke liye dash line achhi lagti hai
     ctx.beginPath();
     
+    let prevX, prevY;
     circles.forEach((el, idx) => {
-        let x = el.offsetLeft + el.offsetWidth/2;
-        let y = el.offsetTop + el.offsetHeight/2;
-        if(idx === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
+        let x = el.offsetLeft + el.offsetWidth / 2;
+        let y = el.offsetTop + el.offsetHeight / 2;
+        if (idx === 0) {
+            ctx.moveTo(x, y);
+        } else {
+            ctx.lineTo(x, y);
+        }
     });
     ctx.stroke();
 }
-
-function highlightSource(r, c) {
-    activePattern = { coords: [{r: r, c: c}] };
-    // Search 10 weeks above for a match
-    for(let i = r-1; i >= Math.max(0, r-10); i--) {
-        for(let j=0; j<6; j++) {
-            if(smartMatch(data[r][c], data[i][j])) {
-                activePattern.coords.push({r: i, c: j});
-            }
-        }
-    }
-    draw();
-}
-
-function addRow() { data.push(["**","**","**","**","**","**"]); draw(); }
-function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); alert("Data Saved to Browser!"); }
-function clearData() { if(confirm("Clear everything?")) { localStorage.removeItem(STORAGE_KEY); location.reload(); } }
-function closePopup() { document.getElementById("popup").style.display="none"; document.getElementById("overlay").style.display="none"; }
-
-// Init
 draw();
 </script>
 </body>
