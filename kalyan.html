@@ -205,11 +205,11 @@ function makePattern(r,c){
   let shape=[];
   let matchCount = 0; // Limit control ke liye variable
 
-  for(let i=Math.max(0,r-8);i<=r;i++){
+  for(let i=Math.max(0,r-6);i<=r;i++){
     let row=[];
     for(let j=0; j<6; j++){ 
       // Condition: Match ho aur total 3 se zyada jodi mark na ho
-      if(data[i][j]!="**" && smartMatch(data[i][j], base) && matchCount < 3) {
+      if(data[i][j]!="**" && smartMatch(data[i][j], base) && matchCount < 2) {
         row.push(1);
         matchCount++;
       } else {
