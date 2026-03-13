@@ -199,27 +199,28 @@ function clearData(){ if(confirm("Permanently clear all data?")){ localStorage.c
 
 function makePattern(r,c){
   targetCol=c; let base="**";
+  // Target ke upar se base jodi uthana
   for(let i=r;i>=0;i--){ if(data[i][c]!="**"){base=data[i][c]; break;}}
   if(base=="**") return;
 
   let shape=[];
-  let matchCount = 0; // Limit control ke liye variable
+  let foundCloseMatch = false;
 
-  for(let i=Math.max(0,r-6);i<=r;i++){
-    let row=[];
+  // Pichli 8 rows check karna (Niche se upar ki taraf taaki sabse kareeb wali mile)
+  for(let i=r; i >= Math.max(0, r-8); i--){
+    let row=[0,0,0,0,0,0];
     for(let j=0; j<6; j++){ 
-      // Condition: Match ho aur total 3 se zyada jodi mark na ho
-      if(data[i][j]!="**" && smartMatch(data[i][j], base) && matchCount < 2) {
-        row.push(1);
-        matchCount++;
-      } else {
-        row.push(0);
+      // Agar blank ke paas pehli matching jodi mil jaye
+      if(!foundCloseMatch && data[i][j]!="**" && smartMatch(data[i][j], base)) {
+        row[j] = 1;
+        foundCloseMatch = true; // Sirf 1 jodi mark karke ruk jayega
       }
     }
-    shape.push(row);
+    shape.unshift(row); // Sahi order mein array banane ke liye
   }
+  
   searchPattern(shape, base);
-}
+            }
 
 function searchPattern(shape,base){
  let lastMatches=[];
