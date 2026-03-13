@@ -214,7 +214,7 @@ function searchPattern(shape,base){
  let lastMatches=[];
  for(let i=0; i<=data.length-shape.length; i++){
   let ok=true;
-  for(let k=0; k<shape.length; k+){
+  for(let k=0; k<shape.length; k++){
    for(let j=0; j<6; j++){ if(shape[k][j] && !smartMatch(data[i+k][j],base)){ok=false; break;}}
    if(!ok) break;
   }
