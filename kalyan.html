@@ -254,7 +254,7 @@ function updateAI(shape, matches){
  let jc={}, dc={};
  matches.forEach(m=>{
   for(let i=0; i<shape.length; i++){
-   for(let j=0; j<6; j+){
+   for(let j=0; j<6; j++){
     if(shape[i][j]){
      let v = data[m.index+i][j];
      jc[v]=(jc[v]||0)+1; dc[v[0]]=(dc[v[0]]||0)+1; dc[v[1]]=(dc[v[1]]||0)+1;
