@@ -198,16 +198,27 @@ function saveData(){ localStorage.setItem(STORAGE_KEY,JSON.stringify(data)); ale
 function clearData(){ if(confirm("Permanently clear all data?")){ localStorage.clear(); location.reload(); }}
 
 function makePattern(r,c){
- targetCol=c; let base="**";
- for(let i=r;i>=0;i--){ if(data[i][c]!="**"){base=data[i][c]; break;}}
- if(base=="**") return;
- let shape=[];
- for(let i=Math.max(0,r-8);i<=r;i++){
-  let row=[];
-  for(let j=0;j<6;j++){ row.push(data[i][j]!="**" && smartMatch(data[i][j],base)?1:0); }
-  shape.push(row);
- }
- searchPattern(shape,base);
+  targetCol=c; let base="**";
+  for(let i=r;i>=0;i--){ if(data[i][c]!="**"){base=data[i][c]; break;}}
+  if(base=="**") return;
+
+  let shape=[];
+  let matchCount = 0; // Limit control ke liye variable
+
+  for(let i=Math.max(0,r-8);i<=r;i++){
+    let row=[];
+    for(let j=0; j<6; j++){ 
+      // Condition: Match ho aur total 3 se zyada jodi mark na ho
+      if(data[i][j]!="**" && smartMatch(data[i][j], base) && matchCount < 3) {
+        row.push(1);
+        matchCount++;
+      } else {
+        row.push(0);
+      }
+    }
+    shape.push(row);
+  }
+  searchPattern(shape, base);
 }
 
 function searchPattern(shape,base){
