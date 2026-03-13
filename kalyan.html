@@ -199,24 +199,25 @@ function clearData(){ if(confirm("Permanently clear all data?")){ localStorage.c
 
 function makePattern(r,c){
   targetCol=c; let base="**";
-  // Sabse pehle base jodi dhoondhte hain (blank ke upar wali)
+  // Pehle base jodi confirm karte hain
   for(let i=r;i>=0;i--){ if(data[i][c]!="**"){base=data[i][c]; break;}}
   if(base=="**") return;
 
-  let shape=[];
-  let matchesFound = 0; // Sirf 1 ya 2 jodi mark karne ke liye counter
+  let shape = Array(9).fill(0).map(() => Array(6).fill(0)); // 9 rows ka khali frame
+  let matchCount = 0;
+  let startRow = Math.max(0, r-8);
 
-  // 8 row upar se niche tak scan karega
-  for(let i=Math.max(0,r-8); i<=r; i++){
-    let row=[0,0,0,0,0,0];
-    for(let j=0; j<6; j++){ 
-      // Agar match milta hai aur abhi tak 2 se kam jodi mark hui hain
-      if(matchesFound < 2 && data[i][j]!="**" && smartMatch(data[i][j], base)) {
-        row[j] = 1;
-        matchesFound++; // Agli matching jodi ke liye count badha do
+  // Neeche se upar (Reverse Loop) taaki blank ke paas wali pehle mile
+  for(let i = r; i >= startRow; i--){
+    for(let j = 0; j < 6; j++){
+      if(data[i][j] != "**" && smartMatch(data[i][j], base)){
+        if(matchCount < 3){ // Sirf 3 jodi tak hi mark karega
+          shape[i - startRow][j] = 1;
+          matchCount++;
+        }
       }
     }
-    shape.push(row);
+    if(matchCount >= 3) break; // 3 milte hi loop rok do
   }
   
   searchPattern(shape, base);
