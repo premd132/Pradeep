@@ -199,28 +199,28 @@ function clearData(){ if(confirm("Permanently clear all data?")){ localStorage.c
 
 function makePattern(r,c){
   targetCol=c; let base="**";
-  // Target ke upar se base jodi uthana
+  // Sabse pehle base jodi dhoondhte hain (blank ke upar wali)
   for(let i=r;i>=0;i--){ if(data[i][c]!="**"){base=data[i][c]; break;}}
   if(base=="**") return;
 
   let shape=[];
-  let foundCloseMatch = false;
+  let matchesFound = 0; // Sirf 1 ya 2 jodi mark karne ke liye counter
 
-  // Pichli 8 rows check karna (Niche se upar ki taraf taaki sabse kareeb wali mile)
-  for(let i=r; i >= Math.max(0, r-8); i--){
+  // 8 row upar se niche tak scan karega
+  for(let i=Math.max(0,r-8); i<=r; i++){
     let row=[0,0,0,0,0,0];
     for(let j=0; j<6; j++){ 
-      // Agar blank ke paas pehli matching jodi mil jaye
-      if(!foundCloseMatch && data[i][j]!="**" && smartMatch(data[i][j], base)) {
+      // Agar match milta hai aur abhi tak 2 se kam jodi mark hui hain
+      if(matchesFound < 2 && data[i][j]!="**" && smartMatch(data[i][j], base)) {
         row[j] = 1;
-        foundCloseMatch = true; // Sirf 1 jodi mark karke ruk jayega
+        matchesFound++; // Agli matching jodi ke liye count badha do
       }
     }
-    shape.unshift(row); // Sahi order mein array banane ke liye
+    shape.push(row);
   }
   
   searchPattern(shape, base);
-            }
+}
 
 function searchPattern(shape,base){
  let lastMatches=[];
