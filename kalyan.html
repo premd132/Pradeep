@@ -8,8 +8,8 @@
     <style>
         :root { 
             --gold: #ffd700; 
-            --blue-circle: #0084ff; /* Blue Circle */
-            --green-line: #00ff88; /* Green Connection Line */
+            --blue-circle: #0084ff; 
+            --green-line: #00ff88; 
             --bg: #0f172a; 
             --panel: #1e293b; 
         }
@@ -17,7 +17,6 @@
         * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { margin: 0; background: var(--bg); color: #fff; overflow-x: hidden; }
 
-        /* --- Home Page Styling --- */
         #home-screen {
             height: 100vh; width: 100vw; display: flex; flex-direction: column;
             align-items: center; justify-content: center; text-align: center;
@@ -32,17 +31,14 @@
         }
         .enter-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(255,215,0,0.2); }
 
-        /* --- Dashboard Styling --- */
         #main-app { display: none; padding: 15px; }
         .toolbar { background: var(--panel); padding: 12px; border-radius: 12px; margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; border: 1px solid rgba(255,255,255,0.1); }
         
-        /* Table Styling */
         .table-container { position: relative; background: #fff; border-radius: 10px; padding: 5px; box-shadow: 0 0 30px rgba(0,0,0,0.5); display: inline-block; }
         table { border-collapse: collapse; color: #000; font-size: 14px; position: relative; z-index: 5; }
         td, th { border: 1px solid #ddd; padding: 8px 4px; text-align: center; font-weight: bold; width: 45px; height: 45px; }
         th { background: #1e293b; color: white; font-size: 11px; }
         
-        /* --- NEW MARKING STYLE --- */
         .circle { 
             border: 3px solid var(--blue-circle) !important; 
             border-radius: 50% !important; 
@@ -51,7 +47,7 @@
         }
         canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 4; }
 
-        .Kalyan { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 20px; }
+        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 20px; }
         .card { background: var(--panel); padding: 15px; border-radius: 12px; border-top: 3px solid var(--gold); }
         .card h3 { margin: 0 0 10px 0; color: var(--gold); font-size: 14px; text-transform: uppercase; }
 
@@ -118,11 +114,19 @@
 </div>
 
 <script>
-// --- CORE LOGIC (UNTOUCHED) ---
 const STORAGE_KEY="pdata_Kalyan_v2";
 let targetCol=null;
-    
-// Aapka original FAMILY object
+let activeMark=null;
+
+// Normalize function: Ensures 2-digit format and numbers only
+function norm(v) {
+    if (!v || v.trim() === "" || v === "**") return "**";
+    let n = v.replace(/[^0-9]/g, "");
+    if (n === "") return "**";
+    if (n.length === 1) n = "0" + n;
+    return n.substring(0, 2);
+}
+
 const FAMILY = {
  "22":["22","27","72","77"], "11":["11","61","66","16"], "33":["33","83","88","38"], "99":["99","44","49","94"], "55":["50","00","05","55"],
  "12":["12","17","21","26","62","67","71","76"], "13":["13","18","31","36","63","68","81","86"], "14":["14","19","41","46","64","69","91","96"],  
@@ -131,7 +135,7 @@ const FAMILY = {
  "45":["04","09","40","45","54","59","90","95"]
 };
     
-let data=JSON.parse(localStorage.getItem(STORAGE_KEY)) || [["10","20","30","40","50"],["**","**","**","**","**"]];
+let data=JSON.parse(localStorage.getItem(STORAGE_KEY)) || [["10","20","30","40","50","60"],["**","**","**","**","**","**"]];
 
 function startApp() {
     document.getElementById('home-screen').style.display = 'none';
@@ -141,10 +145,7 @@ function startApp() {
 
 function fam(v){for(let k in FAMILY) if(FAMILY[k].includes(v)) return k; return "NA";}
 function palti(v){return v[1]+v[0];}
-
 function smartMatch(a1,b1){ if(a1=="**"||b1=="**") return false; return a1===b1 || palti(a1)===b1 || fam(a1)===fam(b1); }
-
-let activeMark=null;
 
 function draw(){
  let h="<tr><th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th><th>SAT</th></tr>";
@@ -167,7 +168,6 @@ function isPartOfPattern(ri, ci){
     return (i >= 0 && i < activeMark.shape.length && activeMark.shape[i][ci]);
 }
 
-// --- UPDATED VISUALS: GREEN LINES ---
 function drawLines(cvsId, tblEl) {
     const cvs = document.getElementById(cvsId);
     const ctx = cvs.getContext("2d");
@@ -177,7 +177,7 @@ function drawLines(cvsId, tblEl) {
     if(cells.length < 2) return;
     
     const tRect = tblEl.getBoundingClientRect();
-    ctx.strokeStyle = "#00ff88"; // GREEN LINE
+    ctx.strokeStyle = "#00ff88"; 
     ctx.lineWidth = 2.5;
     ctx.lineCap = "round";
     
@@ -192,34 +192,34 @@ function drawLines(cvsId, tblEl) {
     ctx.stroke();
 }
 
-function edit(r,c,el){ data[r][c]=norm(el.innerText.trim()); }
+function edit(r,c,el){ 
+    data[r][c] = norm(el.innerText.trim()); 
+}
+
 function addRow(){ data.push(["**","**","**","**","**","**"]); draw(); }
-function saveData(){ localStorage.setItem(STORAGE_KEY,JSON.stringify(data)); alert("Saved Successfully!"); }
+function saveData(){ localStorage.setItem(STORAGE_KEY,JSON.stringify(data)); alert("Data Saved Successfully!"); }
 function clearData(){ if(confirm("Permanently clear all data?")){ localStorage.clear(); location.reload(); }}
 
 function makePattern(r,c){
   targetCol=c; let base="**";
-  // Pehle base jodi confirm karte hain
   for(let i=r;i>=0;i--){ if(data[i][c]!="**"){base=data[i][c]; break;}}
   if(base=="**") return;
 
-  let shape = Array(9).fill(0).map(() => Array(6).fill(0)); // 9 rows ka khali frame
+  let shape = Array(9).fill(0).map(() => Array(6).fill(0)); 
   let matchCount = 0;
   let startRow = Math.max(0, r-8);
 
-  // Neeche se upar (Reverse Loop) taaki blank ke paas wali pehle mile
   for(let i = r; i >= startRow; i--){
     for(let j = 0; j < 6; j++){
       if(data[i][j] != "**" && smartMatch(data[i][j], base)){
-        if(matchCount < 3){ // Sirf 3 jodi tak hi mark karega
+        if(matchCount < 3){ 
           shape[i - startRow][j] = 1;
           matchCount++;
         }
       }
     }
-    if(matchCount >= 3) break; // 3 milte hi loop rok do
+    if(matchCount >= 3) break; 
   }
-  
   searchPattern(shape, base);
 }
 
@@ -291,12 +291,16 @@ document.getElementById("csv").onchange = e => {
     let fr = new FileReader();
     fr.onload = () => {
         let lines = fr.result.split('\n');
-        data = lines.filter(l=>l.trim()).map(l => l.split(',').map(v => norm(v.trim())));
+        data = lines.filter(l=>l.trim()).map(l => {
+            let row = l.split(',').map(v => norm(v.trim()));
+            while(row.length < 6) row.push("**"); // Fill missing days
+            return row.slice(0,6);
+        });
         draw();
+        alert("CSV Loaded successfully!");
     };
     fr.readAsText(e.target.files[0]);
 };
 </script>
 </body>
 </html>
-
