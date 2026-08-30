@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalyan Pro AI – Mobile Responsive Edition</title>
+    <title>Kalyan Pro AI – Cloud Live Sync Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -40,6 +40,12 @@
             justify-content: center; border: 1px solid rgba(255,255,255,0.1); 
         }
         
+        .sync-status {
+            font-size: 11px; padding: 4px 8px; border-radius: 4px; font-weight: bold; margin-bottom: 10px; text-align: center;
+        }
+        .sync-online { background: #059669; color: white; }
+        .sync-syncing { background: #d97706; color: white; }
+
         .table-container { 
             position: relative; background: #fff; border-radius: 10px; 
             padding: 5px; box-shadow: 0 0 20px rgba(0,0,0,0.5); 
@@ -81,20 +87,26 @@
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; z-index: 90; }
         button { cursor: pointer; border-radius: 6px; border: none; font-weight: bold; padding: 8px 10px; font-size: 11px; }
     </style>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 </head>
 <body>
 
 <div id="home-screen">
     <h1 class="hero-title">Kalyan PRO AI</h1>
-    <p class="hero-sub">ULTRA MOBILE ENGINE V10.0</p>
+    <p class="hero-sub">CLOUD LIVE SYNC ENGINE V11.0</p>
     <button class="enter-btn" onclick="startApp()">START ANALYSIS</button>
 </div>
 
 <div id="main-app">
-    <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom:10px;">
+    <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom:5px;">
         <h3 style="color:var(--gold); margin:0; font-size: 1.1rem;">Kalyan Ultra AI</h3>
         <span id="trend-bar" class="trend-badge">Trend: Scanning...</span>
     </div>
+    
+    <div id="sync-indicator" class="sync-status sync-online">☁️ Cloud Live Sync Connected</div>
 
     <div class="toolbar">
         <input type="file" id="csv" accept=".csv" style="display:none">
@@ -102,7 +114,7 @@
         <button onclick="addRow()" style="background:#444; color:white;">➕ ROW</button>
         <button onclick="autoScanPatterns()" style="background:var(--purple); color:white;">🔍 AUTO SCAN</button>
         <button onclick="runTwoJodiSequenceSearch()" style="background:#0084ff; color:white;">⚡ 2-JODI</button>
-        <button onclick="saveData()" style="background:#28a745; color:white;">💾 SAVE</button>
+        <button onclick="saveData()" style="background:#28a745; color:white;">💾 SAVE TO CLOUD</button>
         <button onclick="clearData()" style="background:#dc3545; color:white;">🗑️ CLEAR</button>
     </div>
 
@@ -154,9 +166,26 @@
 </div>
 
 <script>
-const STORAGE_KEY="pdata_Kalyan_v10";
-let targetCol=null;
-let activeMark=null;
+// Firebase Configuration Setup
+const firebaseConfig = {
+  apiKey: "AIzaSyDSJ0jO4W9ZCb25jt3b7rCgtAGmL1-zKy0",
+  authDomain: "kalyan-ai-f0b16.firebaseapp.com",
+  databaseURL: "https://kalyan-ai-f0b16-default-rtdb.firebaseio.com",
+  projectId: "kalyan-ai-f0b16",
+  storageBucket: "kalyan-ai-f0b16.firebasestorage.app",
+  messagingSenderId: "451708729331",
+  appId: "1:451708729331:web:13433d1b99e024fd4cc486",
+  measurementId: "G-TMWP389ZDL"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const dbRef = db.ref("chart_data");
+
+const STORAGE_KEY = "pdata_Kalyan_v10";
+let targetCol = null;
+let activeMark = null;
 let highlightedFam = null;
 
 function norm(v) {
@@ -175,7 +204,6 @@ const FAMILY = {
  "45":["04","09","40","45","54","59","90","95"]
 };
 
-// Default Initial Data (Mobile Auto Load)
 const defaultData = [
     ["10","20","30","40","50","60"],
     ["15","25","35","45","55","65"],
@@ -184,6 +212,25 @@ const defaultData = [
 ];
 
 let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || defaultData;
+
+// Listen for Realtime Cloud Updates
+dbRef.on('value', (snapshot) => {
+    const cloudData = snapshot.val();
+    if(cloudData) {
+        data = cloudData;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        draw();
+        showSyncStatus("☁️ Live Synced with Cloud", "sync-online");
+    }
+});
+
+function showSyncStatus(msg, className) {
+    const el = document.getElementById("sync-indicator");
+    if(el) {
+        el.innerText = msg;
+        el.className = "sync-status " + className;
+    }
+}
 
 function startApp() {
     document.getElementById('home-screen').style.display = 'none';
@@ -264,8 +311,26 @@ function edit(r,c,el){
 }
 
 function addRow(){ data.push(["**","**","**","**","**","**"]); draw(); }
-function saveData(){ localStorage.setItem(STORAGE_KEY,JSON.stringify(data)); alert("Data Saved Successfully!"); }
-function clearData(){ if(confirm("Permanently clear all data?")){ localStorage.removeItem(STORAGE_KEY); data = defaultData; draw(); }}
+
+function saveData(){ 
+    showSyncStatus("⏳ Syncing with Cloud...", "sync-syncing");
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); 
+    dbRef.set(data).then(() => {
+        showSyncStatus("☁️ Saved to Cloud Successfully!", "sync-online");
+        alert("Data Saved & Synced across all devices!");
+    }).catch(err => {
+        alert("Saved locally, Cloud sync failed: " + err.message);
+    });
+}
+
+function clearData(){ 
+    if(confirm("Permanently clear all cloud data?")){ 
+        localStorage.removeItem(STORAGE_KEY); 
+        data = defaultData; 
+        dbRef.set(defaultData);
+        draw(); 
+    }
+}
 
 function updateTrendIndicator() {
     let redCount = 0, total = 0;
@@ -431,7 +496,8 @@ function searchPattern(shape,base){
    for(let j=0; j<6; j++){ if(shape[k][j] && !smartMatch(data[i+k][j],base)){ok=false; break;}}
    if(!ok) break;
   }
-  if(ok) lastMatches.push({index:i});
+  if(!ok) continue;
+  lastMatches.push({index:i});
  }
  showChecks(shape, lastMatches);
 }
@@ -498,7 +564,7 @@ document.getElementById("csv").onchange = e => {
         });
         saveData();
         draw();
-        alert("CSV Loaded & Saved!");
+        alert("CSV Loaded & Synced with Cloud!");
     };
     fr.readAsText(e.target.files[0]);
 };
