@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalyan Pro AI – Ultra Edition</title>
+    <title>Kalyan Pro AI – Ultra Max Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -13,6 +13,7 @@
             --bg: #0f172a; 
             --panel: #1e293b; 
             --red: #ff4444;
+            --purple: #a855f7;
         }
 
         * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
@@ -33,24 +34,27 @@
         .enter-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 25px rgba(255,215,0,0.2); }
 
         #main-app { display: none; padding: 15px; }
-        .toolbar { background: var(--panel); padding: 12px; border-radius: 12px; margin-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; border: 1px solid rgba(255,255,255,0.1); }
+        .toolbar { background: var(--panel); padding: 12px; border-radius: 12px; margin-bottom: 15px; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; border: 1px solid rgba(255,255,255,0.1); }
         
         .table-container { position: relative; background: #fff; border-radius: 10px; padding: 5px; box-shadow: 0 0 30px rgba(0,0,0,0.5); display: inline-block; }
         table { border-collapse: collapse; color: #000; font-size: 14px; position: relative; z-index: 5; }
-        td, th { border: 1px solid #ddd; padding: 8px 4px; text-align: center; font-weight: bold; width: 45px; height: 45px; }
+        td, th { border: 1px solid #ddd; padding: 8px 4px; text-align: center; font-weight: bold; width: 45px; height: 45px; cursor: pointer; }
         th { background: #1e293b; color: white; font-size: 11px; }
         
         .circle { 
             border: 3px solid var(--blue-circle) !important; 
             border-radius: 50% !important; 
-            background: rgba(0, 132, 255, 0.15); 
+            background: rgba(0, 132, 255, 0.2); 
             z-index: 10;
         }
+        .fam-highlight { background: rgba(255, 215, 0, 0.4) !important; font-weight: 900; }
+        .red-jodi { color: #ff0000 !important; font-weight: 900; }
+
         canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 4; }
 
         .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-top: 20px; }
         .card { background: var(--panel); padding: 15px; border-radius: 12px; border-top: 3px solid var(--gold); }
-        .card h3 { margin: 0 0 10px 0; color: var(--gold); font-size: 14px; text-transform: uppercase; }
+        .card h3 { margin: 0 0 10px 0; color: var(--gold); font-size: 13px; text-transform: uppercase; }
 
         .day-ank-table { width: 100%; color: white; font-size: 12px; border-collapse: collapse; margin-top: 5px; }
         .day-ank-table th { background: #0f172a; color: var(--gold); border: 1px solid #334155; padding: 4px; }
@@ -58,37 +62,39 @@
 
         .prob-badge { background: #00ff88; color: #000; border-radius: 4px; padding: 2px 6px; font-weight: bold; font-size: 11px; margin-left: 5px; }
         .cut-badge { background: var(--red); color: #fff; border-radius: 4px; padding: 2px 6px; font-weight: bold; font-size: 11px; }
+        .trend-badge { background: var(--purple); color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 12px; font-weight: bold; }
 
         #popup { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 15px; display: none; z-index: 100; padding: 15px; color: #000; width: 90%; max-width: 400px; }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; z-index: 90; }
-        button { cursor: pointer; border-radius: 6px; border: none; font-weight: bold; }
+        button { cursor: pointer; border-radius: 6px; border: none; font-weight: bold; padding: 8px 12px; }
     </style>
 </head>
 <body>
 
 <div id="home-screen">
     <h1 class="hero-title">Kalyan PRO AI</h1>
-    <p class="hero-sub">ULTRA PATTERN & PROBABILITY ENGINE</p>
+    <p class="hero-sub">ULTRA MAX ENGINE V10.0</p>
     <button class="enter-btn" onclick="startApp()">START ANALYSIS</button>
 </div>
 
 <div id="main-app">
-    <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom:10px;">
-        <h2 style="color:var(--gold); margin:0;">Kalyan Ultra AI</h2>
-        <button onclick="location.reload()" style="background:none; color:white; border:1px solid #444; padding:5px 10px;">Logout</button>
+    <div style="display:flex; justify- space-between; align-items: center; margin-bottom:10px;">
+        <h2 style="color:var(--gold); margin:0;">Kalyan Ultra Max AI</h2>
+        <span id="trend-bar" class="trend-badge">Trend: Scanning...</span>
     </div>
 
     <div class="toolbar">
         <input type="file" id="csv" style="display:none">
         <button onclick="document.getElementById('csv').click()" style="background:#444; color:white;">📂 CSV</button>
         <button onclick="addRow()" style="background:#444; color:white;">➕ ROW</button>
-        <button onclick="runTwoJodiSequenceSearch()" style="background:#0084ff; color:white;">⚡ 2-JODI AUTO MATCH</button>
+        <button onclick="autoScanPatterns()" style="background:var(--purple); color:white;">🔍 AUTO AI SCAN</button>
+        <button onclick="runTwoJodiSequenceSearch()" style="background:#0084ff; color:white;">⚡ 2-JODI MATCH</button>
         <button onclick="saveData()" style="background:#28a745; color:white;">💾 SAVE DATA</button>
         <button onclick="clearData()" style="background:#dc3545; color:white;">🗑️ CLEAR</button>
     </div>
 
     <center>
-        <div class="table-container">
+        <div class="table-container" id="printable-chart">
             <canvas id="mainCanvas"></canvas>
             <table id="tbl"></table>
         </div>
@@ -111,7 +117,6 @@
             <h3>🎯 2-Jodi Sequence Prediction</h3>
             <div id="seq-predict">Click 2-Jodi Auto Match...</div>
         </div>
-        <!-- Ultra Strong Features -->
         <div class="card">
             <h3>🚫 High Risk Cut-Ank</h3>
             <div id="cut-ank">Calculating...</div>
@@ -136,9 +141,10 @@
 </div>
 
 <script>
-const STORAGE_KEY="pdata_Kalyan_v2";
+const STORAGE_KEY="pdata_Kalyan_v10";
 let targetCol=null;
 let activeMark=null;
+let highlightedFam = null;
 
 function norm(v) {
     if (!v || v.trim() === "" || v === "**") return "**";
@@ -155,8 +161,12 @@ const FAMILY = {
  "25":["02","07","20","25","52","57","70","75"], "34":["34","39","43","48","84","89","93","98"], "35":["03","08","30","35","53","58","80","85"],  
  "45":["04","09","40","45","54","59","90","95"]
 };
-    
-let data=JSON.parse(localStorage.getItem(STORAGE_KEY)) || [["10","20","30","40","50","60"],["**","**","**","**","**","**"]];
+
+let data=JSON.parse(localStorage.getItem(STORAGE_KEY)) || [
+    ["10","20","30","40","50","60"],
+    ["15","25","35","45","55","65"],
+    ["**","**","**","**","**","**"]
+];
 
 function startApp() {
     document.getElementById('home-screen').style.display = 'none';
@@ -167,6 +177,7 @@ function startApp() {
 function fam(v){for(let k in FAMILY) if(FAMILY[k].includes(v)) return k; return "NA";}
 function palti(v){return v[1]+v[0];}
 function smartMatch(a1,b1){ if(a1=="**"||b1=="**") return false; return a1===b1 || palti(a1)===b1 || fam(a1)===fam(b1); }
+function isRedJodi(v){ return v!=="**" && (v[0]===v[1] || Math.abs(parseInt(v[0])-parseInt(v[1]))===5); }
 
 function draw(){
  let h="<tr><th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th><th>SAT</th></tr>";
@@ -174,8 +185,11 @@ function draw(){
   h+="<tr>";
   r.forEach((c,ci)=>{
    let cls = (activeMark && isPartOfPattern(ri, ci)) ? "circle" : "";
+   if(highlightedFam && fam(c) === highlightedFam) cls += " fam-highlight";
+   if(isRedJodi(c)) cls += " red-jodi";
    if(c=="**") cls += " blank";
-   h+=`<td class="${cls}" contenteditable oninput="edit(${ri},${ci},this)" onclick="${c=='**'?'makePattern('+ri+','+ci+')':'' }">${c}</td>`;
+   
+   h+=`<td class="${cls}" contenteditable oninput="edit(${ri},${ci},this)" onclick="handleCellClick(${ri},${ci},'${c}')">${c}</td>`;
   });
   h+="</tr>";
  });
@@ -184,6 +198,16 @@ function draw(){
  
  calculateDayFrequency();
  calculateCutAnk();
+ updateTrendIndicator();
+}
+
+function handleCellClick(r, c, val) {
+    if(val !== "**") {
+        highlightedFam = (highlightedFam === fam(val)) ? null : fam(val);
+        draw();
+    } else {
+        makePattern(r, c);
+    }
 }
 
 function isPartOfPattern(ri, ci){
@@ -226,6 +250,20 @@ function addRow(){ data.push(["**","**","**","**","**","**"]); draw(); }
 function saveData(){ localStorage.setItem(STORAGE_KEY,JSON.stringify(data)); alert("Data Saved Successfully!"); }
 function clearData(){ if(confirm("Permanently clear all data?")){ localStorage.clear(); location.reload(); }}
 
+function updateTrendIndicator() {
+    let redCount = 0, total = 0;
+    data.slice(-10).forEach(row => {
+        row.forEach(cell => {
+            if(cell !== "**") {
+                total++;
+                if(isRedJodi(cell)) redCount++;
+            }
+        });
+    });
+    let redRatio = total ? Math.round((redCount / total) * 100) : 0;
+    document.getElementById("trend-bar").innerText = `Trend: ${redRatio}% Red Jodis (Last 10 Wks)`;
+}
+
 function calculateDayFrequency() {
     const days = ["MON", "TUE", "WED", "THU", "FRI", "SAT"];
     let dayFreq = [{}, {}, {}, {}, {}, {}];
@@ -233,8 +271,7 @@ function calculateDayFrequency() {
     data.forEach(row => {
         row.forEach((val, dayIdx) => {
             if (val && val !== "**" && val.length === 2) {
-                let d1 = val[0];
-                let d2 = val[1];
+                let d1 = val[0], d2 = val[1];
                 dayFreq[dayIdx][d1] = (dayFreq[dayIdx][d1] || 0) + 1;
                 dayFreq[dayIdx][d2] = (dayFreq[dayIdx][d2] || 0) + 1;
             }
@@ -255,9 +292,6 @@ function calculateDayFrequency() {
     document.getElementById("day-freq-analysis").innerHTML = html;
 }
 
-// -------------------------------------------------------------
-// ULTRA FEATURE: Smart Cut-Ank Eliminator
-// -------------------------------------------------------------
 function calculateCutAnk() {
     let ankCounts = Array(10).fill(0);
     let totalAnk = 0;
@@ -272,17 +306,12 @@ function calculateCutAnk() {
         });
     });
 
-    if(totalAnk === 0) {
-        document.getElementById("cut-ank").innerHTML = "No data available";
-        return;
-    }
+    if(totalAnk === 0) return;
 
     let cutAnks = [];
     ankCounts.forEach((cnt, ank) => {
         let prob = (cnt / totalAnk) * 100;
-        if(prob < 6.5) { // Lowest frequency threshold
-            cutAnks.push(ank);
-        }
+        if(prob < 6.5) cutAnks.push(ank);
     });
 
     document.getElementById("cut-ank").innerHTML = cutAnks.length 
@@ -290,32 +319,34 @@ function calculateCutAnk() {
         : "<b style='color:#00ff88;'>All Ank are Balanced</b>";
 }
 
-// -------------------------------------------------------------
-// ULTRA FEATURE: Weighted 2-Jodi Sequence & Probability Score %
-// -------------------------------------------------------------
+function autoScanPatterns() {
+    let totalRows = data.length;
+    if(totalRows < 5) { alert("कम से कम 5 हफ्तों का डेटा चाहिए!"); return; }
+    
+    // Auto Pick target blank cell
+    let blankRow = totalRows - 1;
+    let blankCol = 0;
+    makePattern(blankRow, blankCol);
+}
+
 function runTwoJodiSequenceSearch() {
     let validCells = [];
     for (let i = data.length - 1; i >= 0; i--) {
         for (let j = 5; j >= 0; j--) {
-            if (data[i][j] !== "**") {
-                validCells.push({ r: i, c: j, val: data[i][j] });
-            }
+            if (data[i][j] !== "**") validCells.push({ r: i, c: j, val: data[i][j] });
             if (validCells.length === 2) break;
         }
         if (validCells.length === 2) break;
     }
 
     if (validCells.length < 2) {
-        document.getElementById("seq-predict").innerHTML = "कम से कम 2 जोड़ियां रिकॉर्ड में होनी चाहिए!";
+        document.getElementById("seq-predict").innerHTML = "रिकॉर्ड में जोड़ियां अधूरी हैं!";
         return;
     }
 
-    let jodi2 = validCells[0]; 
-    let jodi1 = validCells[1]; 
-    let matches = [];
+    let jodi2 = validCells[0], jodi1 = validCells[1];
     let weightedNextScores = {};
     let totalScoreSum = 0;
-
     const totalRows = data.length;
 
     for (let i = 0; i < totalRows - 1; i++) {
@@ -330,12 +361,9 @@ function runTwoJodiSequenceSearch() {
                     
                     if (targetR < totalRows && data[targetR][targetC] !== "**") {
                         let targetVal = data[targetR][targetC];
-                        // 70/30 Weighted Logic: Recent rows get higher score multiplier
                         let weight = (i >= totalRows - 10) ? 2.5 : 1.0;
-                        
                         weightedNextScores[targetVal] = (weightedNextScores[targetVal] || 0) + weight;
                         totalScoreSum += weight;
-                        matches.push(targetVal);
                     }
                 }
             }
@@ -343,10 +371,9 @@ function runTwoJodiSequenceSearch() {
     }
 
     if (totalScoreSum === 0) {
-        document.getElementById("seq-predict").innerHTML = `<b>Base:</b> ${jodi1.val} ➔ ${jodi2.val}<br><span style="color:#ff4444;">इतिहास में 2-जोड़ी मैच नहीं मिला!</span>`;
+        document.getElementById("seq-predict").innerHTML = `<b>Base:</b> ${jodi1.val} ➔ ${jodi2.val}<br><span style="color:#ff4444;">इतिहास में मैच नहीं मिला!</span>`;
     } else {
         let sortedJodis = Object.keys(weightedNextScores).sort((a,b) => weightedNextScores[b] - weightedNextScores[a]);
-        
         let topOutputs = sortedJodis.slice(0, 3).map(jodi => {
             let probPercent = Math.round((weightedNextScores[jodi] / totalScoreSum) * 100);
             return `${jodi} <span class="prob-badge">${probPercent}%</span>`;
@@ -354,7 +381,6 @@ function runTwoJodiSequenceSearch() {
 
         document.getElementById("seq-predict").innerHTML = `
             <b>Sequence Base:</b> ${jodi1.val} ➔ ${jodi2.val}<br>
-            <b>Matches Found:</b> ${matches.length}<br>
             <b style="color:#00ff88;">High Probable Next:</b><br>${topOutputs.join(" | ")}
         `;
     }
