@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalyan Pro AI – Premium System</title>
+    <title>Kalyan Pro AI – Ultra Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -12,6 +12,7 @@
             --green-line: #00ff88; 
             --bg: #0f172a; 
             --panel: #1e293b; 
+            --red: #ff4444;
         }
 
         * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
@@ -47,13 +48,16 @@
         }
         canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 4; }
 
-        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 20px; }
+        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-top: 20px; }
         .card { background: var(--panel); padding: 15px; border-radius: 12px; border-top: 3px solid var(--gold); }
         .card h3 { margin: 0 0 10px 0; color: var(--gold); font-size: 14px; text-transform: uppercase; }
 
         .day-ank-table { width: 100%; color: white; font-size: 12px; border-collapse: collapse; margin-top: 5px; }
         .day-ank-table th { background: #0f172a; color: var(--gold); border: 1px solid #334155; padding: 4px; }
         .day-ank-table td { border: 1px solid #334155; padding: 4px; text-align: center; color: #00ff88; width: auto; height: auto; }
+
+        .prob-badge { background: #00ff88; color: #000; border-radius: 4px; padding: 2px 6px; font-weight: bold; font-size: 11px; margin-left: 5px; }
+        .cut-badge { background: var(--red); color: #fff; border-radius: 4px; padding: 2px 6px; font-weight: bold; font-size: 11px; }
 
         #popup { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 15px; display: none; z-index: 100; padding: 15px; color: #000; width: 90%; max-width: 400px; }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; z-index: 90; }
@@ -64,13 +68,13 @@
 
 <div id="home-screen">
     <h1 class="hero-title">Kalyan PRO AI</h1>
-    <p class="hero-sub">ADVANCED PATTERN RECOGNITION</p>
+    <p class="hero-sub">ULTRA PATTERN & PROBABILITY ENGINE</p>
     <button class="enter-btn" onclick="startApp()">START ANALYSIS</button>
 </div>
 
 <div id="main-app">
     <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom:10px;">
-        <h2 style="color:var(--gold); margin:0;">Kalyan</h2>
+        <h2 style="color:var(--gold); margin:0;">Kalyan Ultra AI</h2>
         <button onclick="location.reload()" style="background:none; color:white; border:1px solid #444; padding:5px 10px;">Logout</button>
     </div>
 
@@ -103,12 +107,15 @@
             <h3>🔮 Future Prediction</h3>
             <div id="future">Select a match...</div>
         </div>
-        <!-- 2-Jodi Sequence Prediction Engine Display -->
         <div class="card">
             <h3>🎯 2-Jodi Sequence Prediction</h3>
             <div id="seq-predict">Click 2-Jodi Auto Match...</div>
         </div>
-        <!-- Day wise High Frequency Ank Analysis -->
+        <!-- Ultra Strong Features -->
+        <div class="card">
+            <h3>🚫 High Risk Cut-Ank</h3>
+            <div id="cut-ank">Calculating...</div>
+        </div>
         <div class="card" style="grid-column: 1 / -1;">
             <h3>📊 Day-by-Day Top 4 Frequent Ank (Overall Record)</h3>
             <div id="day-freq-analysis">Calculating...</div>
@@ -176,6 +183,7 @@ function draw(){
  if(activeMark) setTimeout(() => drawLines("mainCanvas", document.getElementById("tbl")), 50);
  
  calculateDayFrequency();
+ calculateCutAnk();
 }
 
 function isPartOfPattern(ri, ci){
@@ -211,6 +219,7 @@ function drawLines(cvsId, tblEl) {
 function edit(r,c,el){ 
     data[r][c] = norm(el.innerText.trim()); 
     calculateDayFrequency();
+    calculateCutAnk();
 }
 
 function addRow(){ data.push(["**","**","**","**","**","**"]); draw(); }
@@ -247,10 +256,44 @@ function calculateDayFrequency() {
 }
 
 // -------------------------------------------------------------
-// NEW FEATURE: 2-Jodi Sequence Trigger & Next Jodi Prediction
+// ULTRA FEATURE: Smart Cut-Ank Eliminator
+// -------------------------------------------------------------
+function calculateCutAnk() {
+    let ankCounts = Array(10).fill(0);
+    let totalAnk = 0;
+
+    data.forEach(row => {
+        row.forEach(val => {
+            if (val && val !== "**" && val.length === 2) {
+                ankCounts[parseInt(val[0])]++;
+                ankCounts[parseInt(val[1])]++;
+                totalAnk += 2;
+            }
+        });
+    });
+
+    if(totalAnk === 0) {
+        document.getElementById("cut-ank").innerHTML = "No data available";
+        return;
+    }
+
+    let cutAnks = [];
+    ankCounts.forEach((cnt, ank) => {
+        let prob = (cnt / totalAnk) * 100;
+        if(prob < 6.5) { // Lowest frequency threshold
+            cutAnks.push(ank);
+        }
+    });
+
+    document.getElementById("cut-ank").innerHTML = cutAnks.length 
+        ? `<span class="cut-badge">REJECT</span> <b>Low Chance Ank:</b> ${cutAnks.join(", ")}`
+        : "<b style='color:#00ff88;'>All Ank are Balanced</b>";
+}
+
+// -------------------------------------------------------------
+// ULTRA FEATURE: Weighted 2-Jodi Sequence & Probability Score %
 // -------------------------------------------------------------
 function runTwoJodiSequenceSearch() {
-    // 1. Get recent valid two jodis from last rows
     let validCells = [];
     for (let i = data.length - 1; i >= 0; i--) {
         for (let j = 5; j >= 0; j--) {
@@ -267,45 +310,52 @@ function runTwoJodiSequenceSearch() {
         return;
     }
 
-    let jodi2 = validCells[0]; // Recent jodi
-    let jodi1 = validCells[1]; // Previous jodi
-
+    let jodi2 = validCells[0]; 
+    let jodi1 = validCells[1]; 
     let matches = [];
-    let nextJodis = [];
+    let weightedNextScores = {};
+    let totalScoreSum = 0;
 
-    // Scan overall data excluding the current active tail
-    for (let i = 0; i < data.length - 1; i++) {
+    const totalRows = data.length;
+
+    for (let i = 0; i < totalRows - 1; i++) {
         for (let j = 0; j < 6; j++) {
             if (smartMatch(data[i][j], jodi1.val)) {
-                // Check next adjacent cell in record sequence
                 let nextR = i, nextC = j + 1;
                 if (nextC > 5) { nextR++; nextC = 0; }
                 
-                if (nextR < data.length && smartMatch(data[nextR][nextC], jodi2.val)) {
-                    // Match found! Get the 3rd cell (Next Target Jodi)
+                if (nextR < totalRows && smartMatch(data[nextR][nextC], jodi2.val)) {
                     let targetR = nextR, targetC = nextC + 1;
                     if (targetC > 5) { targetR++; targetC = 0; }
                     
-                    if (targetR < data.length && data[targetR][targetC] !== "**") {
-                        matches.push({ r1: i, c1: j, r2: nextR, c2: nextC });
-                        nextJodis.push(data[targetR][targetC]);
+                    if (targetR < totalRows && data[targetR][targetC] !== "**") {
+                        let targetVal = data[targetR][targetC];
+                        // 70/30 Weighted Logic: Recent rows get higher score multiplier
+                        let weight = (i >= totalRows - 10) ? 2.5 : 1.0;
+                        
+                        weightedNextScores[targetVal] = (weightedNextScores[targetVal] || 0) + weight;
+                        totalScoreSum += weight;
+                        matches.push(targetVal);
                     }
                 }
             }
         }
     }
 
-    if (nextJodis.length === 0) {
+    if (totalScoreSum === 0) {
         document.getElementById("seq-predict").innerHTML = `<b>Base:</b> ${jodi1.val} ➔ ${jodi2.val}<br><span style="color:#ff4444;">इतिहास में 2-जोड़ी मैच नहीं मिला!</span>`;
     } else {
-        let freqMap = {};
-        nextJodis.forEach(j => freqMap[j] = (freqMap[j] || 0) + 1);
-        let topPredicted = Object.keys(freqMap).sort((a,b) => freqMap[b] - freqMap[a]);
+        let sortedJodis = Object.keys(weightedNextScores).sort((a,b) => weightedNextScores[b] - weightedNextScores[a]);
         
+        let topOutputs = sortedJodis.slice(0, 3).map(jodi => {
+            let probPercent = Math.round((weightedNextScores[jodi] / totalScoreSum) * 100);
+            return `${jodi} <span class="prob-badge">${probPercent}%</span>`;
+        });
+
         document.getElementById("seq-predict").innerHTML = `
             <b>Sequence Base:</b> ${jodi1.val} ➔ ${jodi2.val}<br>
             <b>Matches Found:</b> ${matches.length}<br>
-            <b style="color:#00ff88;">Next Jodi Predict:</b> ${topPredicted.slice(0, 3).join(", ")}
+            <b style="color:#00ff88;">High Probable Next:</b><br>${topOutputs.join(" | ")}
         `;
     }
 }
