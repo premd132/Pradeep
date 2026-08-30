@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalyan Pro AI – Fixed Persistent Pattern Engine</title>
+    <title>Kalyan Pro AI – Custom Row Connection Pattern Engine</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -73,9 +73,9 @@
         .fam-highlight { background: rgba(255, 215, 0, 0.4) !important; font-weight: 900; }
         .red-jodi { color: #ff0000 !important; font-weight: 900; }
         
-        .seq-selected-1 { background: #facc15 !important; color: #000 !important; font-weight: 900; border: 2px solid #b45309 !important; }
-        .seq-selected-2 { background: #c084fc !important; color: #000 !important; font-weight: 900; border: 2px solid #7e22ce !important; }
-        .seq-selected-3 { background: #38bdf8 !important; color: #000 !important; font-weight: 900; border: 2px solid #0284c7 !important; }
+        .seq-selected-1 { background: #facc15 !important; color: #000 !important; font-weight: 900; border: 3px solid #b45309 !important; border-radius: 50% !important; }
+        .seq-selected-2 { background: #c084fc !important; color: #000 !important; font-weight: 900; border: 3px solid #7e22ce !important; border-radius: 50% !important; }
+        .seq-selected-3 { background: #38bdf8 !important; color: #000 !important; font-weight: 900; border: 3px solid #0284c7 !important; border-radius: 50% !important; }
         
         tr.row-highlight td {
             background-color: #e9d5ff !important;
@@ -115,7 +115,7 @@
 
 <div id="home-screen">
     <h1 class="hero-title">Kalyan PRO AI</h1>
-    <p class="hero-sub">PERSISTENT PATTERN ENGINE V17.0</p>
+    <p class="hero-sub">CUSTOM ROW CONNECTION PATTERN ENGINE V18.0</p>
     <button class="enter-btn" onclick="startApp()">START ANALYSIS</button>
 </div>
 
@@ -159,7 +159,7 @@
             <div id="future">Select a match...</div>
         </div>
         <div class="card" style="grid-column: 1 / -1;">
-            <h3>🎯 3-Jodi Exact Pattern Prediction Engine</h3>
+            <h3>🎯 3-Jodi Connection Line Prediction Engine</h3>
             <div id="seq-predict">Click "SELECT 3-JODI" then tap 3 cells on table in sequence...</div>
         </div>
         <div class="card">
@@ -250,23 +250,54 @@ function draw(){
    
    if(c=="**") cls += " blank";
    
-   h+=`<td class="${cls}" contenteditable="true" onblur="updateCell(${ri},${ci},this)" onkeydown="checkEnter(event, this)" onclick="handleCellClick(${ri},${ci},'${c}')">${c}</td>`;
+   h+=`<td class="${cls}" data-row="${ri}" data-col="${ci}" contenteditable="true" onblur="updateCell(${ri},${ci},this)" onkeydown="checkEnter(event, this)" onclick="handleCellClick(${ri},${ci},'${c}')">${c}</td>`;
   });
   h+=`<td class="action-td"><button class="btn-del-row" onclick="deleteRow(${ri})">✕</button></td>`;
   h+="</tr>";
  });
  document.getElementById("tbl").innerHTML=h;
  
- // Redraw persistent lines if activeMark exists
- if(activeMark) {
-     setTimeout(() => drawLines("mainCanvas", document.getElementById("tbl")), 50);
- } else {
-     clearCanvas("mainCanvas");
- }
+ setTimeout(() => {
+     if(selectedJodis.length > 1) {
+         drawSelectedJodiLines("mainCanvas", document.getElementById("tbl"));
+     } else if(activeMark) {
+         drawLines("mainCanvas", document.getElementById("tbl"));
+     } else {
+         clearCanvas("mainCanvas");
+     }
+ }, 50);
  
  calculateDayFrequency();
  calculateCutAnk();
  updateTrendIndicator();
+}
+
+function drawSelectedJodiLines(cvsId, tblEl) {
+    const cvs = document.getElementById(cvsId);
+    const ctx = cvs.getContext("2d");
+    cvs.width = tblEl.offsetWidth; 
+    cvs.height = tblEl.offsetHeight;
+    ctx.clearRect(0,0,cvs.width,cvs.height);
+    
+    if(selectedJodis.length < 2) return;
+    const tRect = tblEl.getBoundingClientRect();
+    
+    ctx.strokeStyle = "#a855f7"; 
+    ctx.lineWidth = 3;
+    ctx.lineCap = "round";
+    
+    ctx.beginPath();
+    selectedJodis.forEach((pos, idx) => {
+        const cell = tblEl.querySelector(`td[data-row="${pos.r}"][data-col="${pos.c}"]`);
+        if(cell) {
+            const r = cell.getBoundingClientRect();
+            const x = r.left - tRect.left + r.width/2;
+            const y = r.top - tRect.top + r.height/2;
+            if(idx === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        }
+    });
+    ctx.stroke();
 }
 
 function clearCanvas(cvsId) {
@@ -279,6 +310,7 @@ function clearCanvas(cvsId) {
 
 function clearActivePattern() {
     activeMark = null;
+    selectedJodis = [];
     draw();
 }
 
@@ -308,6 +340,7 @@ function deleteRow(rIndex) {
 function toggleMultiJodiMode() {
     isMultiJodiSelectionMode = !isMultiJodiSelectionMode;
     selectedJodis = [];
+    activeMark = null;
     const btn = document.getElementById("btn-3jodi-mode");
     if(isMultiJodiSelectionMode) {
         btn.classList.add("btn-active");
@@ -435,8 +468,8 @@ function runSelectedThreeJodiSearch() {
             <b>Selected Base 3-Jodi:</b> ${j1.val} ➔ ${j2.val} ➔ ${j3.val}<br>
             <b style="color:#00ff88; font-size:13px;">High Probable 4th Jodi: ${topOutputs.join(" | ")}</b>
             <div class="explanation-box">
-                <b>🔍 AI Exact 3-Jodi Pattern Breakdown:</b><br>
-                1. रिकॉर्ड में कुल <b>${matchLogs.length} बार</b> ऐसा 3-Jodi पैटर्न बना।<br>
+                <b>🔍 AI Connection Line Row Pattern Breakdown:</b><br>
+                1. रिकॉर्ड में कुल <b>${matchLogs.length} बार</b> सेम ऐसा 3-Jodi पैटर्न बना।<br>
                 2. पुरानी हिस्ट्री मैच रिकॉर्ड्स (देखने के लिए क्लिक करें):<br>${logHtml}
             </div>
         `;
@@ -485,6 +518,7 @@ function clearData(){
         localStorage.removeItem(STORAGE_KEY); 
         data = defaultData; 
         activeMark = null;
+        selectedJodis = [];
         draw(); 
     }
 }
@@ -608,7 +642,7 @@ function showChecks(shape, matches){
   let d = document.createElement("div");
   d.style = "background:#2a2a2a; margin:4px 0; padding:6px; cursor:pointer; border-radius:6px; font-size:11px; border-left:3px solid #0084ff;";
   d.innerText = `Match Found at Row ${m.index + 1}`;
-  d.onclick = () => { activeMark={start:m.index, shape:shape}; draw(); showOne(shape, m.index); };
+  d.onclick = () => { activeMark={start:m.index, shape:shape}; selectedJodis=[]; draw(); showOne(shape, m.index); };
   document.getElementById("checks").appendChild(d);
  });
  updateAI(shape, matches);
