@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalyan Pro AI – Exact Sequence & Direction Engine</title>
+    <title>Kalyan Pro AI – Fixed Persistent Pattern Engine</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -72,8 +72,10 @@
         }
         .fam-highlight { background: rgba(255, 215, 0, 0.4) !important; font-weight: 900; }
         .red-jodi { color: #ff0000 !important; font-weight: 900; }
+        
         .seq-selected-1 { background: #facc15 !important; color: #000 !important; font-weight: 900; border: 2px solid #b45309 !important; }
-        .seq-selected-2 { background: var(--selected) !important; color: #000 !important; font-weight: 900; border: 2px solid #7e22ce !important; }
+        .seq-selected-2 { background: #c084fc !important; color: #000 !important; font-weight: 900; border: 2px solid #7e22ce !important; }
+        .seq-selected-3 { background: #38bdf8 !important; color: #000 !important; font-weight: 900; border: 2px solid #0284c7 !important; }
         
         tr.row-highlight td {
             background-color: #e9d5ff !important;
@@ -113,7 +115,7 @@
 
 <div id="home-screen">
     <h1 class="hero-title">Kalyan PRO AI</h1>
-    <p class="hero-sub">EXACT PATTERN & SEQUENCE ENGINE V15.0</p>
+    <p class="hero-sub">PERSISTENT PATTERN ENGINE V17.0</p>
     <button class="enter-btn" onclick="startApp()">START ANALYSIS</button>
 </div>
 
@@ -130,9 +132,10 @@
         <button onclick="document.getElementById('csv').click()" style="background:#444; color:white;">📂 CSV</button>
         <button onclick="addRow()" style="background:#0284c7; color:white;">➕ ADD ROW</button>
         <button onclick="autoScanPatterns()" style="background:var(--purple); color:white;">🔍 AUTO SCAN</button>
-        <button id="btn-2jodi-mode" onclick="toggleTwoJodiMode()" style="background:#0084ff; color:white;">⚡ SELECT 2-JODI</button>
+        <button id="btn-3jodi-mode" onclick="toggleMultiJodiMode()" style="background:#0084ff; color:white;">⚡ SELECT 3-JODI</button>
+        <button onclick="clearActivePattern()" style="background:#eab308; color:black;">❌ CLEAR PATTERN</button>
         <button onclick="saveData()" style="background:#28a745; color:white;">💾 SAVE DATA</button>
-        <button onclick="clearData()" style="background:#dc3545; color:white;">🗑️ CLEAR</button>
+        <button onclick="clearData()" style="background:#dc3545; color:white;">🗑️ CLEAR ALL</button>
     </div>
 
     <center>
@@ -156,8 +159,8 @@
             <div id="future">Select a match...</div>
         </div>
         <div class="card" style="grid-column: 1 / -1;">
-            <h3>🎯 2-Jodi Exact Direction & Pattern Prediction</h3>
-            <div id="seq-predict">Click "SELECT 2-JODI" then tap 2 cells on table in sequence...</div>
+            <h3>🎯 3-Jodi Exact Pattern Prediction Engine</h3>
+            <div id="seq-predict">Click "SELECT 3-JODI" then tap 3 cells on table in sequence...</div>
         </div>
         <div class="card">
             <h3>🚫 High Risk Cut-Ank</h3>
@@ -188,7 +191,7 @@ let targetCol = null;
 let activeMark = null;
 let highlightedFam = null;
 
-let isTwoJodiSelectionMode = false;
+let isMultiJodiSelectionMode = false;
 let selectedJodis = []; 
 
 function norm(v) {
@@ -243,6 +246,7 @@ function draw(){
    let selIdx = getSelectedJodiIndex(ri, ci);
    if(selIdx === 0) cls += " seq-selected-1";
    else if(selIdx === 1) cls += " seq-selected-2";
+   else if(selIdx === 2) cls += " seq-selected-3";
    
    if(c=="**") cls += " blank";
    
@@ -252,11 +256,30 @@ function draw(){
   h+="</tr>";
  });
  document.getElementById("tbl").innerHTML=h;
- if(activeMark) setTimeout(() => drawLines("mainCanvas", document.getElementById("tbl")), 50);
+ 
+ // Redraw persistent lines if activeMark exists
+ if(activeMark) {
+     setTimeout(() => drawLines("mainCanvas", document.getElementById("tbl")), 50);
+ } else {
+     clearCanvas("mainCanvas");
+ }
  
  calculateDayFrequency();
  calculateCutAnk();
  updateTrendIndicator();
+}
+
+function clearCanvas(cvsId) {
+    const cvs = document.getElementById(cvsId);
+    if(cvs) {
+        const ctx = cvs.getContext("2d");
+        ctx.clearRect(0, 0, cvs.width, cvs.height);
+    }
+}
+
+function clearActivePattern() {
+    activeMark = null;
+    draw();
 }
 
 function updateCell(r, c, el) {
@@ -282,44 +305,46 @@ function deleteRow(rIndex) {
     }
 }
 
-function toggleTwoJodiMode() {
-    isTwoJodiSelectionMode = !isTwoJodiSelectionMode;
+function toggleMultiJodiMode() {
+    isMultiJodiSelectionMode = !isMultiJodiSelectionMode;
     selectedJodis = [];
-    const btn = document.getElementById("btn-2jodi-mode");
-    if(isTwoJodiSelectionMode) {
+    const btn = document.getElementById("btn-3jodi-mode");
+    if(isMultiJodiSelectionMode) {
         btn.classList.add("btn-active");
         btn.innerText = "🎯 TAP 1ST JODI (YELLOW)";
-        document.getElementById("seq-predict").innerHTML = "<b style='color:var(--gold);'>क्रम से 1st (Yellow) और 2nd (Purple) जोड़ी चुनें...</b>";
+        document.getElementById("seq-predict").innerHTML = "<b style='color:var(--gold);'>क्रम से 1st (Yellow), 2nd (Purple) और 3rd (Blue) जोड़ी चुनें...</b>";
     } else {
         btn.classList.remove("btn-active");
-        btn.innerText = "⚡ SELECT 2-JODI";
+        btn.innerText = "⚡ SELECT 3-JODI";
     }
     draw();
 }
 
 function handleCellClick(r, c, val) {
-    if (isTwoJodiSelectionMode) {
+    if (isMultiJodiSelectionMode) {
         if (val === "**") return;
         
         let index = getSelectedJodiIndex(r, c);
         if (index > -1) {
             selectedJodis.splice(index, 1);
         } else {
-            if (selectedJodis.length >= 2) selectedJodis = []; 
+            if (selectedJodis.length >= 3) selectedJodis = []; 
             selectedJodis.push({ r: r, c: c, val: val });
         }
         
-        const btn = document.getElementById("btn-2jodi-mode");
+        const btn = document.getElementById("btn-3jodi-mode");
         if(selectedJodis.length === 1) {
             btn.innerText = "🎯 TAP 2ND JODI (PURPLE)";
+        } else if(selectedJodis.length === 2) {
+            btn.innerText = "🎯 TAP 3RD JODI (BLUE)";
         } else if(selectedJodis.length === 0) {
             btn.innerText = "🎯 TAP 1ST JODI (YELLOW)";
         }
         
         draw();
         
-        if (selectedJodis.length === 2) {
-            runSelectedTwoJodiSearch();
+        if (selectedJodis.length === 3) {
+            runSelectedThreeJodiSearch();
         }
         return;
     }
@@ -343,34 +368,35 @@ function scrollToAndHighlightRow(rowIndex) {
     }
 }
 
-function runSelectedTwoJodiSearch() {
-    let j1 = selectedJodis[0]; // 1st Clicked Jodi
-    let j2 = selectedJodis[1]; // 2nd Clicked Jodi
+function runSelectedThreeJodiSearch() {
+    let j1 = selectedJodis[0]; 
+    let j2 = selectedJodis[1]; 
+    let j3 = selectedJodis[2]; 
 
-    // Exact Direction Offset (Row Difference & Column Difference)
-    let dRow = j2.r - j1.r;
-    let dCol = j2.c - j1.c;
+    let dRow12 = j2.r - j1.r, dCol12 = j2.c - j1.c;
+    let dRow23 = j3.r - j2.r, dCol23 = j3.c - j2.c;
 
     let weightedNextScores = {};
     let totalScoreSum = 0;
     let matchLogs = []; 
     const totalRows = data.length;
 
-    // Search for EXACT sequence pattern match with SAME offset distance
     for (let r1 = 0; r1 < totalRows; r1++) {
         for (let c1 = 0; c1 < 6; c1++) {
             if (smartMatch(data[r1][c1], j1.val)) {
-                let r2 = r1 + dRow;
-                let c2 = c1 + dCol;
+                let r2 = r1 + dRow12;
+                let c2 = c1 + dCol12;
 
-                if (r2 >= 0 && r2 < totalRows && c2 >= 0 && c2 < 6) {
-                    if (smartMatch(data[r2][c2], j2.val)) {
-                        // Predict 3rd step in the exact SAME direction/distance
-                        let r3 = r2 + dRow;
-                        let c3 = c2 + dCol;
+                if (r2 >= 0 && r2 < totalRows && c2 >= 0 && c2 < 6 && smartMatch(data[r2][c2], j2.val)) {
+                    let r3 = r2 + dRow23;
+                    let c3 = c2 + dCol23;
 
-                        if (r3 >= 0 && r3 < totalRows && c3 >= 0 && c3 < 6 && data[r3][c3] !== "**") {
-                            let targetVal = data[r3][c3];
+                    if (r3 >= 0 && r3 < totalRows && c3 >= 0 && c3 < 6 && smartMatch(data[r3][c3], j3.val)) {
+                        let r4 = r3 + dRow23;
+                        let c4 = c3 + dCol23;
+
+                        if (r4 >= 0 && r4 < totalRows && c4 >= 0 && c4 < 6 && data[r4][c4] !== "**") {
+                            let targetVal = data[r4][c4];
                             let weight = (r1 >= totalRows - 10) ? 2.5 : 1.0;
                             weightedNextScores[targetVal] = (weightedNextScores[targetVal] || 0) + weight;
                             totalScoreSum += weight;
@@ -378,9 +404,9 @@ function runSelectedTwoJodiSearch() {
                             matchLogs.push({
                                 rowIndex: r1,
                                 rowDisplay: r1 + 1,
-                                matchedSeq: `${data[r1][c1]} ➔ ${data[r2][c2]}`,
+                                matchedSeq: `${data[r1][c1]} ➔ ${data[r2][c2]} ➔ ${data[r3][c3]}`,
                                 followedBy: targetVal,
-                                targetRowDisplay: r3 + 1
+                                targetRowDisplay: r4 + 1
                             });
                         }
                     }
@@ -389,12 +415,10 @@ function runSelectedTwoJodiSearch() {
         }
     }
 
-    let dirText = dRow === 0 ? `Horizontal (${dCol} col distance)` : `Diagonal/Vertical (${dRow} Row, ${dCol} Col Gap)`;
-
     if (totalScoreSum === 0) {
         document.getElementById("seq-predict").innerHTML = `
-            <b>Selected Pattern:</b> ${j1.val} ➔ ${j2.val} (${dirText})<br>
-            <span style="color:#ff4444;">इस सटीक दिशा/गैप में पुरानी हिस्ट्री में कोई पैटर्न नहीं मिला!</span>
+            <b>Selected Base 3-Jodi:</b> ${j1.val} ➔ ${j2.val} ➔ ${j3.val}<br>
+            <span style="color:#ff4444;">इस 3-Jodi सीक्वेंस का कोई पैटर्न पुरानी हिस्ट्री में नहीं मिला!</span>
         `;
     } else {
         let sortedJodis = Object.keys(weightedNextScores).sort((a,b) => weightedNextScores[b] - weightedNextScores[a]);
@@ -404,16 +428,16 @@ function runSelectedTwoJodiSearch() {
         });
 
         let logHtml = matchLogs.slice(-5).map(m => 
-            `<span class="clickable-row-link" onclick="scrollToAndHighlightRow(${m.rowIndex})">👉 Row ${m.rowDisplay} पर मिला पैटर्न (${m.matchedSeq}) ➔ Row ${m.targetRowDisplay} में आया: <b>${m.followedBy}</b></span>`
+            `<span class="clickable-row-link" onclick="scrollToAndHighlightRow(${m.rowIndex})">👉 Row ${m.rowDisplay} पर 3-Jodi पैटर्न मिला ➔ Row ${m.targetRowDisplay} में अगला आया: <b>${m.followedBy}</b></span>`
         ).join("");
 
         document.getElementById("seq-predict").innerHTML = `
-            <b>Selected Sequence:</b> ${j1.val} (1st) ➔ ${j2.val} (2nd)<br>
-            <b style="color:#00ff88; font-size:13px;">Direction Next Jodi: ${topOutputs.join(" | ")}</b>
+            <b>Selected Base 3-Jodi:</b> ${j1.val} ➔ ${j2.val} ➔ ${j3.val}<br>
+            <b style="color:#00ff88; font-size:13px;">High Probable 4th Jodi: ${topOutputs.join(" | ")}</b>
             <div class="explanation-box">
-                <b>🔍 AI Exact Pattern Breakdown:</b><br>
-                1. पैटर्न टाइप: <b>${dirText}</b><br>
-                2. पुरानी हिस्ट्री में सेम दूरी पर मिले रिकॉर्ड्स:<br>${logHtml}
+                <b>🔍 AI Exact 3-Jodi Pattern Breakdown:</b><br>
+                1. रिकॉर्ड में कुल <b>${matchLogs.length} बार</b> ऐसा 3-Jodi पैटर्न बना।<br>
+                2. पुरानी हिस्ट्री मैच रिकॉर्ड्स (देखने के लिए क्लिक करें):<br>${logHtml}
             </div>
         `;
     }
@@ -460,6 +484,7 @@ function clearData(){
     if(confirm("Permanently clear all data?")){ 
         localStorage.removeItem(STORAGE_KEY); 
         data = defaultData; 
+        activeMark = null;
         draw(); 
     }
 }
