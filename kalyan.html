@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalyan Pro AI – Cloud Live Sync Edition with Edit</title>
+    <title>Kalyan Pro AI – Interactive 2-Jodi Sync Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -14,6 +14,7 @@
             --panel: #1e293b; 
             --red: #ff4444;
             --purple: #a855f7;
+            --selected: #c084fc;
         }
 
         * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
@@ -59,12 +60,10 @@
             user-select: none;
         }
         td[contenteditable="true"] {
-            outline: none;
-            background: #fff;
+            outline: none; background: #fff;
         }
         td[contenteditable="true"]:focus {
-            background: #e0f2fe;
-            border: 2px solid var(--blue-circle);
+            background: #e0f2fe; border: 2px solid var(--blue-circle);
         }
         th { background: #1e293b; color: white; font-size: 10px; }
         .action-th, .action-td { width: 30px; background: #f8fafc; }
@@ -78,6 +77,7 @@
         }
         .fam-highlight { background: rgba(255, 215, 0, 0.4) !important; font-weight: 900; }
         .red-jodi { color: #ff0000 !important; font-weight: 900; }
+        .seq-selected { background: var(--selected) !important; color: #000 !important; font-weight: 900; border: 2px solid #7e22ce !important; }
 
         canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 4; }
 
@@ -96,9 +96,9 @@
         #popup { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 15px; display: none; z-index: 100; padding: 12px; color: #000; width: 92%; max-width: 380px; }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; z-index: 90; }
         button { cursor: pointer; border-radius: 6px; border: none; font-weight: bold; padding: 8px 10px; font-size: 11px; }
+        .btn-active { outline: 2px solid var(--gold); box-shadow: 0 0 10px var(--gold); }
     </style>
 
-    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 </head>
@@ -106,7 +106,7 @@
 
 <div id="home-screen">
     <h1 class="hero-title">Kalyan PRO AI</h1>
-    <p class="hero-sub">CLOUD LIVE SYNC + EDIT ENGINE V12.0</p>
+    <p class="hero-sub">CLOUD LIVE SYNC + INTERACTIVE 2-JODI ENGINE V13.0</p>
     <button class="enter-btn" onclick="startApp()">START ANALYSIS</button>
 </div>
 
@@ -123,7 +123,7 @@
         <button onclick="document.getElementById('csv').click()" style="background:#444; color:white;">📂 CSV</button>
         <button onclick="addRow()" style="background:#0284c7; color:white;">➕ ADD ROW</button>
         <button onclick="autoScanPatterns()" style="background:var(--purple); color:white;">🔍 AUTO SCAN</button>
-        <button onclick="runTwoJodiSequenceSearch()" style="background:#0084ff; color:white;">⚡ 2-JODI</button>
+        <button id="btn-2jodi-mode" onclick="toggleTwoJodiMode()" style="background:#0084ff; color:white;">⚡ SELECT 2-JODI</button>
         <button onclick="saveData()" style="background:#28a745; color:white;">💾 SAVE TO CLOUD</button>
         <button onclick="clearData()" style="background:#dc3545; color:white;">🗑️ CLEAR</button>
     </div>
@@ -150,7 +150,7 @@
         </div>
         <div class="card">
             <h3>🎯 2-Jodi Sequence Prediction</h3>
-            <div id="seq-predict">Click 2-Jodi...</div>
+            <div id="seq-predict">Click "SELECT 2-JODI" then tap 2 cells on table...</div>
         </div>
         <div class="card">
             <h3>🚫 High Risk Cut-Ank</h3>
@@ -176,7 +176,6 @@
 </div>
 
 <script>
-// Firebase Configuration Setup
 const firebaseConfig = {
   apiKey: "AIzaSyDSJ0jO4W9ZCb25jt3b7rCgtAGmL1-zKy0",
   authDomain: "kalyan-ai-f0b16.firebaseapp.com",
@@ -196,6 +195,9 @@ const STORAGE_KEY = "pdata_Kalyan_v10";
 let targetCol = null;
 let activeMark = null;
 let highlightedFam = null;
+
+let isTwoJodiSelectionMode = false;
+let selectedJodis = []; 
 
 function norm(v) {
     if (!v || v.trim() === "" || v === "**") return "**";
@@ -251,6 +253,10 @@ function palti(v){return v[1]+v[0];}
 function smartMatch(a1,b1){ if(a1=="**"||b1=="**") return false; return a1===b1 || palti(a1)===b1 || fam(a1)===fam(b1); }
 function isRedJodi(v){ return v!=="**" && (v[0]===v[1] || Math.abs(parseInt(v[0])-parseInt(v[1]))===5); }
 
+function isSelectedJodi(r, c) {
+    return selectedJodis.some(item => item.r === r && item.c === c);
+}
+
 function draw(){
  let h="<tr><th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th><th>SAT</th><th class='action-th'>❌</th></tr>";
  data.forEach((r,ri)=>{
@@ -259,6 +265,7 @@ function draw(){
    let cls = (activeMark && isPartOfPattern(ri, ci)) ? "circle" : "";
    if(highlightedFam && fam(c) === highlightedFam) cls += " fam-highlight";
    if(isRedJodi(c)) cls += " red-jodi";
+   if(isSelectedJodi(ri, ci)) cls += " seq-selected";
    if(c=="**") cls += " blank";
    
    h+=`<td class="${cls}" contenteditable="true" onblur="updateCell(${ri},${ci},this)" onkeydown="checkEnter(event, this)" onclick="handleCellClick(${ri},${ci},'${c}')">${c}</td>`;
@@ -297,12 +304,93 @@ function deleteRow(rIndex) {
     }
 }
 
+function toggleTwoJodiMode() {
+    isTwoJodiSelectionMode = !isTwoJodiSelectionMode;
+    selectedJodis = [];
+    const btn = document.getElementById("btn-2jodi-mode");
+    if(isTwoJodiSelectionMode) {
+        btn.classList.add("btn-active");
+        btn.innerText = "🎯 TAP 2 CELLS ON TABLE";
+        document.getElementById("seq-predict").innerHTML = "<b style='color:var(--gold);'>टेबल पर किन्हीं 2 जोड़ियों पर टच करें...</b>";
+    } else {
+        btn.classList.remove("btn-active");
+        btn.innerText = "⚡ SELECT 2-JODI";
+    }
+    draw();
+}
+
 function handleCellClick(r, c, val) {
+    if (isTwoJodiSelectionMode) {
+        if (val === "**") return;
+        
+        let index = selectedJodis.findIndex(item => item.r === r && item.c === c);
+        if (index > -1) {
+            selectedJodis.splice(index, 1);
+        } else {
+            if (selectedJodis.length >= 2) selectedJodis.shift(); 
+            selectedJodis.push({ r: r, c: c, val: val });
+        }
+        draw();
+        
+        if (selectedJodis.length === 2) {
+            runSelectedTwoJodiSearch();
+        }
+        return;
+    }
+
     if(val !== "**") {
         highlightedFam = (highlightedFam === fam(val)) ? null : fam(val);
         draw();
     } else {
         makePattern(r, c);
+    }
+}
+
+function runSelectedTwoJodiSearch() {
+    let jodi1 = selectedJodis[0];
+    let jodi2 = selectedJodis[1];
+
+    let weightedNextScores = {};
+    let totalScoreSum = 0;
+    const totalRows = data.length;
+
+    for (let i = 0; i < totalRows; i++) {
+        for (let j = 0; j < 6; j++) {
+            if (smartMatch(data[i][j], jodi1.val)) {
+                let nextR = i, nextC = j + 1;
+                if (nextC > 5) { nextR++; nextC = 0; }
+                
+                if (nextR < totalRows && smartMatch(data[nextR][nextC], jodi2.val)) {
+                    let targetR = nextR, targetC = nextC + 1;
+                    if (targetC > 5) { targetR++; targetC = 0; }
+                    
+                    if (targetR < totalRows && data[targetR][targetC] !== "**") {
+                        let targetVal = data[targetR][targetC];
+                        let weight = (i >= totalRows - 10) ? 2.5 : 1.0;
+                        weightedNextScores[targetVal] = (weightedNextScores[targetVal] || 0) + weight;
+                        totalScoreSum += weight;
+                    }
+                }
+            }
+        }
+    }
+
+    if (totalScoreSum === 0) {
+        document.getElementById("seq-predict").innerHTML = `
+            <b>Selected Base:</b> ${jodi1.val} ➔ ${jodi2.val}<br>
+            <span style="color:#ff4444;">पुरानी हिस्ट्री में इसका कोई मैच नहीं मिला!</span>
+        `;
+    } else {
+        let sortedJodis = Object.keys(weightedNextScores).sort((a,b) => weightedNextScores[b] - weightedNextScores[a]);
+        let topOutputs = sortedJodis.slice(0, 3).map(jodi => {
+            let probPercent = Math.round((weightedNextScores[jodi] / totalScoreSum) * 100);
+            return `${jodi} <span class="prob-badge">${probPercent}%</span>`;
+        });
+
+        document.getElementById("seq-predict").innerHTML = `
+            <b>Selected Base:</b> ${jodi1.val} ➔ ${jodi2.val}<br>
+            <b style="color:#00ff88;">High Probable Next:</b><br>${topOutputs.join(" | ")}
+        `;
     }
 }
 
@@ -432,63 +520,6 @@ function autoScanPatterns() {
     if(totalRows < 3) { alert("Need more data!"); return; }
     let blankRow = totalRows - 1;
     makePattern(blankRow, 0);
-}
-
-function runTwoJodiSequenceSearch() {
-    let validCells = [];
-    for (let i = data.length - 1; i >= 0; i--) {
-        for (let j = 5; j >= 0; j--) {
-            if (data[i][j] !== "**") validCells.push({ r: i, c: j, val: data[i][j] });
-            if (validCells.length === 2) break;
-        }
-        if (validCells.length === 2) break;
-    }
-
-    if (validCells.length < 2) {
-        document.getElementById("seq-predict").innerHTML = "Need 2 jodis minimum!";
-        return;
-    }
-
-    let jodi2 = validCells[0], jodi1 = validCells[1];
-    let weightedNextScores = {};
-    let totalScoreSum = 0;
-    const totalRows = data.length;
-
-    for (let i = 0; i < totalRows - 1; i++) {
-        for (let j = 0; j < 6; j++) {
-            if (smartMatch(data[i][j], jodi1.val)) {
-                let nextR = i, nextC = j + 1;
-                if (nextC > 5) { nextR++; nextC = 0; }
-                
-                if (nextR < totalRows && smartMatch(data[nextR][nextC], jodi2.val)) {
-                    let targetR = nextR, targetC = nextC + 1;
-                    if (targetC > 5) { targetR++; targetC = 0; }
-                    
-                    if (targetR < totalRows && data[targetR][targetC] !== "**") {
-                        let targetVal = data[targetR][targetC];
-                        let weight = (i >= totalRows - 10) ? 2.5 : 1.0;
-                        weightedNextScores[targetVal] = (weightedNextScores[targetVal] || 0) + weight;
-                        totalScoreSum += weight;
-                    }
-                }
-            }
-        }
-    }
-
-    if (totalScoreSum === 0) {
-        document.getElementById("seq-predict").innerHTML = `<b>Base:</b> ${jodi1.val} ➔ ${jodi2.val}<br><span style="color:#ff4444;">No match found!</span>`;
-    } else {
-        let sortedJodis = Object.keys(weightedNextScores).sort((a,b) => weightedNextScores[b] - weightedNextScores[a]);
-        let topOutputs = sortedJodis.slice(0, 3).map(jodi => {
-            let probPercent = Math.round((weightedNextScores[jodi] / totalScoreSum) * 100);
-            return `${jodi} <span class="prob-badge">${probPercent}%</span>`;
-        });
-
-        document.getElementById("seq-predict").innerHTML = `
-            <b>Base:</b> ${jodi1.val} ➔ ${jodi2.val}<br>
-            <b style="color:#00ff88;">High Probable Next:</b><br>${topOutputs.join(" | ")}
-        `;
-    }
 }
 
 function makePattern(r,c){
