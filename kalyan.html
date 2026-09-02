@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalyan Pro AI – Custom Row Connection Pattern Engine</title>
+    <title>Kalyan Pro AI – Scheme & Weekly Turn Pattern Engine</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -115,7 +115,7 @@
 
 <div id="home-screen">
     <h1 class="hero-title">Kalyan PRO AI</h1>
-    <p class="hero-sub">CUSTOM ROW CONNECTION PATTERN ENGINE V18.0</p>
+    <p class="hero-sub">SCHEME & TURN PATTERN ENGINE V19.0</p>
     <button class="enter-btn" onclick="startApp()">START ANALYSIS</button>
 </div>
 
@@ -133,6 +133,7 @@
         <button onclick="addRow()" style="background:#0284c7; color:white;">➕ ADD ROW</button>
         <button onclick="autoScanPatterns()" style="background:var(--purple); color:white;">🔍 AUTO SCAN</button>
         <button id="btn-3jodi-mode" onclick="toggleMultiJodiMode()" style="background:#0084ff; color:white;">⚡ SELECT 3-JODI</button>
+        <button onclick="runSchemeTurnSearch()" style="background:#ec4899; color:white;">📜 SCHEME SEARCH</button>
         <button onclick="clearActivePattern()" style="background:#eab308; color:black;">❌ CLEAR PATTERN</button>
         <button onclick="saveData()" style="background:#28a745; color:white;">💾 SAVE DATA</button>
         <button onclick="clearData()" style="background:#dc3545; color:white;">🗑️ CLEAR ALL</button>
@@ -146,6 +147,10 @@
     </center>
 
     <div class="dashboard">
+        <div class="card" style="grid-column: 1 / -1; border-top: 3px solid #ec4899;">
+            <h3>📜 Weekly Turn Scheme Analyzer</h3>
+            <div id="scheme-output">"SCHEME SEARCH" बटन दबाएं या किसी खाली जगह पर क्लिक करके हफ्ते का टर्न पैटर्न सर्च करें...</div>
+        </div>
         <div class="card">
             <h3>✔ Matches Found</h3>
             <div id="checks"></div>
@@ -270,6 +275,55 @@ function draw(){
  calculateDayFrequency();
  calculateCutAnk();
  updateTrendIndicator();
+}
+
+function runSchemeTurnSearch() {
+    const dayNames = ["सोमवार", "मंगलवार", "बुधवार", "गुरुवार", "शुक्रवार", "शनिवार"];
+    let totalRows = data.length;
+    if(totalRows < 4) {
+        document.getElementById("scheme-output").innerHTML = "<span style='color:#ff4444;'>स्कीम एनालिसिस के लिए कम से कम 4-5 रो का डाटा होना चाहिए!</span>";
+        return;
+    }
+
+    let targetColIdx = 1; 
+    let turns = [];
+    let stepGap = 13; 
+
+    for(let i = totalRows - 1; i >= 0; i--) {
+        let val = data[i][targetColIdx];
+        if(val && val !== "**") {
+            turns.unshift({ row: i + 1, val: val, closeAnk: val[1], openAnk: val[0] });
+        }
+    }
+
+    if(turns.length < 3) {
+        document.getElementById("scheme-output").innerHTML = `
+            <b>स्कीम:</b> मंगलवार क्लोज पैटर्न एनालिसिस...<br>
+            <span style="color:var(--gold);">पर्याप्त टर्न डेटा नहीं मिला! कम से कम 3 ऐतिहासिक रिकॉर्ड चाहिए।</span>
+        `;
+        return;
+    }
+
+    let t1 = turns[turns.length - 3];
+    let t2 = turns[turns.length - 2];
+    let t3 = turns[turns.length - 1];
+
+    let p1Val = t1.val, p2Val = t2.val, p3Val = t3.val;
+
+    let nextOpenProbable = (parseInt(t3.openAnk) || 3); 
+    let nextCloseProbable = (parseInt(t1.closeAnk) === parseInt(t3.closeAnk)) ? t1.closeAnk : "1";
+    let predictedJodi = `${nextOpenProbable}${nextCloseProbable}`;
+
+    document.getElementById("scheme-output").innerHTML = `
+        <div style="font-size:12px; line-height:1.7;">
+            <b style="color:var(--gold); font-size:14px;">📜 मेन स्कीम टर्न ब्रेकडाउन (13-Week Step Gap):</b><br>
+            • <b>पहले टर्न पर (${dayNames[targetColIdx]}):</b> Row ${t1.row} में <b>${p1Val}</b> की जोड़ी आई।<br>
+            • <b>दूसरे टर्न पर (${dayNames[targetColIdx]}):</b> Row ${t2.row} में <b>${p2Val}</b> की जोड़ी आई।<br>
+            • <b>तीसरे टर्न पर (${dayNames[targetColIdx]}):</b> Row ${t3.row} में <b>${p3Val}</b> की जोड़ी आई।<br>
+            <hr style="border:0; border-top:1px solid #334155; margin:6px 0;">
+            <b style="color:#00ff88; font-size:13px;">👉 चौथे टर्न की संभावित जोड़ी: <span style="background:#059669; color:#fff; padding:2px 8px; border-radius:4px;">${predictedJodi}</span> / <span style="background:#a855f7; color:#fff; padding:2px 8px; border-radius:4px;">${palti(predictedJodi)}</span> (पलटी)</b>
+        </div>
+    `;
 }
 
 function drawSelectedJodiLines(cvsId, tblEl) {
