@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalyan Pro AI – Scheme & Weekly Turn Pattern Engine</title>
+    <title>Kalyan Pro AI – Dynamic AI Scheme Search Engine</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -14,7 +14,7 @@
             --panel: #1e293b; 
             --red: #ff4444;
             --purple: #a855f7;
-            --selected: #c084fc;
+            --pink: #ec4899;
         }
 
         * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
@@ -70,6 +70,18 @@
             background: rgba(0, 132, 255, 0.2); 
             z-index: 10;
         }
+        .blank-selected {
+            background: #fef08a !important;
+            border: 2px dashed #ca8a04 !important;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { background-color: #fef08a; }
+            50% { background-color: #fde047; }
+            100% { background-color: #fef08a; }
+        }
+
         .fam-highlight { background: rgba(255, 215, 0, 0.4) !important; font-weight: 900; }
         .red-jodi { color: #ff0000 !important; font-weight: 900; }
         
@@ -115,7 +127,7 @@
 
 <div id="home-screen">
     <h1 class="hero-title">Kalyan PRO AI</h1>
-    <p class="hero-sub">SCHEME & TURN PATTERN ENGINE V19.0</p>
+    <p class="hero-sub">DYNAMIC BLANK CELL & AI SCHEME ENGINE V20.0</p>
     <button class="enter-btn" onclick="startApp()">START ANALYSIS</button>
 </div>
 
@@ -125,16 +137,16 @@
         <span id="trend-bar" class="trend-badge">Trend: Scanning...</span>
     </div>
     
-    <div id="sync-indicator" class="sync-status sync-online">💾 Local Storage Active</div>
+    <div id="sync-indicator" class="sync-status sync-online">💾 Dynamic Storage & AI Scheme Ready</div>
 
     <div class="toolbar">
         <input type="file" id="csv" accept=".csv" style="display:none">
         <button onclick="document.getElementById('csv').click()" style="background:#444; color:white;">📂 CSV</button>
         <button onclick="addRow()" style="background:#0284c7; color:white;">➕ ADD ROW</button>
+        <button onclick="autoAiSchemeSearch()" style="background:var(--pink); color:white;">🤖 AI AUTO SCHEME</button>
         <button onclick="autoScanPatterns()" style="background:var(--purple); color:white;">🔍 AUTO SCAN</button>
         <button id="btn-3jodi-mode" onclick="toggleMultiJodiMode()" style="background:#0084ff; color:white;">⚡ SELECT 3-JODI</button>
-        <button onclick="runSchemeTurnSearch()" style="background:#ec4899; color:white;">📜 SCHEME SEARCH</button>
-        <button onclick="clearActivePattern()" style="background:#eab308; color:black;">❌ CLEAR PATTERN</button>
+        <button onclick="clearActivePattern()" style="background:#eab308; color:black;">❌ CLEAR SELECTION</button>
         <button onclick="saveData()" style="background:#28a745; color:white;">💾 SAVE DATA</button>
         <button onclick="clearData()" style="background:#dc3545; color:white;">🗑️ CLEAR ALL</button>
     </div>
@@ -147,9 +159,9 @@
     </center>
 
     <div class="dashboard">
-        <div class="card" style="grid-column: 1 / -1; border-top: 3px solid #ec4899;">
-            <h3>📜 Weekly Turn Scheme Analyzer</h3>
-            <div id="scheme-output">"SCHEME SEARCH" बटन दबाएं या किसी खाली जगह पर क्लिक करके हफ्ते का टर्न पैटर्न सर्च करें...</div>
+        <div class="card" style="grid-column: 1 / -1; border-top: 3px solid var(--pink);">
+            <h3>📜 Selected Cell AI Scheme Breakdown</h3>
+            <div id="scheme-output">किसी भी <b>खाली डिब्बे (Blank Cell / **)</b> पर क्लिक करें, AI तुरंत उस जगह की अलग-अलग स्कीम खोजकर बताएगा!</div>
         </div>
         <div class="card">
             <h3>✔ Matches Found</h3>
@@ -191,10 +203,13 @@
 </div>
 
 <script>
-const STORAGE_KEY = "pdata_Kalyan_v10";
+const STORAGE_KEY = "pdata_Kalyan_v11";
+const DAY_NAMES = ["सोमवार", "मंगलवार", "बुधवार", "गुरुवार", "शुक्रवार", "शनिवार"];
+
 let targetCol = null;
 let activeMark = null;
 let highlightedFam = null;
+let selectedBlank = null; 
 
 let isMultiJodiSelectionMode = false;
 let selectedJodis = []; 
@@ -247,6 +262,7 @@ function draw(){
    let cls = (activeMark && isPartOfPattern(ri, ci)) ? "circle" : "";
    if(highlightedFam && fam(c) === highlightedFam) cls += " fam-highlight";
    if(isRedJodi(c)) cls += " red-jodi";
+   if(selectedBlank && selectedBlank.r === ri && selectedBlank.c === ci) cls += " blank-selected";
    
    let selIdx = getSelectedJodiIndex(ri, ci);
    if(selIdx === 0) cls += " seq-selected-1";
@@ -277,53 +293,100 @@ function draw(){
  updateTrendIndicator();
 }
 
-function runSchemeTurnSearch() {
-    const dayNames = ["सोमवार", "मंगलवार", "बुधवार", "गुरुवार", "शुक्रवार", "शनिवार"];
+// *** AI BLANK CELL SCHEME SEARCH ENGINE ***
+function analyzeBlankCellScheme(rowIdx, colIdx) {
+    selectedBlank = { r: rowIdx, c: colIdx };
+    draw();
+
+    let dayName = DAY_NAMES[colIdx];
     let totalRows = data.length;
-    if(totalRows < 4) {
-        document.getElementById("scheme-output").innerHTML = "<span style='color:#ff4444;'>स्कीम एनालिसिस के लिए कम से कम 4-5 रो का डाटा होना चाहिए!</span>";
-        return;
-    }
 
-    let targetColIdx = 1; 
-    let turns = [];
-    let stepGap = 13; 
-
-    for(let i = totalRows - 1; i >= 0; i--) {
-        let val = data[i][targetColIdx];
-        if(val && val !== "**") {
-            turns.unshift({ row: i + 1, val: val, closeAnk: val[1], openAnk: val[0] });
+    let colHistory = [];
+    for(let r = 0; r < rowIdx; r++) {
+        if(data[r][colIdx] && data[r][colIdx] !== "**") {
+            colHistory.push({ row: r + 1, val: data[r][colIdx] });
         }
     }
 
-    if(turns.length < 3) {
-        document.getElementById("scheme-output").innerHTML = `
-            <b>स्कीम:</b> मंगलवार क्लोज पैटर्न एनालिसिस...<br>
-            <span style="color:var(--gold);">पर्याप्त टर्न डेटा नहीं मिला! कम से कम 3 ऐतिहासिक रिकॉर्ड चाहिए।</span>
-        `;
-        return;
+    let scheme1Output = "";
+    if(colHistory.length >= 2) {
+        let last1 = colHistory[colHistory.length - 1];
+        let last2 = colHistory[colHistory.length - 2];
+        
+        let op1 = last1.val[0], cl1 = last1.val[1];
+        let op2 = last2.val[0], cl2 = last2.val[1];
+
+        let pOpen = (parseInt(op1) + (parseInt(op1) - parseInt(op2)) + 10) % 10;
+        let pClose = (parseInt(cl1) === parseInt(cl2)) ? cl1 : (parseInt(cl1) + 1) % 10;
+        let predJodi1 = `${pOpen}${pClose}`;
+
+        scheme1Output = `<b>1. ${dayName} Vertical Turn Pattern:</b> Row ${last2.row} (${last2.val}) ➔ Row ${last1.row} (${last1.val}) ➔ Proposed: <span style="color:var(--gold); font-weight:bold;">${predJodi1}</span> / <span style="color:#38bdf8;">${palti(predJodi1)}</span>`;
+    } else {
+        scheme1Output = `<b>1. ${dayName} Vertical Pattern:</b> इस दिन का पुराना पर्याप्त डेटा उपलब्ध नहीं है।`;
     }
 
-    let t1 = turns[turns.length - 3];
-    let t2 = turns[turns.length - 2];
-    let t3 = turns[turns.length - 1];
+    let prevRowValues = [];
+    if(rowIdx > 0) {
+        data[rowIdx - 1].forEach((v, c) => {
+            if(v !== "**") prevRowValues.push({ col: DAY_NAMES[c], val: v });
+        });
+    }
 
-    let p1Val = t1.val, p2Val = t2.val, p3Val = t3.val;
+    let scheme2Output = "";
+    if(prevRowValues.length > 0) {
+        let sample = prevRowValues[prevRowValues.length - 1];
+        let famGroup = FAMILY[fam(sample.val)] || [sample.val];
+        let suggested = famGroup[0] || sample.val;
+        scheme2Output = `<b>2. Diagonal Cross-Day Family Shift:</b> पिछली रो (${sample.col} - ${sample.val}) के आधार पर Family जोड़ी: <span style="color:#00ff88; font-weight:bold;">${suggested}</span> (${famGroup.join(",")})`;
+    } else {
+        scheme2Output = `<b>2. Diagonal Shift:</b> ऊपर की रो में कोई मान्य जोड़ी नहीं मिली।`;
+    }
 
-    let nextOpenProbable = (parseInt(t3.openAnk) || 3); 
-    let nextCloseProbable = (parseInt(t1.closeAnk) === parseInt(t3.closeAnk)) ? t1.closeAnk : "1";
-    let predictedJodi = `${nextOpenProbable}${nextCloseProbable}`;
+    let scheme3Output = "";
+    let colFreq = {};
+    data.forEach(r => {
+        let val = r[colIdx];
+        if(val !== "**") colFreq[val] = (colFreq[val] || 0) + 1;
+    });
+    let topColJodis = Object.keys(colFreq).sort((a,b) => colFreq[b] - colFreq[a]);
+    if(topColJodis.length > 0) {
+        scheme3Output = `<b>3. ${dayName} Frequency Loop:</b> इस दिन सबसे ज्यादा रिपीट होने वाली जोड़ियां: <span style="color:var(--pink); font-weight:bold;">${topColJodis.slice(0, 3).join(", ")}</span>`;
+    } else {
+        scheme3Output = `<b>3. Frequency Loop:</b> नो डेटा।`;
+    }
 
     document.getElementById("scheme-output").innerHTML = `
         <div style="font-size:12px; line-height:1.7;">
-            <b style="color:var(--gold); font-size:14px;">📜 मेन स्कीम टर्न ब्रेकडाउन (13-Week Step Gap):</b><br>
-            • <b>पहले टर्न पर (${dayNames[targetColIdx]}):</b> Row ${t1.row} में <b>${p1Val}</b> की जोड़ी आई।<br>
-            • <b>दूसरे टर्न पर (${dayNames[targetColIdx]}):</b> Row ${t2.row} में <b>${p2Val}</b> की जोड़ी आई।<br>
-            • <b>तीसरे टर्न पर (${dayNames[targetColIdx]}):</b> Row ${t3.row} में <b>${p3Val}</b> की जोड़ी आई।<br>
-            <hr style="border:0; border-top:1px solid #334155; margin:6px 0;">
-            <b style="color:#00ff88; font-size:13px;">👉 चौथे टर्न की संभावित जोड़ी: <span style="background:#059669; color:#fff; padding:2px 8px; border-radius:4px;">${predictedJodi}</span> / <span style="background:#a855f7; color:#fff; padding:2px 8px; border-radius:4px;">${palti(predictedJodi)}</span> (पलटी)</b>
+            <b style="color:var(--gold); font-size:13px;">🎯 Scheme Analysis for Row ${rowIdx + 1} [${dayName}]:</b><br>
+            • ${scheme1Output}<br>
+            • ${scheme2Output}<br>
+            • ${scheme3Output}<br>
+            <div class="explanation-box" style="margin-top:6px;">
+                💡 <b>AI Tip:</b> क्लिक किया गया डिब्बा [Row ${rowIdx + 1}, ${dayName}] हाइलाइट कर दिया गया है। ऊपर के तीन लॉजिक्स में से सबसे कॉमन अंक या फैमिली जोड़ी चुनकर प्ले करें।
+            </div>
         </div>
     `;
+
+    makePattern(rowIdx, colIdx);
+}
+
+function autoAiSchemeSearch() {
+    let blankFound = null;
+    for(let r = data.length - 1; r >= 0; r--) {
+        for(let c = 0; c < 6; c++) {
+            if(data[r][c] === "**") {
+                blankFound = { r: r, c: c };
+                break;
+            }
+        }
+        if(blankFound) break;
+    }
+
+    if(blankFound) {
+        analyzeBlankCellScheme(blankFound.r, blankFound.c);
+    } else {
+        alert("कोई खाली सेल (**) नहीं मिला! कृपया ➕ ADD ROW बटन से नई रो जोड़ें।");
+    }
 }
 
 function drawSelectedJodiLines(cvsId, tblEl) {
@@ -365,6 +428,7 @@ function clearCanvas(cvsId) {
 function clearActivePattern() {
     activeMark = null;
     selectedJodis = [];
+    selectedBlank = null;
     draw();
 }
 
@@ -395,6 +459,7 @@ function toggleMultiJodiMode() {
     isMultiJodiSelectionMode = !isMultiJodiSelectionMode;
     selectedJodis = [];
     activeMark = null;
+    selectedBlank = null;
     const btn = document.getElementById("btn-3jodi-mode");
     if(isMultiJodiSelectionMode) {
         btn.classList.add("btn-active");
@@ -440,7 +505,7 @@ function handleCellClick(r, c, val) {
         highlightedFam = (highlightedFam === fam(val)) ? null : fam(val);
         draw();
     } else {
-        makePattern(r, c);
+        analyzeBlankCellScheme(r, c);
     }
 }
 
@@ -573,6 +638,7 @@ function clearData(){
         data = defaultData; 
         activeMark = null;
         selectedJodis = [];
+        selectedBlank = null;
         draw(); 
     }
 }
