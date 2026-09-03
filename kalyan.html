@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalyan Ultra AI – Pattern Completion Engine</title>
+    <title>Kalyan Ultra AI – Cross Diagonal Pattern Engine</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -123,7 +123,7 @@
 
 <div id="home-screen">
     <h1 class="hero-title">Kalyan PRO AI</h1>
-    <p class="hero-sub">HISTORICAL PATTERN REPLAY & COMPLETION ENGINE</p>
+    <p class="hero-sub">CROSS DIAGONAL PATTERN & REPEAT JODI ENGINE</p>
     <button class="enter-btn" onclick="startApp()">START ANALYSIS</button>
 </div>
 
@@ -133,13 +133,13 @@
         <span id="trend-bar" class="trend-badge">Trend: Scanning...</span>
     </div>
     
-    <div id="sync-indicator" class="sync-status sync-online">⚡ Historical Pattern Completion Engine Active</div>
+    <div id="sync-indicator" class="sync-status sync-online">⚡ Diagonal Cross Pattern AI Active</div>
 
     <div class="toolbar">
         <input type="file" id="csv" accept=".csv" style="display:none">
         <button onclick="document.getElementById('csv').click()" style="background:#444; color:white;">📂 CSV</button>
         <button onclick="addRow()" style="background:#0284c7; color:white;">➕ ADD ROW</button>
-        <button onclick="autoAiSchemeSearch()" style="background:var(--pink); color:white;">🤖 PATTERN COMPLETION LINE</button>
+        <button onclick="autoAiSchemeSearch()" style="background:var(--pink); color:white;">🎯 CROSS PATTERN PREDICTOR</button>
         <button onclick="autoScanPatterns()" style="background:var(--purple); color:white;">🔍 AUTO SCAN</button>
         <button onclick="clearActivePattern()" style="background:#eab308; color:black;">❌ CLEAR SELECTION</button>
         <button onclick="saveData()" style="background:#28a745; color:white;">💾 SAVE DATA</button>
@@ -155,8 +155,8 @@
 
     <div class="dashboard">
         <div class="card" style="grid-column: 1 / -1; border-top: 3px solid var(--pink);">
-            <h3>🚨 Pattern Completion Line Alert (पुराना पैटर्न REPLAY)</h3>
-            <div id="scheme-output">किसी भी <b>खाली खाने (Blank Cell)</b> पर क्लिक करें। AI पुरानी हिस्ट्री (10-15+ हफ़्तों के ऊपर) से पूरा हुआ सेम पैटर्न ढूँढकर completion line निकालेगा।</div>
+            <h3>🚨 Cross / Diagonal Pattern Repeat Prediction</h3>
+            <div id="scheme-output">किसी भी <b>खाली खाने (Blank Cell)</b> पर क्लिक करें। AI पुरानी हिस्ट्री से तिरछी (Diagonal) और सीधी कट-ऑफ लाइन्स स्कैन करके बेस्ट जोड़ी निकालेगा।</div>
         </div>
         <div class="card">
             <h3>✔ Matches Found</h3>
@@ -167,7 +167,7 @@
             <div id="ai">Wait for input...</div>
         </div>
         <div class="card">
-            <h3>🔮 Future Completion Jodi</h3>
+            <h3>🔮 Strong Future Target Jodi</h3>
             <div id="future">Select a match...</div>
         </div>
         <div class="card" style="grid-column: 1 / -1;">
@@ -190,7 +190,7 @@
 </div>
 
 <script>
-const STORAGE_KEY = "pdata_Kalyan_v15";
+const STORAGE_KEY = "pdata_Kalyan_v16";
 const DAY_NAMES = ["सोमवार", "मंगलवार", "बुधवार", "गुरुवार", "शुक्रवार", "शनिवार"];
 
 let targetCol = null;
@@ -266,7 +266,7 @@ function draw(){
  updateTrendIndicator();
 }
 
-// *** ADVANCED PATTERN COMPLETION SEARCH (OLD PATTERN MATCHING) ***
+// *** CROSS & DIAGONAL PATTERN AI ANALYZER ***
 function analyzeBlankCellScheme(rowIdx, colIdx) {
     selectedBlank = { r: rowIdx, c: colIdx };
     activeMark = null;
@@ -275,78 +275,70 @@ function analyzeBlankCellScheme(rowIdx, colIdx) {
     let targetDay = DAY_NAMES[colIdx];
     let totalRows = data.length;
 
-    // Build current pending pattern chain (up to 3-4 steps backward)
-    let currentChain = [];
+    // 1. Gather Cross/Diagonal Chain (Diagonal Up-Left, Up-Right, or Direct Cross)
+    let diagChain = [];
     
-    // Look backward in the current row and upper rows
-    for(let c = colIdx - 1; c >= 0; c--) {
-        if(data[rowIdx][c] !== "**") {
-            currentChain.unshift({ r: rowIdx, c: c, val: data[rowIdx][c] });
-        }
+    // Check Top-Left Diagonal: (row - 1, col - 1)
+    if(rowIdx > 0 && colIdx > 0 && data[rowIdx - 1][colIdx - 1] !== "**") {
+        diagChain.push({ r: rowIdx - 1, c: colIdx - 1, val: data[rowIdx - 1][colIdx - 1], type: "Top-Left Diagonal" });
     }
-    
-    if(currentChain.length < 2 && rowIdx > 0) {
-        for(let c = 5; c >= 0; c--) {
-            if(data[rowIdx - 1][c] !== "**") {
-                currentChain.unshift({ r: rowIdx - 1, c: c, val: data[rowIdx - 1][c] });
-                if(currentChain.length >= 3) break;
-            }
-        }
+    // Check Top-Right Diagonal: (row - 1, col + 1)
+    if(rowIdx > 0 && colIdx < 5 && data[rowIdx - 1][colIdx + 1] !== "**") {
+        diagChain.push({ r: rowIdx - 1, c: colIdx + 1, val: data[rowIdx - 1][colIdx + 1], type: "Top-Right Diagonal" });
+    }
+    // Check Direct Row-Left: (row, col - 1)
+    if(colIdx > 0 && data[rowIdx][colIdx - 1] !== "**") {
+        diagChain.push({ r: rowIdx, c: colIdx - 1, val: data[rowIdx][colIdx - 1], type: "Straight Left" });
     }
 
-    let patternMatches = [];
+    let crossMatches = [];
 
-    // Search historical completed patterns (10-15+ weeks above)
-    if(currentChain.length >= 1) {
+    // Search historical patterns (from top 5 up to all older rows)
+    if(diagChain.length > 0) {
         for(let r = 0; r < rowIdx; r++) {
-            let matchCount = 0;
-            for(let k = 0; k < currentChain.length; k++) {
-                let currItem = currentChain[k];
-                // Check relative match in historical row 'r'
-                if(smartMatch(data[r][currItem.c], currItem.val)) {
-                    matchCount++;
+            diagChain.forEach(item => {
+                // If historical row 'r' at same relative cross position matches:
+                if(data[r][item.c] && smartMatch(data[r][item.c], item.val)) {
+                    let targetVal = data[r][colIdx];
+                    if(targetVal && targetVal !== "**") {
+                        crossMatches.push({
+                            oldRow: r + 1,
+                            oldJodi: targetVal,
+                            matchedCrossVal: data[r][item.c],
+                            matchType: item.type
+                        });
+                    }
                 }
-            }
-            
-            // If the pattern sequence matched in history, check how it completed!
-            if(matchCount === currentChain.length) {
-                let historicalCompletionVal = data[r][colIdx];
-                if(historicalCompletionVal && historicalCompletionVal !== "**") {
-                    patternMatches.push({
-                        oldRow: r + 1,
-                        oldJodi: historicalCompletionVal,
-                        matchedChain: currentChain.map(x => x.val).join(" ➔ ")
-                    });
-                }
-            }
+            });
         }
     }
 
     let outputHtml = "";
-    if(patternMatches.length > 0) {
-        let topMatch = patternMatches[patternMatches.length - 1]; // most recent historical completion
-        let topTarget = topMatch.oldJodi;
+    if(crossMatches.length > 0) {
+        let freq = {};
+        crossMatches.forEach(m => freq[m.oldJodi] = (freq[m.oldJodi] || 0) + 1);
+        let topTarget = Object.keys(freq).sort((a,b) => freq[b] - freq[a])[0];
         let targetFam = FAMILY[fam(topTarget)] || [topTarget];
 
-        let logs = patternMatches.map(m => 
-            `<span class="clickable-row-link" onclick="scrollToAndHighlightRow(${m.oldRow - 1})">👉 पुराना रिकॉर्ड Row ${m.oldRow}: [${m.matchedChain}] के बाद ${targetDay} को **${m.oldJodi}** पर पैटर्न पूरा हुआ था।</span>`
+        let logs = crossMatches.slice(-4).map(m => 
+            `<span class="clickable-row-link" onclick="scrollToAndHighlightRow(${m.oldRow - 1})">👉 Row ${m.oldRow} [${m.matchType}]: ${m.matchedCrossVal} के क्रॉस कनेक्शन से ${targetDay} को **${m.oldJodi}** रिपीट हुई थी।</span>`
         ).join("");
 
         outputHtml = `
             <div class="alert-box">
-                🔥 <b>AI ALERT: [Row ${rowIdx + 1} - ${targetDay}] पुराना पैटर्न REPLAY!</b><br>
-                वर्तमान अधूरा पैटर्न: <b>${currentChain.map(x=>x.val).join(" ➔ ") || "None"} ➔ [ ? ]</b><br>
-                🎯 <b>इस लाइन से पैटर्न Complete होगा: <span style="color:var(--gold); font-size:15px;">${topTarget}</span> (Family: ${targetFam.join(",")})</b>
+                📐 <b>AI CROSS PATTERN ALERT: [Row ${rowIdx + 1} - ${targetDay}]!</b><br>
+                कनेक्टेड तिरछी/क्रॉस जोड़ियाँ: <b>${diagChain.map(x=> `${x.type}: ${x.val}`).join(" | ")}</b><br>
+                🎯 <b>Strong Target Completion Jodi: <span style="color:var(--gold); font-size:16px;">${topTarget}</span> (Family: ${targetFam.join(",")})</b>
             </div>
             <div class="explanation-box" style="margin-top:6px;">
-                <b>📜 ऐतिहासिक प्रमाण (पुरानी कम्प्लीट लाइन्स):</b><br>${logs}
+                <b>📜 पुराना तिरछा रिकॉर्ड जहाँ से यह जोड़ी/फैमिली कनेक्ट हो रही है:</b><br>${logs}
             </div>
         `;
     } else {
         outputHtml = `
             <div class="explanation-box">
-                ℹ️ <b>[Row ${rowIdx + 1} - ${targetDay}] पैटर्न स्टेटस:</b><br>
-                वर्तमान सीक्वेंस <b>${currentChain.map(x=>x.val).join(" ➔ ") || "None"}</b> के लिए ऊपर का कोई सटीक रिपीट रिकॉर्ड नहीं मिला। AI लाइव स्टैटिक सर्च से पैटर्न मैच कर रहा है।
+                ℹ️ <b>[Row ${rowIdx + 1} - ${targetDay}] तिरछा पैटर्न सर्च:</b><br>
+                इस स्थान के लिए तिरछी जोड़ियों का सीधा पुराना मैच नहीं मिला। AI लाइव पैटर्न शेप सर्च कर रहा है।
             </div>
         `;
     }
