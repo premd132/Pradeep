@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalyan Ultra AI – Multi-Day All Scheme Engine</title>
+    <title>Kalyan Ultra AI – Smart Pattern Completion Engine</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -85,10 +85,6 @@
         .fam-highlight { background: rgba(255, 215, 0, 0.4) !important; font-weight: 900; }
         .red-jodi { color: #ff0000 !important; font-weight: 900; }
         
-        .seq-selected-1 { background: #facc15 !important; color: #000 !important; font-weight: 900; border: 3px solid #b45309 !important; border-radius: 50% !important; }
-        .seq-selected-2 { background: #c084fc !important; color: #000 !important; font-weight: 900; border: 3px solid #7e22ce !important; border-radius: 50% !important; }
-        .seq-selected-3 { background: #38bdf8 !important; color: #000 !important; font-weight: 900; border: 3px solid #0284c7 !important; border-radius: 50% !important; }
-        
         tr.row-highlight td {
             background-color: #e9d5ff !important;
             border-top: 2px solid #a855f7 !important;
@@ -106,11 +102,13 @@
         .day-ank-table td { border: 1px solid #334155; padding: 4px; text-align: center; color: #00ff88; }
 
         .prob-badge { background: #00ff88; color: #000; border-radius: 4px; padding: 2px 5px; font-weight: bold; font-size: 10px; margin-left: 4px; }
-        .cut-badge { background: var(--red); color: #fff; border-radius: 4px; padding: 2px 5px; font-weight: bold; font-size: 10px; }
         .trend-badge { background: var(--purple); color: #fff; padding: 3px 6px; border-radius: 6px; font-size: 11px; font-weight: bold; }
 
         .explanation-box {
             font-size: 11px; line-height: 1.6; color: #cbd5e1; background: #0f172a; padding: 10px; border-radius: 6px; border-left: 3px solid var(--gold); margin-top: 6px;
+        }
+        .alert-box {
+            font-size: 11px; line-height: 1.6; color: #fff; background: #831843; padding: 10px; border-radius: 6px; border-left: 4px solid var(--pink); margin-top: 6px;
         }
         .clickable-row-link {
             color: #38bdf8; text-decoration: underline; cursor: pointer; font-weight: bold; display: block; margin: 4px 0;
@@ -120,14 +118,13 @@
         #popup { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 15px; display: none; z-index: 100; padding: 12px; color: #000; width: 92%; max-width: 380px; }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; z-index: 90; }
         button { cursor: pointer; border-radius: 6px; border: none; font-weight: bold; padding: 8px 10px; font-size: 11px; }
-        .btn-active { outline: 2px solid var(--gold); box-shadow: 0 0 10px var(--gold); }
     </style>
 </head>
 <body>
 
 <div id="home-screen">
     <h1 class="hero-title">Kalyan PRO AI</h1>
-    <p class="hero-sub">ALL-DAY MULTI-JODI SCHEME & PREDICTION ENGINE</p>
+    <p class="hero-sub">AI AUTO PATTERN COMPLETION & LINE ENGINE</p>
     <button class="enter-btn" onclick="startApp()">START ANALYSIS</button>
 </div>
 
@@ -137,15 +134,14 @@
         <span id="trend-bar" class="trend-badge">Trend: Scanning...</span>
     </div>
     
-    <div id="sync-indicator" class="sync-status sync-online">💾 Multi-Jodi Cross Scheme Active</div>
+    <div id="sync-indicator" class="sync-status sync-online">⚡ Smart AI Completion Engine Active</div>
 
     <div class="toolbar">
         <input type="file" id="csv" accept=".csv" style="display:none">
         <button onclick="document.getElementById('csv').click()" style="background:#444; color:white;">📂 CSV</button>
         <button onclick="addRow()" style="background:#0284c7; color:white;">➕ ADD ROW</button>
-        <button onclick="autoAiSchemeSearch()" style="background:var(--pink); color:white;">🤖 AUTO SCHEME</button>
+        <button onclick="autoAiSchemeSearch()" style="background:var(--pink); color:white;">🤖 AUTO COMPLETED PATTERN</button>
         <button onclick="autoScanPatterns()" style="background:var(--purple); color:white;">🔍 AUTO SCAN</button>
-        <button id="btn-3jodi-mode" onclick="toggleMultiJodiMode()" style="background:#0084ff; color:white;">⚡ SELECT 3-JODI</button>
         <button onclick="clearActivePattern()" style="background:#eab308; color:black;">❌ CLEAR SELECTION</button>
         <button onclick="saveData()" style="background:#28a745; color:white;">💾 SAVE DATA</button>
         <button onclick="clearData()" style="background:#dc3545; color:white;">🗑️ CLEAR ALL</button>
@@ -160,28 +156,20 @@
 
     <div class="dashboard">
         <div class="card" style="grid-column: 1 / -1; border-top: 3px solid var(--pink);">
-            <h3>📜 Multi-Jodi All-Day Scheme Breakdown</h3>
-            <div id="scheme-output">सोमवार से शनिवार के किसी भी **खाली डिब्बे (Blank Cell)** पर क्लिक करें, AI सभी दिनों की जोड़ियों को मिलाकर अलग-अलग स्कीम बनाएगा!</div>
+            <h3>🚨 Pattern Completion Alert & Line Prediction</h3>
+            <div id="scheme-output">किसी भी <b>खाली डिब्बे (Blank Cell)</b> पर क्लिक करें, AI पुरानी हिस्ट्री से मैच करके बताएगा कि कौन सा पैटर्न यहाँ आकर पूरा (Complete) होने वाला है!</div>
         </div>
         <div class="card">
             <h3>✔ Matches Found</h3>
             <div id="checks"></div>
         </div>
         <div class="card">
-            <h3>🤖 AI Analysis</h3>
+            <h3>🤖 AI Line Analysis</h3>
             <div id="ai">Wait for input...</div>
         </div>
         <div class="card">
-            <h3>🔮 Future Prediction</h3>
+            <h3>🔮 Future Target Jodi</h3>
             <div id="future">Select a match...</div>
-        </div>
-        <div class="card" style="grid-column: 1 / -1;">
-            <h3>🎯 3-Jodi Connection Line Prediction Engine</h3>
-            <div id="seq-predict">Click "SELECT 3-JODI" then tap 3 cells on table in sequence...</div>
-        </div>
-        <div class="card">
-            <h3>🚫 High Risk Cut-Ank</h3>
-            <div id="cut-ank">Calculating...</div>
         </div>
         <div class="card" style="grid-column: 1 / -1;">
             <h3>📊 Day-by-Day Top 4 Frequent Ank</h3>
@@ -203,16 +191,13 @@
 </div>
 
 <script>
-const STORAGE_KEY = "pdata_Kalyan_v12";
+const STORAGE_KEY = "pdata_Kalyan_v13";
 const DAY_NAMES = ["सोमवार", "मंगलवार", "बुधवार", "गुरुवार", "शुक्रवार", "शनिवार"];
 
 let targetCol = null;
 let activeMark = null;
 let highlightedFam = null;
 let selectedBlank = null; 
-
-let isMultiJodiSelectionMode = false;
-let selectedJodis = []; 
 
 function norm(v) {
     if (!v || v.trim() === "" || v === "**") return "**";
@@ -250,10 +235,6 @@ function palti(v){return v[1]+v[0];}
 function smartMatch(a1,b1){ if(a1=="**"||b1=="**") return false; return a1===b1 || palti(a1)===b1 || fam(a1)===fam(b1); }
 function isRedJodi(v){ return v!=="**" && (v[0]===v[1] || Math.abs(parseInt(v[0])-parseInt(v[1]))===5); }
 
-function getSelectedJodiIndex(r, c) {
-    return selectedJodis.findIndex(item => item.r === r && item.c === c);
-}
-
 function draw(){
  let h="<tr><th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th><th>SAT</th><th class='action-th'>❌</th></tr>";
  data.forEach((r,ri)=>{
@@ -263,12 +244,6 @@ function draw(){
    if(highlightedFam && fam(c) === highlightedFam) cls += " fam-highlight";
    if(isRedJodi(c)) cls += " red-jodi";
    if(selectedBlank && selectedBlank.r === ri && selectedBlank.c === ci) cls += " blank-selected";
-   
-   let selIdx = getSelectedJodiIndex(ri, ci);
-   if(selIdx === 0) cls += " seq-selected-1";
-   else if(selIdx === 1) cls += " seq-selected-2";
-   else if(selIdx === 2) cls += " seq-selected-3";
-   
    if(c=="**") cls += " blank";
    
    h+=`<td class="${cls}" data-row="${ri}" data-col="${ci}" contenteditable="true" onblur="updateCell(${ri},${ci},this)" onkeydown="checkEnter(event, this)" onclick="handleCellClick(${ri},${ci},'${c}')">${c}</td>`;
@@ -279,9 +254,7 @@ function draw(){
  document.getElementById("tbl").innerHTML=h;
  
  setTimeout(() => {
-     if(selectedJodis.length > 1) {
-         drawSelectedJodiLines("mainCanvas", document.getElementById("tbl"));
-     } else if(activeMark) {
+     if(activeMark) {
          drawLines("mainCanvas", document.getElementById("tbl"));
      } else {
          clearCanvas("mainCanvas");
@@ -289,91 +262,112 @@ function draw(){
  }, 50);
  
  calculateDayFrequency();
- calculateCutAnk();
  updateTrendIndicator();
 }
 
-// *** ADVANCED ALL-DAY MULTI-JODI SCHEME ENGINE ***
+// *** SMART AI PATTERN COMPLETION DETECTOR ***
 function analyzeBlankCellScheme(rowIdx, colIdx) {
     selectedBlank = { r: rowIdx, c: colIdx };
     draw();
 
     let targetDay = DAY_NAMES[colIdx];
+    let totalRows = data.length;
+
+    // 1. Collect last 2 or 3 jodis leading up to this blank cell
+    let recentChain = [];
     
-    // 1. Cross-Day Pairs (सोमवार से शुक्रवार तक की जोड़ियों को चुनना)
-    let availableWeekJodis = [];
-    let currentRow = data[rowIdx];
+    // Check horizontally in current row
+    for(let c = 0; c < colIdx; c++) {
+        if(data[rowIdx][c] !== "**") {
+            recentChain.push({ r: rowIdx, c: c, val: data[rowIdx][c] });
+        }
+    }
     
-    for(let c = 0; c < 6; c++) {
-        if(c !== colIdx && currentRow[c] !== "**") {
-            availableWeekJodis.push({ day: DAY_NAMES[c], val: currentRow[c] });
+    // If not enough horizontal, check previous row
+    if(recentChain.length < 2 && rowIdx > 0) {
+        for(let c = 5; c >= 0; c--) {
+            if(data[rowIdx - 1][c] !== "**") {
+                recentChain.unshift({ r: rowIdx - 1, c: c, val: data[rowIdx - 1][c] });
+                if(recentChain.length >= 3) break;
+            }
         }
     }
 
-    // अगर उसी हफ़्ते में अन्य दिन मौजूद हैं
-    let schemeCrossDay = "";
-    if(availableWeekJodis.length > 0) {
-        let lastKnown = availableWeekJodis[availableWeekJodis.length - 1];
-        let famMembers = FAMILY[fam(lastKnown.val)] || [lastKnown.val];
-        schemeCrossDay = `<b>1. Same-Week Cross Shift (${lastKnown.day} ➔ ${targetDay}):</b> ${lastKnown.day} की जोड़ी <b>${lastKnown.val}</b> के आधार पर सीधी/फैमिली जोड़ी: <span style="color:var(--gold); font-weight:bold;">${famMembers[0]}</span> / <span style="color:#00ff88;">${famMembers[1] || palti(famMembers[0])}</span>`;
-    } else {
-        schemeCrossDay = `<b>1. Same-Week Cross Shift:</b> इस सप्ताह में पहले के दिनों का डेटा उपलब्ध नहीं है।`;
-    }
+    let completionMatches = [];
 
-    // 2. Vertical Turn (उसी दिन की ऐतिहासिक जोड़ियाँ)
-    let colHistory = [];
-    for(let r = 0; r < rowIdx; r++) {
-        if(data[r][colIdx] && data[r][colIdx] !== "**") {
-            colHistory.push({ row: r + 1, val: data[r][colIdx] });
+    if(recentChain.length >= 2) {
+        let j1 = recentChain[recentChain.length - 2];
+        let j2 = recentChain[recentChain.length - 1];
+
+        // Search old history for similar j1 -> j2 sequence
+        for(let r = 0; r < totalRows - 1; r++) {
+            for(let c = 0; c < 6; c++) {
+                if(r === rowIdx && c >= colIdx) continue;
+                
+                if(smartMatch(data[r][c], j1.val)) {
+                    // Look for j2 relative to j1
+                    let nextC = (c + 1) % 6;
+                    let nextR = (c + 1 > 5) ? r + 1 : r;
+
+                    if(nextR < totalRows && smartMatch(data[nextR][nextC], j2.val)) {
+                        // Potential target cell that completes the pattern
+                        let targetC = (nextC + 1) % 6;
+                        let targetR = (nextC + 1 > 5) ? nextR + 1 : nextR;
+
+                        if(targetR < totalRows && data[targetR][targetC] !== "**") {
+                            completionMatches.push({
+                                startRow: r + 1,
+                                matchedLine: `${data[r][c]} ➔ ${data[nextR][nextC]}`,
+                                completedWith: data[targetR][targetC]
+                            });
+                        }
+                    }
+                }
+            }
         }
     }
 
-    let schemeVertical = "";
-    if(colHistory.length >= 2) {
-        let l1 = colHistory[colHistory.length - 1];
-        let l2 = colHistory[colHistory.length - 2];
-        let pOpen = (parseInt(l1.val[0]) + Math.abs(parseInt(l1.val[0]) - parseInt(l2.val[0]))) % 10;
-        let pClose = l1.val[1];
-        let pred = `${pOpen}${pClose}`;
-        schemeVertical = `<b>2. Vertical Turn (${targetDay} History):</b> Row ${l2.row} (${l2.val}) ➔ Row ${l1.row} (${l1.val}) ➔ वर्टिकल टर्न: <span style="color:#38bdf8; font-weight:bold;">${pred}</span>`;
-    } else {
-        schemeVertical = `<b>2. Vertical Turn:</b> पुराना रिकॉर्ड कम से कम 2 हफ़्ते का चाहिए।`;
-    }
+    let outputHtml = "";
+    if(completionMatches.length > 0) {
+        let targets = completionMatches.map(m => m.completedWith);
+        let freqMap = {};
+        targets.forEach(t => freqMap[t] = (freqMap[t] || 0) + 1);
+        let topTarget = Object.keys(freqMap).sort((a,b) => freqMap[b] - freqMap[a])[0];
+        let targetFam = FAMILY[fam(topTarget)] || [topTarget];
 
-    // 3. Multi-Jodi Combination (पिछली रो की अलग-अलग जोड़ियों का मेल)
-    let schemeMultiJodi = "";
-    if(rowIdx > 0) {
-        let prevRow = data[rowIdx - 1];
-        let validPrev = [];
-        prevRow.forEach((v, idx) => { if(v !== "**") validPrev.push({ day: DAY_NAMES[idx], val: v }); });
-        
-        if(validPrev.length >= 2) {
-            let j1 = validPrev[0];
-            let j2 = validPrev[validPrev.length - 1];
-            let combinedOpen = j1.val[0];
-            let combinedClose = j2.val[1];
-            let combJodi = `${combinedOpen}${combinedClose}`;
-            schemeMultiJodi = `<b>3. Cross Multi-Jodi Combination (${j1.day} + ${j2.day}):</b> ${j1.day} ओपन (${j1.val[0]}) + ${j2.day} क्लोज (${j2.val[1]}) ➔ <span style="color:var(--pink); font-weight:bold;">${combJodi}</span> / <span style="color:#c084fc;">${palti(combJodi)}</span>`;
-        } else {
-            schemeMultiJodi = `<b>3. Cross Multi-Jodi Combination:</b> पिछली रो में पर्याप्त जोड़ियाँ नहीं हैं।`;
-        }
-    } else {
-        schemeMultiJodi = `<b>3. Cross Multi-Jodi Combination:</b> यह सबसे पहली रो है।`;
-    }
+        let logs = completionMatches.slice(-3).map(m => 
+            `<span class="clickable-row-link" onclick="scrollToAndHighlightRow(${m.startRow - 1})">👉 Row ${m.startRow} की लाइन पर सेम पैटर्न पूरा हुआ था ➔ वहाँ अगला आया: <b>${m.completedWith}</b></span>`
+        ).join("");
 
-    // Output Display
-    document.getElementById("scheme-output").innerHTML = `
-        <div style="font-size:12px; line-height:1.7;">
-            <b style="color:var(--gold); font-size:13px;">🎯 AI Multi-Jodi Scheme Breakdown [Row ${rowIdx + 1} - ${targetDay}]:</b><br>
-            • ${schemeCrossDay}<br>
-            • ${schemeVertical}<br>
-            • ${schemeMultiJodi}<br>
-            <div class="explanation-box" style="margin-top:6px;">
-                💡 <b>AI Prediction Insight:</b> सिर्फ एक दिन नहीं, बल्कि सप्ताह के अन्य दिनों (सोम-शुक्र) की जोड़ियों को मिलाकर ऊपर 3 अलग-अलग लॉजिक दिए गए हैं।
+        outputHtml = `
+            <div class="alert-box">
+                🔥 <b>AI ALERT: यह पैटर्न यहाँ पूरा (Complete) होने वाला है!</b><br>
+                हाल की आ चुकी जोड़ियाँ: <b>${recentChain.map(x=>x.val).join(" ➔ ")}</b><br>
+                🎯 <b>Target Completion Jodi: <span style="color:var(--gold); font-size:14px;">${topTarget}</span> (Family: ${targetFam.join(",")})</b>
             </div>
-        </div>
-    `;
+            <div class="explanation-box" style="margin-top:6px;">
+                <b>📜 पुरानी हिस्ट्री मैच रिकॉर्ड्स (जहां यह पैटर्न पहले पूरा हो चुका है):</b><br>${logs}
+            </div>
+        `;
+    } else {
+        // Fallback vertical turn line analysis
+        let colHistory = [];
+        for(let r = 0; r < rowIdx; r++) {
+            if(data[r][colIdx] && data[r][colIdx] !== "**") {
+                colHistory.push(data[r][colIdx]);
+            }
+        }
 
+        let fallbackJodi = colHistory.length > 0 ? colHistory[colHistory.length - 1] : "**";
+        outputHtml = `
+            <div class="explanation-box">
+                ℹ️ <b>पैटर्न स्टेटस:</b> इस जगह के लिए कोई डायरेक्ट पुराना 2-Jodi सीक्वेंस नहीं मिला।<br>
+                <b>${targetDay} Vertical Day Line:</b> पिछले ${targetDay} की जोड़ी <b>${fallbackJodi}</b> के आधार पर टर्न फैमिली: <span style="color:var(--gold); font-weight:bold;">${fam(fallbackJodi) !== "NA" ? FAMILY[fam(fallbackJodi)].join(", ") : fallbackJodi}</span>
+            </div>
+        `;
+    }
+
+    document.getElementById("scheme-output").innerHTML = outputHtml;
     makePattern(rowIdx, colIdx);
 }
 
@@ -396,34 +390,6 @@ function autoAiSchemeSearch() {
     }
 }
 
-function drawSelectedJodiLines(cvsId, tblEl) {
-    const cvs = document.getElementById(cvsId);
-    const ctx = cvs.getContext("2d");
-    cvs.width = tblEl.offsetWidth; 
-    cvs.height = tblEl.offsetHeight;
-    ctx.clearRect(0,0,cvs.width,cvs.height);
-    
-    if(selectedJodis.length < 2) return;
-    const tRect = tblEl.getBoundingClientRect();
-    
-    ctx.strokeStyle = "#a855f7"; 
-    ctx.lineWidth = 3;
-    ctx.lineCap = "round";
-    
-    ctx.beginPath();
-    selectedJodis.forEach((pos, idx) => {
-        const cell = tblEl.querySelector(`td[data-row="${pos.r}"][data-col="${pos.c}"]`);
-        if(cell) {
-            const r = cell.getBoundingClientRect();
-            const x = r.left - tRect.left + r.width/2;
-            const y = r.top - tRect.top + r.height/2;
-            if(idx === 0) ctx.moveTo(x, y);
-            else ctx.lineTo(x, y);
-        }
-    });
-    ctx.stroke();
-}
-
 function clearCanvas(cvsId) {
     const cvs = document.getElementById(cvsId);
     if(cvs) {
@@ -434,7 +400,6 @@ function clearCanvas(cvsId) {
 
 function clearActivePattern() {
     activeMark = null;
-    selectedJodis = [];
     selectedBlank = null;
     draw();
 }
@@ -444,7 +409,6 @@ function updateCell(r, c, el) {
     data[r][c] = val;
     el.innerText = val;
     calculateDayFrequency();
-    calculateCutAnk();
     updateTrendIndicator();
 }
 
@@ -462,52 +426,7 @@ function deleteRow(rIndex) {
     }
 }
 
-function toggleMultiJodiMode() {
-    isMultiJodiSelectionMode = !isMultiJodiSelectionMode;
-    selectedJodis = [];
-    activeMark = null;
-    selectedBlank = null;
-    const btn = document.getElementById("btn-3jodi-mode");
-    if(isMultiJodiSelectionMode) {
-        btn.classList.add("btn-active");
-        btn.innerText = "🎯 TAP 1ST JODI (YELLOW)";
-        document.getElementById("seq-predict").innerHTML = "<b style='color:var(--gold);'>क्रम से 1st (Yellow), 2nd (Purple) और 3rd (Blue) जोड़ी चुनें...</b>";
-    } else {
-        btn.classList.remove("btn-active");
-        btn.innerText = "⚡ SELECT 3-JODI";
-    }
-    draw();
-}
-
 function handleCellClick(r, c, val) {
-    if (isMultiJodiSelectionMode) {
-        if (val === "**") return;
-        
-        let index = getSelectedJodiIndex(r, c);
-        if (index > -1) {
-            selectedJodis.splice(index, 1);
-        } else {
-            if (selectedJodis.length >= 3) selectedJodis = []; 
-            selectedJodis.push({ r: r, c: c, val: val });
-        }
-        
-        const btn = document.getElementById("btn-3jodi-mode");
-        if(selectedJodis.length === 1) {
-            btn.innerText = "🎯 TAP 2ND JODI (PURPLE)";
-        } else if(selectedJodis.length === 2) {
-            btn.innerText = "🎯 TAP 3RD JODI (BLUE)";
-        } else if(selectedJodis.length === 0) {
-            btn.innerText = "🎯 TAP 1ST JODI (YELLOW)";
-        }
-        
-        draw();
-        
-        if (selectedJodis.length === 3) {
-            runSelectedThreeJodiSearch();
-        }
-        return;
-    }
-
     if(val !== "**") {
         highlightedFam = (highlightedFam === fam(val)) ? null : fam(val);
         draw();
@@ -524,81 +443,6 @@ function scrollToAndHighlightRow(rowIndex) {
         setTimeout(() => {
             rowEl.classList.remove('row-highlight');
         }, 2500);
-    }
-}
-
-function runSelectedThreeJodiSearch() {
-    let j1 = selectedJodis[0]; 
-    let j2 = selectedJodis[1]; 
-    let j3 = selectedJodis[2]; 
-
-    let dRow12 = j2.r - j1.r, dCol12 = j2.c - j1.c;
-    let dRow23 = j3.r - j2.r, dCol23 = j3.c - j2.c;
-
-    let weightedNextScores = {};
-    let totalScoreSum = 0;
-    let matchLogs = []; 
-    const totalRows = data.length;
-
-    for (let r1 = 0; r1 < totalRows; r1++) {
-        for (let c1 = 0; c1 < 6; c1++) {
-            if (smartMatch(data[r1][c1], j1.val)) {
-                let r2 = r1 + dRow12;
-                let c2 = c1 + dCol12;
-
-                if (r2 >= 0 && r2 < totalRows && c2 >= 0 && c2 < 6 && smartMatch(data[r2][c2], j2.val)) {
-                    let r3 = r2 + dRow23;
-                    let c3 = c2 + dCol23;
-
-                    if (r3 >= 0 && r3 < totalRows && c3 >= 0 && c3 < 6 && smartMatch(data[r3][c3], j3.val)) {
-                        let r4 = r3 + dRow23;
-                        let c4 = c3 + dCol23;
-
-                        if (r4 >= 0 && r4 < totalRows && c4 >= 0 && c4 < 6 && data[r4][c4] !== "**") {
-                            let targetVal = data[r4][c4];
-                            let weight = (r1 >= totalRows - 10) ? 2.5 : 1.0;
-                            weightedNextScores[targetVal] = (weightedNextScores[targetVal] || 0) + weight;
-                            totalScoreSum += weight;
-
-                            matchLogs.push({
-                                rowIndex: r1,
-                                rowDisplay: r1 + 1,
-                                matchedSeq: `${data[r1][c1]} ➔ ${data[r2][c2]} ➔ ${data[r3][c3]}`,
-                                followedBy: targetVal,
-                                targetRowDisplay: r4 + 1
-                            });
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    if (totalScoreSum === 0) {
-        document.getElementById("seq-predict").innerHTML = `
-            <b>Selected Base 3-Jodi:</b> ${j1.val} ➔ ${j2.val} ➔ ${j3.val}<br>
-            <span style="color:#ff4444;">इस 3-Jodi सीक्वेंस का कोई पैटर्न पुरानी हिस्ट्री में नहीं मिला!</span>
-        `;
-    } else {
-        let sortedJodis = Object.keys(weightedNextScores).sort((a,b) => weightedNextScores[b] - weightedNextScores[a]);
-        let topOutputs = sortedJodis.slice(0, 3).map(jodi => {
-            let probPercent = Math.round((weightedNextScores[jodi] / totalScoreSum) * 100);
-            return `${jodi} <span class="prob-badge">${probPercent}%</span>`;
-        });
-
-        let logHtml = matchLogs.slice(-5).map(m => 
-            `<span class="clickable-row-link" onclick="scrollToAndHighlightRow(${m.rowIndex})">👉 Row ${m.rowDisplay} पर 3-Jodi पैटर्न मिला ➔ Row ${m.targetRowDisplay} में अगला आया: <b>${m.followedBy}</b></span>`
-        ).join("");
-
-        document.getElementById("seq-predict").innerHTML = `
-            <b>Selected Base 3-Jodi:</b> ${j1.val} ➔ ${j2.val} ➔ ${j3.val}<br>
-            <b style="color:#00ff88; font-size:13px;">High Probable 4th Jodi: ${topOutputs.join(" | ")}</b>
-            <div class="explanation-box">
-                <b>🔍 AI Connection Line Row Pattern Breakdown:</b><br>
-                1. रिकॉर्ड में कुल <b>${matchLogs.length} बार</b> सेम ऐसा 3-Jodi पैटर्न बना।<br>
-                2. पुरानी हिस्ट्री मैच रिकॉर्ड्स (देखने के लिए क्लिक करें):<br>${logHtml}
-            </div>
-        `;
     }
 }
 
@@ -644,7 +488,6 @@ function clearData(){
         localStorage.removeItem(STORAGE_KEY); 
         data = defaultData; 
         activeMark = null;
-        selectedJodis = [];
         selectedBlank = null;
         draw(); 
     }
@@ -690,33 +533,6 @@ function calculateDayFrequency() {
 
     html += `</tr></table>`;
     document.getElementById("day-freq-analysis").innerHTML = html;
-}
-
-function calculateCutAnk() {
-    let ankCounts = Array(10).fill(0);
-    let totalAnk = 0;
-
-    data.forEach(row => {
-        row.forEach(val => {
-            if (val && val !== "**" && val.length === 2) {
-                ankCounts[parseInt(val[0])]++;
-                ankCounts[parseInt(val[1])]++;
-                totalAnk += 2;
-            }
-        });
-    });
-
-    if(totalAnk === 0) return;
-
-    let cutAnks = [];
-    ankCounts.forEach((cnt, ank) => {
-        let prob = (cnt / totalAnk) * 100;
-        if(prob < 6.5) cutAnks.push(ank);
-    });
-
-    document.getElementById("cut-ank").innerHTML = cutAnks.length 
-        ? `<span class="cut-badge">REJECT</span> <b>Low Ank:</b> ${cutAnks.join(", ")}`
-        : "<b style='color:#00ff88;'>All Ank Balanced</b>";
 }
 
 function autoScanPatterns() {
@@ -769,7 +585,7 @@ function showChecks(shape, matches){
   let d = document.createElement("div");
   d.style = "background:#2a2a2a; margin:4px 0; padding:6px; cursor:pointer; border-radius:6px; font-size:11px; border-left:3px solid #0084ff;";
   d.innerText = `Match Found at Row ${m.index + 1}`;
-  d.onclick = () => { activeMark={start:m.index, shape:shape}; selectedJodis=[]; draw(); showOne(shape, m.index); };
+  d.onclick = () => { activeMark={start:m.index, shape:shape}; draw(); showOne(shape, m.index); };
   document.getElementById("checks").appendChild(d);
  });
  updateAI(shape, matches);
@@ -783,6 +599,7 @@ function showOne(shape, idx){
    html+=`<td class="${shape[i][j]?'circle':''}">${v}</td>`;
   });
   html+="</tr>";
+ me
  }
  document.getElementById("popData").innerHTML=html+"</table>";
  document.getElementById("popup").style.display="block";
@@ -802,14 +619,14 @@ function updateAI(shape, matches){
    }
   }
  });
- document.getElementById("ai").innerHTML = `<b>Top Jodi:</b> ${Object.keys(jc).slice(0,3).join(", ") || "-"}<br><b>Common Ank:</b> ${Object.keys(dc).slice(0,3).join(", ") || "-"}`;
+ document.getElementById("ai").innerHTML = `<b>Top Line Jodi:</b> ${Object.keys(jc).slice(0,3).join(", ") || "-"}<br><b>Common Ank:</b> ${Object.keys(dc).slice(0,3).join(", ") || "-"}`;
  
  let pool = [];
  matches.forEach(m => {
   let nextR = m.index + shape.length;
   if(nextR < data.length && data[nextR][targetCol] != "**") pool.push(data[nextR][targetCol]);
  });
- document.getElementById("future").innerHTML = pool.length ? `<b>Probable Next:</b> ${[...new Set(pool)].join(" , ")}` : "Analyzing...";
+ document.getElementById("future").innerHTML = pool.length ? `<b>Target Completion Jodi:</b> ${[...new Set(pool)].join(" , ")}` : "Analyzing...";
 }
 
 function closePopup(){ document.getElementById("popup").style.display="none"; document.getElementById("overlay").style.display="none"; }
