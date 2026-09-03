@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalyan Ultra AI – Smart Pattern Completion Engine</title>
+    <title>Kalyan Ultra AI – Dynamic Pattern Completion Engine</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -101,7 +101,6 @@
         .day-ank-table th { background: #0f172a; color: var(--gold); border: 1px solid #334155; padding: 4px; }
         .day-ank-table td { border: 1px solid #334155; padding: 4px; text-align: center; color: #00ff88; }
 
-        .prob-badge { background: #00ff88; color: #000; border-radius: 4px; padding: 2px 5px; font-weight: bold; font-size: 10px; margin-left: 4px; }
         .trend-badge { background: var(--purple); color: #fff; padding: 3px 6px; border-radius: 6px; font-size: 11px; font-weight: bold; }
 
         .explanation-box {
@@ -124,7 +123,7 @@
 
 <div id="home-screen">
     <h1 class="hero-title">Kalyan PRO AI</h1>
-    <p class="hero-sub">AI AUTO PATTERN COMPLETION & LINE ENGINE</p>
+    <p class="hero-sub">DYNAMIC PATTERN COMPLETION & LINE ENGINE</p>
     <button class="enter-btn" onclick="startApp()">START ANALYSIS</button>
 </div>
 
@@ -134,7 +133,7 @@
         <span id="trend-bar" class="trend-badge">Trend: Scanning...</span>
     </div>
     
-    <div id="sync-indicator" class="sync-status sync-online">⚡ Smart AI Completion Engine Active</div>
+    <div id="sync-indicator" class="sync-status sync-online">⚡ Dynamic AI Cell Analyzer Active</div>
 
     <div class="toolbar">
         <input type="file" id="csv" accept=".csv" style="display:none">
@@ -156,8 +155,8 @@
 
     <div class="dashboard">
         <div class="card" style="grid-column: 1 / -1; border-top: 3px solid var(--pink);">
-            <h3>🚨 Pattern Completion Alert & Line Prediction</h3>
-            <div id="scheme-output">किसी भी <b>खाली डिब्बे (Blank Cell)</b> पर क्लिक करें, AI पुरानी हिस्ट्री से मैच करके बताएगा कि कौन सा पैटर्न यहाँ आकर पूरा (Complete) होने वाला है!</div>
+            <h3>🚨 Pattern Completion Alert & Dynamic Line</h3>
+            <div id="scheme-output">किसी भी <b>खाली डिब्बे (Blank Cell)</b> पर क्लिक करें, AI पुरानी हिस्ट्री से मैच करके उसी सेल के लिए अलग पैटर्न निकालेगा!</div>
         </div>
         <div class="card">
             <h3>✔ Matches Found</h3>
@@ -191,7 +190,7 @@
 </div>
 
 <script>
-const STORAGE_KEY = "pdata_Kalyan_v13";
+const STORAGE_KEY = "pdata_Kalyan_v14";
 const DAY_NAMES = ["सोमवार", "मंगलवार", "बुधवार", "गुरुवार", "शुक्रवार", "शनिवार"];
 
 let targetCol = null;
@@ -265,25 +264,23 @@ function draw(){
  updateTrendIndicator();
 }
 
-// *** SMART AI PATTERN COMPLETION DETECTOR ***
+// *** DYNAMIC PER-CELL PATTERN COMPLETION DETECTOR ***
 function analyzeBlankCellScheme(rowIdx, colIdx) {
     selectedBlank = { r: rowIdx, c: colIdx };
-    draw();
-
+    activeMark = null; // Clear old pattern marks immediately
+    clearCanvas("mainCanvas");
+    
     let targetDay = DAY_NAMES[colIdx];
     let totalRows = data.length;
 
-    // 1. Collect last 2 or 3 jodis leading up to this blank cell
+    // 1. Get recent chain specific to this click position
     let recentChain = [];
-    
-    // Check horizontally in current row
     for(let c = 0; c < colIdx; c++) {
         if(data[rowIdx][c] !== "**") {
             recentChain.push({ r: rowIdx, c: c, val: data[rowIdx][c] });
         }
     }
     
-    // If not enough horizontal, check previous row
     if(recentChain.length < 2 && rowIdx > 0) {
         for(let c = 5; c >= 0; c--) {
             if(data[rowIdx - 1][c] !== "**") {
@@ -295,33 +292,21 @@ function analyzeBlankCellScheme(rowIdx, colIdx) {
 
     let completionMatches = [];
 
-    if(recentChain.length >= 2) {
-        let j1 = recentChain[recentChain.length - 2];
-        let j2 = recentChain[recentChain.length - 1];
+    if(recentChain.length >= 1) {
+        let lastJodi = recentChain[recentChain.length - 1];
 
-        // Search old history for similar j1 -> j2 sequence
-        for(let r = 0; r < totalRows - 1; r++) {
-            for(let c = 0; c < 6; c++) {
-                if(r === rowIdx && c >= colIdx) continue;
-                
-                if(smartMatch(data[r][c], j1.val)) {
-                    // Look for j2 relative to j1
-                    let nextC = (c + 1) % 6;
-                    let nextR = (c + 1 > 5) ? r + 1 : r;
-
-                    if(nextR < totalRows && smartMatch(data[nextR][nextC], j2.val)) {
-                        // Potential target cell that completes the pattern
-                        let targetC = (nextC + 1) % 6;
-                        let targetR = (nextC + 1 > 5) ? nextR + 1 : nextR;
-
-                        if(targetR < totalRows && data[targetR][targetC] !== "**") {
-                            completionMatches.push({
-                                startRow: r + 1,
-                                matchedLine: `${data[r][c]} ➔ ${data[nextR][nextC]}`,
-                                completedWith: data[targetR][targetC]
-                            });
-                        }
-                    }
+        for(let r = 0; r < totalRows; r++) {
+            if(r === rowIdx) continue;
+            
+            // Search match in history for the same relative position or same day
+            if(smartMatch(data[r][lastJodi.c], lastJodi.val)) {
+                let targetVal = data[r][colIdx];
+                if(targetVal && targetVal !== "**") {
+                    completionMatches.push({
+                        startRow: r + 1,
+                        matchedLine: `Row ${r + 1} (${DAY_NAMES[lastJodi.c]}): ${data[r][lastJodi.c]}`,
+                        completedWith: targetVal
+                    });
                 }
             }
         }
@@ -335,40 +320,79 @@ function analyzeBlankCellScheme(rowIdx, colIdx) {
         let topTarget = Object.keys(freqMap).sort((a,b) => freqMap[b] - freqMap[a])[0];
         let targetFam = FAMILY[fam(topTarget)] || [topTarget];
 
-        let logs = completionMatches.slice(-3).map(m => 
-            `<span class="clickable-row-link" onclick="scrollToAndHighlightRow(${m.startRow - 1})">👉 Row ${m.startRow} की लाइन पर सेम पैटर्न पूरा हुआ था ➔ वहाँ अगला आया: <b>${m.completedWith}</b></span>`
+        let logs = completionMatches.slice(-4).map(m => 
+            `<span class="clickable-row-link" onclick="scrollToAndHighlightRow(${m.startRow - 1})">👉 ${m.matchedLine} ➔ ${targetDay} को आया: <b>${m.completedWith}</b></span>`
         ).join("");
 
         outputHtml = `
             <div class="alert-box">
-                🔥 <b>AI ALERT: यह पैटर्न यहाँ पूरा (Complete) होने वाला है!</b><br>
-                हाल की आ चुकी जोड़ियाँ: <b>${recentChain.map(x=>x.val).join(" ➔ ")}</b><br>
+                🔥 <b>AI ALERT: [Row ${rowIdx + 1} - ${targetDay}] का विशेष पैटर्न!</b><br>
+                इस स्थान से पहले आई जोड़ी: <b>${recentChain.map(x=>x.val).join(" ➔ ") || "None"}</b><br>
                 🎯 <b>Target Completion Jodi: <span style="color:var(--gold); font-size:14px;">${topTarget}</span> (Family: ${targetFam.join(",")})</b>
             </div>
             <div class="explanation-box" style="margin-top:6px;">
-                <b>📜 पुरानी हिस्ट्री मैच रिकॉर्ड्स (जहां यह पैटर्न पहले पूरा हो चुका है):</b><br>${logs}
+                <b>📜 इस सेल/दिन से मैच होते पुरानी हिस्ट्री के रिकॉर्ड्स:</b><br>${logs}
             </div>
         `;
     } else {
-        // Fallback vertical turn line analysis
         let colHistory = [];
         for(let r = 0; r < rowIdx; r++) {
             if(data[r][colIdx] && data[r][colIdx] !== "**") {
-                colHistory.push(data[r][colIdx]);
+                colHistory.push({ r: r+1, val: data[r][colIdx] });
             }
         }
 
-        let fallbackJodi = colHistory.length > 0 ? colHistory[colHistory.length - 1] : "**";
+        let fallbackJodi = colHistory.length > 0 ? colHistory[colHistory.length - 1].val : "**";
         outputHtml = `
             <div class="explanation-box">
-                ℹ️ <b>पैटर्न स्टेटस:</b> इस जगह के लिए कोई डायरेक्ट पुराना 2-Jodi सीक्वेंस नहीं मिला।<br>
-                <b>${targetDay} Vertical Day Line:</b> पिछले ${targetDay} की जोड़ी <b>${fallbackJodi}</b> के आधार पर टर्न फैमिली: <span style="color:var(--gold); font-weight:bold;">${fam(fallbackJodi) !== "NA" ? FAMILY[fam(fallbackJodi)].join(", ") : fallbackJodi}</span>
+                ℹ️ <b>[Row ${rowIdx + 1} - ${targetDay}] पैटर्न स्टेटस:</b><br>
+                पिछले ${targetDay} (Row ${colHistory.length > 0 ? colHistory[colHistory.length - 1].r : '-'}) की जोड़ी <b>${fallbackJodi}</b> के आधार पर संभावित टर्न फैमिली: <span style="color:var(--gold); font-weight:bold;">${fam(fallbackJodi) !== "NA" ? FAMILY[fam(fallbackJodi)].join(", ") : fallbackJodi}</span>
             </div>
         `;
     }
 
     document.getElementById("scheme-output").innerHTML = outputHtml;
-    makePattern(rowIdx, colIdx);
+    
+    // Dynamic pattern generation specific to clicked cell
+    makeDynamicPatternForCell(rowIdx, colIdx);
+}
+
+function makeDynamicPatternForCell(r, c) {
+    targetCol = c;
+    let base = data[r][c] !== "**" ? data[r][c] : null;
+    
+    if(!base) {
+        for(let i = c - 1; i >= 0; i--) {
+            if(data[r][i] !== "**") { base = data[r][i]; break; }
+        }
+    }
+    if(!base && r > 0) {
+        for(let i = 5; i >= 0; i--) {
+            if(data[r-1][i] !== "**") { base = data[r-1][i]; break; }
+        }
+    }
+    
+    if(!base) {
+        draw();
+        return;
+    }
+
+    let shape = Array(9).fill(0).map(() => Array(6).fill(0));
+    let matchCount = 0;
+    let startRow = Math.max(0, r - 8);
+
+    for(let i = r; i >= startRow; i--) {
+        for(let j = 0; j < 6; j++) {
+            if(data[i][j] !== "**" && smartMatch(data[i][j], base)) {
+                if(matchCount < 3) {
+                    shape[i - startRow][j] = 1;
+                    matchCount++;
+                }
+            }
+        }
+        if(matchCount >= 3) break;
+    }
+    searchPattern(shape, base);
 }
 
 function autoAiSchemeSearch() {
@@ -401,6 +425,7 @@ function clearCanvas(cvsId) {
 function clearActivePattern() {
     activeMark = null;
     selectedBlank = null;
+    highlightedFam = null;
     draw();
 }
 
@@ -429,7 +454,7 @@ function deleteRow(rIndex) {
 function handleCellClick(r, c, val) {
     if(val !== "**") {
         highlightedFam = (highlightedFam === fam(val)) ? null : fam(val);
-        draw();
+        makeDynamicPatternForCell(r, c);
     } else {
         analyzeBlankCellScheme(r, c);
     }
@@ -539,30 +564,7 @@ function autoScanPatterns() {
     let totalRows = data.length;
     if(totalRows < 3) { alert("Need more data!"); return; }
     let blankRow = totalRows - 1;
-    makePattern(blankRow, 0);
-}
-
-function makePattern(r,c){
-  targetCol=c; let base="**";
-  for(let i=r;i>=0;i--){ if(data[i][c]!="**"){base=data[i][c]; break;}}
-  if(base=="**") return;
-
-  let shape = Array(9).fill(0).map(() => Array(6).fill(0)); 
-  let matchCount = 0;
-  let startRow = Math.max(0, r-8);
-
-  for(let i = r; i >= startRow; i--){
-    for(let j = 0; j < 6; j++){
-      if(data[i][j] != "**" && smartMatch(data[i][j], base)){
-        if(matchCount < 3){ 
-          shape[i - startRow][j] = 1;
-          matchCount++;
-        }
-      }
-    }
-    if(matchCount >= 3) break; 
-  }
-  searchPattern(shape, base);
+    makeDynamicPatternForCell(blankRow, 0);
 }
 
 function searchPattern(shape,base){
@@ -599,7 +601,6 @@ function showOne(shape, idx){
    html+=`<td class="${shape[i][j]?'circle':''}">${v}</td>`;
   });
   html+="</tr>";
- me
  }
  document.getElementById("popData").innerHTML=html+"</table>";
  document.getElementById("popup").style.display="block";
