@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalyan Ultra AI – Cross Diagonal Pattern Engine</title>
+    <title>Kalyan Ultra AI – Cross Line & Dynamic Popup Engine</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -67,7 +67,13 @@
         .circle { 
             border: 3px solid var(--blue-circle) !important; 
             border-radius: 50% !important; 
-            background: rgba(0, 132, 255, 0.2); 
+            background: rgba(0, 132, 255, 0.25); 
+            z-index: 10;
+        }
+        .cross-mark {
+            border: 3px solid #ec4899 !important;
+            border-radius: 50% !important;
+            background: rgba(236, 72, 153, 0.3);
             z-index: 10;
         }
         .blank-selected {
@@ -91,7 +97,7 @@
             border-bottom: 2px solid #a855f7 !important;
         }
 
-        canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 4; }
+        canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 6; }
 
         .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .card { background: var(--panel); padding: 12px; border-radius: 12px; border-top: 3px solid var(--gold); }
@@ -114,7 +120,13 @@
         }
         .clickable-row-link:hover { color: var(--gold); }
 
-        #popup { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 15px; display: none; z-index: 100; padding: 12px; color: #000; width: 92%; max-width: 380px; }
+        /* Popup Box Styling */
+        #popup { 
+            position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); 
+            background: #fff; border-radius: 15px; display: none; z-index: 100; 
+            padding: 15px; color: #000; width: 92%; max-width: 400px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+        }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; z-index: 90; }
         button { cursor: pointer; border-radius: 6px; border: none; font-weight: bold; padding: 8px 10px; font-size: 11px; }
     </style>
@@ -123,7 +135,7 @@
 
 <div id="home-screen">
     <h1 class="hero-title">Kalyan PRO AI</h1>
-    <p class="hero-sub">CROSS DIAGONAL PATTERN & REPEAT JODI ENGINE</p>
+    <p class="hero-sub">VISUAL CROSS LINE & POPUP PATTERN ENGINE</p>
     <button class="enter-btn" onclick="startApp()">START ANALYSIS</button>
 </div>
 
@@ -133,13 +145,13 @@
         <span id="trend-bar" class="trend-badge">Trend: Scanning...</span>
     </div>
     
-    <div id="sync-indicator" class="sync-status sync-online">⚡ Diagonal Cross Pattern AI Active</div>
+    <div id="sync-indicator" class="sync-status sync-online">⚡ Visual Cross Lines & Dynamic Popup Active</div>
 
     <div class="toolbar">
         <input type="file" id="csv" accept=".csv" style="display:none">
         <button onclick="document.getElementById('csv').click()" style="background:#444; color:white;">📂 CSV</button>
         <button onclick="addRow()" style="background:#0284c7; color:white;">➕ ADD ROW</button>
-        <button onclick="autoAiSchemeSearch()" style="background:var(--pink); color:white;">🎯 CROSS PATTERN PREDICTOR</button>
+        <button onclick="autoAiSchemeSearch()" style="background:var(--pink); color:white;">🎯 CROSS LINE SCANNER</button>
         <button onclick="autoScanPatterns()" style="background:var(--purple); color:white;">🔍 AUTO SCAN</button>
         <button onclick="clearActivePattern()" style="background:#eab308; color:black;">❌ CLEAR SELECTION</button>
         <button onclick="saveData()" style="background:#28a745; color:white;">💾 SAVE DATA</button>
@@ -155,11 +167,11 @@
 
     <div class="dashboard">
         <div class="card" style="grid-column: 1 / -1; border-top: 3px solid var(--pink);">
-            <h3>🚨 Cross / Diagonal Pattern Repeat Prediction</h3>
-            <div id="scheme-output">किसी भी <b>खाली खाने (Blank Cell)</b> पर क्लिक करें। AI पुरानी हिस्ट्री से तिरछी (Diagonal) और सीधी कट-ऑफ लाइन्स स्कैन करके बेस्ट जोड़ी निकालेगा।</div>
+            <h3>🚨 Cross / Diagonal Pattern Prediction</h3>
+            <div id="scheme-output">किसी भी <b>खाली खाने (Blank Cell)</b> पर क्लिक करें। AI पुरानी हिस्ट्री से तिरछी (Diagonal) रेखाएँ खींचकर पैटर्न दिखाएगा।</div>
         </div>
         <div class="card">
-            <h3>✔ Matches Found</h3>
+            <h3>✔ Matches Found (Click for Popup)</h3>
             <div id="checks"></div>
         </div>
         <div class="card">
@@ -179,10 +191,10 @@
 
 <div class="overlay" id="overlay" onclick="closePopup()"></div>
 <div id="popup">
-    <button onclick="closePopup()" style="float:right; background:#000; color:white; padding:4px 8px;">CLOSE</button>
-    <h4 style="margin: 0 0 10px 0;">Sequence View</h4>
+    <button onclick="closePopup()" style="float:right; background:#000; color:white; padding:4px 8px; border-radius:4px;">✕ CLOSE</button>
+    <h4 style="margin: 0 0 10px 0; color:#0f172a;">📐 Cross Pattern Popup View</h4>
     <center>
-        <div class="table-container" style="border: 1px solid #ddd;">
+        <div class="table-container" style="border: 1px solid #ccc; margin-top:5px; background:#fff;">
             <canvas id="popCanvas"></canvas>
             <div id="popData"></div>
         </div>
@@ -190,13 +202,14 @@
 </div>
 
 <script>
-const STORAGE_KEY = "pdata_Kalyan_v16";
+const STORAGE_KEY = "pdata_Kalyan_v17";
 const DAY_NAMES = ["सोमवार", "मंगलवार", "बुधवार", "गुरुवार", "शुक्रवार", "शनिवार"];
 
 let targetCol = null;
 let activeMark = null;
 let highlightedFam = null;
 let selectedBlank = null; 
+let crossHighlightCells = []; // Stores diagonal cross points to draw lines
 
 function norm(v) {
     if (!v || v.trim() === "" || v === "**") return "**";
@@ -241,7 +254,9 @@ function draw(){
  data.forEach((r,ri)=>{
   h+=`<tr id="table-row-${ri}">`;
   r.forEach((c,ci)=>{
+   let isCross = crossHighlightCells.some(pt => pt.r === ri && pt.c === ci);
    let cls = (activeMark && isPartOfPattern(ri, ci)) ? "circle" : "";
+   if(isCross) cls += " cross-mark";
    if(highlightedFam && fam(c) === highlightedFam) cls += " fam-highlight";
    if(isRedJodi(c)) cls += " red-jodi";
    if(selectedBlank && selectedBlank.r === ri && selectedBlank.c === ci) cls += " blank-selected";
@@ -255,54 +270,85 @@ function draw(){
  document.getElementById("tbl").innerHTML=h;
  
  setTimeout(() => {
-     if(activeMark) {
-         drawLines("mainCanvas", document.getElementById("tbl"));
-     } else {
-         clearCanvas("mainCanvas");
-     }
- }, 50);
+     drawLines("mainCanvas", document.getElementById("tbl"));
+ }, 60);
  
  calculateDayFrequency();
  updateTrendIndicator();
 }
 
-// *** CROSS & DIAGONAL PATTERN AI ANALYZER ***
+// *** CROSS LINE DRAWING ENGINE ***
+function drawLines(cvsId, tblEl) {
+    const cvs = document.getElementById(cvsId);
+    if(!cvs || !tblEl) return;
+    const ctx = cvs.getContext("2d");
+    cvs.width = tblEl.offsetWidth; cvs.height = tblEl.offsetHeight;
+    ctx.clearRect(0,0,cvs.width,cvs.height);
+
+    let targetCells = [];
+    
+    if(crossHighlightCells.length > 0) {
+        crossHighlightCells.forEach(pt => {
+            let el = tblEl.querySelector(`td[data-row="${pt.r}"][data-col="${pt.c}"]`);
+            if(el) targetCells.push(el);
+        });
+    } else {
+        const circles = tblEl.querySelectorAll(".circle");
+        circles.forEach(c => targetCells.push(c));
+    }
+
+    if(targetCells.length < 2) return;
+    
+    const tRect = tblEl.getBoundingClientRect();
+    ctx.strokeStyle = "#00ff88"; 
+    ctx.lineWidth = 3;
+    ctx.lineCap = "round";
+    ctx.shadowColor = 'rgba(0, 255, 136, 0.8)';
+    ctx.shadowBlur = 8;
+    
+    ctx.beginPath();
+    targetCells.forEach((c, idx) => {
+        const r = c.getBoundingClientRect();
+        const x = r.left - tRect.left + r.width/2;
+        const y = r.top - tRect.top + r.height/2;
+        if(idx === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+}
+
 function analyzeBlankCellScheme(rowIdx, colIdx) {
     selectedBlank = { r: rowIdx, c: colIdx };
     activeMark = null;
+    crossHighlightCells = [];
     clearCanvas("mainCanvas");
     
     let targetDay = DAY_NAMES[colIdx];
-    let totalRows = data.length;
-
-    // 1. Gather Cross/Diagonal Chain (Diagonal Up-Left, Up-Right, or Direct Cross)
     let diagChain = [];
     
-    // Check Top-Left Diagonal: (row - 1, col - 1)
+    // Diagonal Cross points collection
     if(rowIdx > 0 && colIdx > 0 && data[rowIdx - 1][colIdx - 1] !== "**") {
         diagChain.push({ r: rowIdx - 1, c: colIdx - 1, val: data[rowIdx - 1][colIdx - 1], type: "Top-Left Diagonal" });
     }
-    // Check Top-Right Diagonal: (row - 1, col + 1)
     if(rowIdx > 0 && colIdx < 5 && data[rowIdx - 1][colIdx + 1] !== "**") {
         diagChain.push({ r: rowIdx - 1, c: colIdx + 1, val: data[rowIdx - 1][colIdx + 1], type: "Top-Right Diagonal" });
     }
-    // Check Direct Row-Left: (row, col - 1)
     if(colIdx > 0 && data[rowIdx][colIdx - 1] !== "**") {
         diagChain.push({ r: rowIdx, c: colIdx - 1, val: data[rowIdx][colIdx - 1], type: "Straight Left" });
     }
 
     let crossMatches = [];
 
-    // Search historical patterns (from top 5 up to all older rows)
     if(diagChain.length > 0) {
         for(let r = 0; r < rowIdx; r++) {
             diagChain.forEach(item => {
-                // If historical row 'r' at same relative cross position matches:
                 if(data[r][item.c] && smartMatch(data[r][item.c], item.val)) {
                     let targetVal = data[r][colIdx];
                     if(targetVal && targetVal !== "**") {
                         crossMatches.push({
                             oldRow: r + 1,
+                            oldRowIdx: r,
+                            oldColIdx: item.c,
                             oldJodi: targetVal,
                             matchedCrossVal: data[r][item.c],
                             matchType: item.type
@@ -315,35 +361,45 @@ function analyzeBlankCellScheme(rowIdx, colIdx) {
 
     let outputHtml = "";
     if(crossMatches.length > 0) {
+        let lastMatch = crossMatches[crossMatches.length - 1];
+        
+        // Push points for Cross Line Canvas
+        crossHighlightCells = [
+            { r: lastMatch.oldRowIdx, c: lastMatch.oldColIdx },
+            { r: lastMatch.oldRowIdx, c: colIdx },
+            { r: rowIdx, c: colIdx }
+        ];
+
         let freq = {};
         crossMatches.forEach(m => freq[m.oldJodi] = (freq[m.oldJodi] || 0) + 1);
         let topTarget = Object.keys(freq).sort((a,b) => freq[b] - freq[a])[0];
         let targetFam = FAMILY[fam(topTarget)] || [topTarget];
 
         let logs = crossMatches.slice(-4).map(m => 
-            `<span class="clickable-row-link" onclick="scrollToAndHighlightRow(${m.oldRow - 1})">👉 Row ${m.oldRow} [${m.matchType}]: ${m.matchedCrossVal} के क्रॉस कनेक्शन से ${targetDay} को **${m.oldJodi}** रिपीट हुई थी।</span>`
+            `<span class="clickable-row-link" onclick="scrollToAndHighlightRow(${m.oldRow - 1})">👉 Row ${m.oldRow} [${m.matchType}]: ${m.matchedCrossVal} के क्रॉस कनेक्शन से **${m.oldJodi}** रिपीट हुआ था।</span>`
         ).join("");
 
         outputHtml = `
             <div class="alert-box">
-                📐 <b>AI CROSS PATTERN ALERT: [Row ${rowIdx + 1} - ${targetDay}]!</b><br>
-                कनेक्टेड तिरछी/क्रॉस जोड़ियाँ: <b>${diagChain.map(x=> `${x.type}: ${x.val}`).join(" | ")}</b><br>
+                📐 <b>AI CROSS LINE ALERT: [Row ${rowIdx + 1} - ${targetDay}]!</b><br>
+                कनेक्टेड जोड़ियाँ: <b>${diagChain.map(x=> `${x.type}: ${x.val}`).join(" | ")}</b><br>
                 🎯 <b>Strong Target Completion Jodi: <span style="color:var(--gold); font-size:16px;">${topTarget}</span> (Family: ${targetFam.join(",")})</b>
             </div>
             <div class="explanation-box" style="margin-top:6px;">
-                <b>📜 पुराना तिरछा रिकॉर्ड जहाँ से यह जोड़ी/फैमिली कनेक्ट हो रही है:</b><br>${logs}
+                <b>📜 पुरानी क्रॉस लाइन्स के प्रमाण:</b><br>${logs}
             </div>
         `;
     } else {
         outputHtml = `
             <div class="explanation-box">
-                ℹ️ <b>[Row ${rowIdx + 1} - ${targetDay}] तिरछा पैटर्न सर्च:</b><br>
-                इस स्थान के लिए तिरछी जोड़ियों का सीधा पुराना मैच नहीं मिला। AI लाइव पैटर्न शेप सर्च कर रहा है।
+                ℹ️ <b>[Row ${rowIdx + 1} - ${targetDay}] तिरछा पैटर्न:</b><br>
+                इस सेल के लिए कोई सीधा तिरछा रिकॉर्ड नहीं मिला। AI लाइव पैटर्न शेप सर्च कर रहा है।
             </div>
         `;
     }
 
     document.getElementById("scheme-output").innerHTML = outputHtml;
+    draw();
     makeDynamicPatternForCell(rowIdx, colIdx);
 }
 
@@ -362,10 +418,7 @@ function makeDynamicPatternForCell(r, c) {
         }
     }
     
-    if(!base) {
-        draw();
-        return;
-    }
+    if(!base) return;
 
     let shape = Array(12).fill(0).map(() => Array(6).fill(0));
     let matchCount = 0;
@@ -400,8 +453,41 @@ function autoAiSchemeSearch() {
     if(blankFound) {
         analyzeBlankCellScheme(blankFound.r, blankFound.c);
     } else {
-        alert("कोई खाली सेल (**) नहीं मिला! कृपया ➕ ADD ROW बटन से नई रो जोड़ें।");
+        alert("कोई खाली सेल (**) नहीं मिला!");
     }
+}
+
+function showChecks(shape, matches){
+ document.getElementById("checks").innerHTML="";
+ matches.forEach((m,i)=>{
+  let d = document.createElement("div");
+  d.style = "background:#2a2a2a; margin:4px 0; padding:6px; cursor:pointer; border-radius:6px; font-size:11px; border-left:3px solid #0084ff;";
+  d.innerText = `🔍 Match Found at Row ${m.index + 1} (Click to View Popup)`;
+  d.onclick = () => { activeMark={start:m.index, shape:shape}; crossHighlightCells = []; draw(); showOne(shape, m.index); };
+  document.getElementById("checks").appendChild(d);
+ });
+ updateAI(shape, matches);
+}
+
+// *** POPUP VIEW ENGINE ***
+function showOne(shape, idx){
+ let html="<table id='popTbl' style='color:#000'>";
+ for(let i=0; i<shape.length; i++){
+  html+="<tr>";
+  data[idx+i].forEach((v,j)=>{
+   html+=`<td class="${shape[i][j]?'circle':''}">${v}</td>`;
+  });
+  html+="</tr>";
+ }
+ document.getElementById("popData").innerHTML=html+"</table>";
+ document.getElementById("popup").style.display="block";
+ document.getElementById("overlay").style.display="block";
+ setTimeout(()=>drawLines("popCanvas", document.getElementById("popTbl")), 120);
+}
+
+function closePopup(){ 
+    document.getElementById("popup").style.display="none"; 
+    document.getElementById("overlay").style.display="none"; 
 }
 
 function clearCanvas(cvsId) {
@@ -416,6 +502,7 @@ function clearActivePattern() {
     activeMark = null;
     selectedBlank = null;
     highlightedFam = null;
+    crossHighlightCells = [];
     draw();
 }
 
@@ -467,30 +554,6 @@ function isPartOfPattern(ri, ci){
     return (i >= 0 && i < activeMark.shape.length && activeMark.shape[i][ci]);
 }
 
-function drawLines(cvsId, tblEl) {
-    const cvs = document.getElementById(cvsId);
-    const ctx = cvs.getContext("2d");
-    cvs.width = tblEl.offsetWidth; cvs.height = tblEl.offsetHeight;
-    ctx.clearRect(0,0,cvs.width,cvs.height);
-    const cells = tblEl.querySelectorAll(".circle");
-    if(cells.length < 2) return;
-    
-    const tRect = tblEl.getBoundingClientRect();
-    ctx.strokeStyle = "#00ff88"; 
-    ctx.lineWidth = 2.5;
-    ctx.lineCap = "round";
-    
-    ctx.beginPath();
-    cells.forEach((c, idx) => {
-        const r = c.getBoundingClientRect();
-        const x = r.left - tRect.left + r.width/2;
-        const y = r.top - tRect.top + r.height/2;
-        if(idx === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-    });
-    ctx.stroke();
-}
-
 function addRow(){ data.push(["**","**","**","**","**","**"]); draw(); }
 
 function saveData(){ 
@@ -504,6 +567,7 @@ function clearData(){
         data = defaultData; 
         activeMark = null;
         selectedBlank = null;
+        crossHighlightCells = [];
         draw(); 
     }
 }
@@ -571,33 +635,6 @@ function searchPattern(shape,base){
  showChecks(shape, lastMatches);
 }
 
-function showChecks(shape, matches){
- document.getElementById("checks").innerHTML="";
- matches.forEach((m,i)=>{
-  let d = document.createElement("div");
-  d.style = "background:#2a2a2a; margin:4px 0; padding:6px; cursor:pointer; border-radius:6px; font-size:11px; border-left:3px solid #0084ff;";
-  d.innerText = `Match Found at Row ${m.index + 1}`;
-  d.onclick = () => { activeMark={start:m.index, shape:shape}; draw(); showOne(shape, m.index); };
-  document.getElementById("checks").appendChild(d);
- });
- updateAI(shape, matches);
-}
-
-function showOne(shape, idx){
- let html="<table id='popTbl' style='color:#000'>";
- for(let i=0; i<shape.length; i++){
-  html+="<tr>";
-  data[idx+i].forEach((v,j)=>{
-   html+=`<td class="${shape[i][j]?'circle':''}">${v}</td>`;
-  });
-  html+="</tr>";
- }
- document.getElementById("popData").innerHTML=html+"</table>";
- document.getElementById("popup").style.display="block";
- document.getElementById("overlay").style.display="block";
- setTimeout(()=>drawLines("popCanvas", document.getElementById("popTbl")), 100);
-}
-
 function updateAI(shape, matches){
  let jc={}, dc={};
  matches.forEach(m=>{
@@ -619,8 +656,6 @@ function updateAI(shape, matches){
  });
  document.getElementById("future").innerHTML = pool.length ? `<b>Target Completion Jodi:</b> ${[...new Set(pool)].join(" , ")}` : "Analyzing...";
 }
-
-function closePopup(){ document.getElementById("popup").style.display="none"; document.getElementById("overlay").style.display="none"; }
 
 document.getElementById("csv").onchange = e => {
     let fr = new FileReader();
