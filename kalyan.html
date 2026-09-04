@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalyan Ultra AI – 3-Touch Cross Line Engine</title>
+    <title>Kalyan Pro AI – Visual 3-Jodi Exact Pattern & Direction Engine</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -14,7 +14,7 @@
             --panel: #1e293b; 
             --red: #ff4444;
             --purple: #a855f7;
-            --pink: #ec4899;
+            --selected: #c084fc;
         }
 
         * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
@@ -26,8 +26,8 @@
             background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
             padding: 20px;
         }
-        .hero-title { font-size: 2.2rem; color: var(--gold); margin: 0; text-shadow: 0 0 20px rgba(255,215,0,0.3); }
-        .hero-sub { opacity: 0.7; letter-spacing: 1.5px; margin-bottom: 30px; font-size: 0.85rem; }
+        .hero-title { font-size: 2.5rem; color: var(--gold); margin: 0; text-shadow: 0 0 20px rgba(255,215,0,0.3); }
+        .hero-sub { opacity: 0.7; letter-spacing: 1.5px; margin-bottom: 30px; font-size: 0.9rem; }
         .enter-btn {
             background: var(--gold); color: #000; padding: 14px 35px;
             font-size: 1.1rem; font-weight: 800; border: none; border-radius: 50px;
@@ -67,37 +67,26 @@
         .circle { 
             border: 3px solid var(--blue-circle) !important; 
             border-radius: 50% !important; 
-            background: rgba(0, 132, 255, 0.25); 
+            background: rgba(0, 132, 255, 0.2); 
             z-index: 10;
         }
-        .cross-mark {
-            border: 3px solid #00ff88 !important;
-            border-radius: 50% !important;
-            background: rgba(0, 255, 136, 0.3);
-            z-index: 10;
-        }
-        .blank-selected {
-            background: #fef08a !important;
-            border: 2px dashed #ca8a04 !important;
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0% { background-color: #fef08a; }
-            50% { background-color: #fde047; }
-            100% { background-color: #fef08a; }
-        }
-
         .fam-highlight { background: rgba(255, 215, 0, 0.4) !important; font-weight: 900; }
         .red-jodi { color: #ff0000 !important; font-weight: 900; }
         
+        /* Highlight colors for 3-Jodi sequence selection */
+        .seq-selected-1 { background: #facc15 !important; color: #000 !important; font-weight: 900; border: 2px solid #b45309 !important; border-radius: 50%; }
+        .seq-selected-2 { background: #c084fc !important; color: #000 !important; font-weight: 900; border: 2px solid #7e22ce !important; border-radius: 50%; }
+        .seq-selected-3 { background: #38bdf8 !important; color: #000 !important; font-weight: 900; border: 2px solid #0284c7 !important; border-radius: 50%; }
+        
+        .scan-zone { background: rgba(255, 215, 0, 0.15) !important; }
+
         tr.row-highlight td {
             background-color: #e9d5ff !important;
             border-top: 2px solid #a855f7 !important;
             border-bottom: 2px solid #a855f7 !important;
         }
 
-        canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 6; }
+        canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 4; }
 
         .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
         .card { background: var(--panel); padding: 12px; border-radius: 12px; border-top: 3px solid var(--gold); }
@@ -107,54 +96,48 @@
         .day-ank-table th { background: #0f172a; color: var(--gold); border: 1px solid #334155; padding: 4px; }
         .day-ank-table td { border: 1px solid #334155; padding: 4px; text-align: center; color: #00ff88; }
 
+        .prob-badge { background: #00ff88; color: #000; border-radius: 4px; padding: 2px 5px; font-weight: bold; font-size: 10px; margin-left: 4px; }
+        .cut-badge { background: var(--red); color: #fff; border-radius: 4px; padding: 2px 5px; font-weight: bold; font-size: 10px; }
         .trend-badge { background: var(--purple); color: #fff; padding: 3px 6px; border-radius: 6px; font-size: 11px; font-weight: bold; }
 
         .explanation-box {
             font-size: 11px; line-height: 1.6; color: #cbd5e1; background: #0f172a; padding: 10px; border-radius: 6px; border-left: 3px solid var(--gold); margin-top: 6px;
-        }
-        .alert-box {
-            font-size: 11px; line-height: 1.6; color: #fff; background: #064e3b; padding: 10px; border-radius: 6px; border-left: 4px solid var(--green-line); margin-top: 6px;
         }
         .clickable-row-link {
             color: #38bdf8; text-decoration: underline; cursor: pointer; font-weight: bold; display: block; margin: 4px 0;
         }
         .clickable-row-link:hover { color: var(--gold); }
 
-        #popup { 
-            position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); 
-            background: #fff; border-radius: 15px; display: none; z-index: 100; 
-            padding: 15px; color: #000; width: 92%; max-width: 420px;
-            box-shadow: 0 0 30px rgba(0,0,0,0.8);
-        }
+        #popup { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 15px; display: none; z-index: 100; padding: 12px; color: #000; width: 92%; max-width: 380px; }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; z-index: 90; }
         button { cursor: pointer; border-radius: 6px; border: none; font-weight: bold; padding: 8px 10px; font-size: 11px; }
+        .btn-active { outline: 2px solid var(--gold); box-shadow: 0 0 10px var(--gold); }
     </style>
 </head>
 <body>
 
 <div id="home-screen">
     <h1 class="hero-title">Kalyan PRO AI</h1>
-    <p class="hero-sub">3-TOUCH VERIFIED CROSS-LINE SYSTEM</p>
+    <p class="hero-sub">3-JODI EXACT DIRECTION & PATTERN ENGINE V16.0</p>
     <button class="enter-btn" onclick="startApp()">START ANALYSIS</button>
 </div>
 
 <div id="main-app">
     <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom:5px;">
-        <h3 style="color:var(--gold); margin:0; font-size: 1.1rem;">Kalyan Ultra AI</h3>
+        <h3 style="color:var(--gold); margin:0; font-size: 1.1rem;">Kalyan Ultra Visual AI</h3>
         <span id="trend-bar" class="trend-badge">Trend: Scanning...</span>
     </div>
     
-    <div id="sync-indicator" class="sync-status sync-online">⚡ 3-Touch Verification System Active</div>
+    <div id="sync-indicator" class="sync-status sync-online">💾 Local Storage Active</div>
 
     <div class="toolbar">
         <input type="file" id="csv" accept=".csv" style="display:none">
         <button onclick="document.getElementById('csv').click()" style="background:#444; color:white;">📂 CSV</button>
         <button onclick="addRow()" style="background:#0284c7; color:white;">➕ ADD ROW</button>
-        <button onclick="autoAiSchemeSearch()" style="background:var(--pink); color:white;">🎯 3-TOUCH CROSS SCAN</button>
         <button onclick="autoScanPatterns()" style="background:var(--purple); color:white;">🔍 AUTO SCAN</button>
-        <button onclick="clearActivePattern()" style="background:#eab308; color:black;">❌ CLEAR</button>
-        <button onclick="saveData()" style="background:#28a745; color:white;">💾 SAVE</button>
-        <button onclick="clearData()" style="background:#dc3545; color:white;">🗑️ CLEAR ALL</button>
+        <button id="btn-3jodi-mode" onclick="toggleMultiJodiMode()" style="background:#0084ff; color:white;">⚡ SELECT 3-JODI</button>
+        <button onclick="saveData()" style="background:#28a745; color:white;">💾 SAVE DATA</button>
+        <button onclick="clearData()" style="background:#dc3545; color:white;">🗑️ CLEAR</button>
     </div>
 
     <center>
@@ -165,21 +148,25 @@
     </center>
 
     <div class="dashboard">
-        <div class="card" style="grid-column: 1 / -1; border-top: 3px solid var(--green-line);">
-            <h3>🎯 3-Touch Pattern Analysis</h3>
-            <div id="scheme-output">किसी भी <b>खाली खाने (**)</b> पर क्लिक करें। AI 3-Touch सत्यापित क्रॉस पैटर्न खोजेगा।</div>
+        <div class="card">
+            <h3>✔ Matches Found</h3>
+            <div id="checks">Click blank cell or scan...</div>
         </div>
         <div class="card">
-            <h3>✔ Verified 3-Touch Matches</h3>
-            <div id="checks"></div>
-        </div>
-        <div class="card">
-            <h3>🤖 AI Line Analysis</h3>
+            <h3>🤖 AI Analysis</h3>
             <div id="ai">Wait for input...</div>
         </div>
         <div class="card">
-            <h3>🔮 Strong Target Jodi</h3>
+            <h3>🔮 Future Prediction</h3>
             <div id="future">Select a match...</div>
+        </div>
+        <div class="card" style="grid-column: 1 / -1;">
+            <h3>🎯 3-Jodi Exact Pattern Prediction Engine</h3>
+            <div id="seq-predict">Click "SELECT 3-JODI" then tap 3 cells on table in sequence...</div>
+        </div>
+        <div class="card">
+            <h3>🚫 High Risk Cut-Ank</h3>
+            <div id="cut-ank">Calculating...</div>
         </div>
         <div class="card" style="grid-column: 1 / -1;">
             <h3>📊 Day-by-Day Top 4 Frequent Ank</h3>
@@ -190,10 +177,10 @@
 
 <div class="overlay" id="overlay" onclick="closePopup()"></div>
 <div id="popup">
-    <button onclick="closePopup()" style="float:right; background:#000; color:white; padding:4px 8px; border-radius:4px;">✕ CLOSE</button>
-    <h4 style="margin: 0 0 10px 0; color:#0f172a;">📐 3-Touch Cross Line Popup</h4>
+    <button onclick="closePopup()" style="float:right; background:#000; color:white; padding:4px 8px;">CLOSE</button>
+    <h4 style="margin: 0 0 10px 0;">Sequence View</h4>
     <center>
-        <div class="table-container" style="border: 1px solid #ccc; margin-top:5px; background:#fff;">
+        <div class="table-container" style="border: 1px solid #ddd;">
             <canvas id="popCanvas"></canvas>
             <div id="popData"></div>
         </div>
@@ -201,14 +188,14 @@
 </div>
 
 <script>
-const STORAGE_KEY = "pdata_Kalyan_v18_3touch";
-const DAY_NAMES = ["सोमवार", "मंगलवार", "बुधवार", "गुरुवार", "शुक्रवार", "शनिवार"];
-
+const STORAGE_KEY = "pdata_Kalyan_v10";
 let targetCol = null;
 let activeMark = null;
 let highlightedFam = null;
-let selectedBlank = null; 
-let crossHighlightCells = []; 
+let scanOffsetRow = -1;
+
+let isMultiJodiSelectionMode = false;
+let selectedJodis = []; 
 
 function norm(v) {
     if (!v || v.trim() === "" || v === "**") return "**";
@@ -227,11 +214,9 @@ const FAMILY = {
 };
 
 const defaultData = [
-    ["12","20","30","40","50","60"],
-    ["15","27","35","45","55","65"],
-    ["12","20","62","77","18","81"],
     ["10","20","30","40","50","60"],
     ["15","25","35","45","55","65"],
+    ["12","27","62","77","18","81"],
     ["**","**","**","**","**","**"]
 ];
 
@@ -248,242 +233,38 @@ function palti(v){return v[1]+v[0];}
 function smartMatch(a1,b1){ if(a1=="**"||b1=="**") return false; return a1===b1 || palti(a1)===b1 || fam(a1)===fam(b1); }
 function isRedJodi(v){ return v!=="**" && (v[0]===v[1] || Math.abs(parseInt(v[0])-parseInt(v[1]))===5); }
 
+function getSelectedJodiIndex(r, c) {
+    return selectedJodis.findIndex(item => item.r === r && item.c === c);
+}
+
 function draw(){
  let h="<tr><th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th><th>SAT</th><th class='action-th'>❌</th></tr>";
  data.forEach((r,ri)=>{
   h+=`<tr id="table-row-${ri}">`;
   r.forEach((c,ci)=>{
-   let isCross = crossHighlightCells.some(pt => pt.r === ri && pt.c === ci);
    let cls = (activeMark && isPartOfPattern(ri, ci)) ? "circle" : "";
-   if(isCross) cls += " cross-mark";
    if(highlightedFam && fam(c) === highlightedFam) cls += " fam-highlight";
    if(isRedJodi(c)) cls += " red-jodi";
-   if(selectedBlank && selectedBlank.r === ri && selectedBlank.c === ci) cls += " blank-selected";
+   if(ri === scanOffsetRow) cls += " scan-zone";
+   
+   let selIdx = getSelectedJodiIndex(ri, ci);
+   if(selIdx === 0) cls += " seq-selected-1";
+   else if(selIdx === 1) cls += " seq-selected-2";
+   else if(selIdx === 2) cls += " seq-selected-3";
+   
    if(c=="**") cls += " blank";
    
-   h+=`<td class="${cls}" data-row="${ri}" data-col="${ci}" contenteditable="true" onblur="updateCell(${ri},${ci},this)" onkeydown="checkEnter(event, this)" onclick="handleCellClick(${ri},${ci},'${c}')">${c}</td>`;
+   h+=`<td class="${cls}" contenteditable="true" onblur="updateCell(${ri},${ci},this)" onkeydown="checkEnter(event, this)" onclick="handleCellClick(${ri},${ci},'${c}')">${c}</td>`;
   });
   h+=`<td class="action-td"><button class="btn-del-row" onclick="deleteRow(${ri})">✕</button></td>`;
   h+="</tr>";
  });
  document.getElementById("tbl").innerHTML=h;
- 
- setTimeout(() => {
-     drawLines("mainCanvas", document.getElementById("tbl"));
- }, 60);
+ if(activeMark) setTimeout(() => drawLines("mainCanvas", document.getElementById("tbl")), 50);
  
  calculateDayFrequency();
+ calculateCutAnk();
  updateTrendIndicator();
-}
-
-// *** 3-TOUCH CANVAS DRAWING ENGINE ***
-function drawLines(cvsId, tblEl) {
-    const cvs = document.getElementById(cvsId);
-    if(!cvs || !tblEl) return;
-    const ctx = cvs.getContext("2d");
-    cvs.width = tblEl.offsetWidth; cvs.height = tblEl.offsetHeight;
-    ctx.clearRect(0,0,cvs.width,cvs.height);
-
-    let targetCells = [];
-    
-    if(crossHighlightCells.length > 0) {
-        crossHighlightCells.forEach(pt => {
-            let el = tblEl.querySelector(`td[data-row="${pt.r}"][data-col="${pt.c}"]`);
-            if(el) targetCells.push(el);
-        });
-    } else {
-        const circles = tblEl.querySelectorAll(".circle");
-        circles.forEach(c => targetCells.push(c));
-    }
-
-    if(targetCells.length < 2) return;
-    
-    const tRect = tblEl.getBoundingClientRect();
-    ctx.strokeStyle = "#00ff88"; 
-    ctx.lineWidth = 3;
-    ctx.lineCap = "round";
-    ctx.shadowColor = 'rgba(0, 255, 136, 0.9)';
-    ctx.shadowBlur = 10;
-    
-    ctx.beginPath();
-    targetCells.forEach((c, idx) => {
-        const r = c.getBoundingClientRect();
-        const x = r.left - tRect.left + r.width/2;
-        const y = r.top - tRect.top + r.height/2;
-        if(idx === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-    });
-    ctx.stroke();
-}
-
-// *** 3-TOUCH PATTERN SCANNER ENGINE ***
-function analyzeBlankCellScheme(rowIdx, colIdx) {
-    selectedBlank = { r: rowIdx, c: colIdx };
-    activeMark = null;
-    crossHighlightCells = [];
-    clearCanvas("mainCanvas");
-    
-    let targetDay = DAY_NAMES[colIdx];
-    let verified3TouchMatches = [];
-
-    // Scan for 3 consecutive weeks forming diagonal touch
-    for (let r = 2; r < rowIdx; r++) {
-        let touch1 = data[r - 2][colIdx > 0 ? colIdx - 1 : colIdx + 1];
-        let touch2 = data[r - 1][colIdx];
-        let touch3 = data[r][colIdx];
-
-        if (smartMatch(touch1, touch2) || smartMatch(touch2, touch3)) {
-            let targetJodi = data[r][colIdx];
-            if (targetJodi && targetJodi !== "**") {
-                verified3TouchMatches.push({
-                    t1_row: r - 2,
-                    t2_row: r - 1,
-                    t3_row: r,
-                    col: colIdx,
-                    targetJodi: targetJodi,
-                    touchVal: touch2
-                });
-            }
-        }
-    }
-
-    let outputHtml = "";
-    if (verified3TouchMatches.length > 0) {
-        let bestMatch = verified3TouchMatches[verified3TouchMatches.length - 1];
-        
-        crossHighlightCells = [
-            { r: bestMatch.t1_row, c: colIdx > 0 ? colIdx - 1 : colIdx + 1 },
-            { r: bestMatch.t2_row, c: colIdx },
-            { r: bestMatch.t3_row, c: colIdx },
-            { r: rowIdx, c: colIdx }
-        ];
-
-        let freq = {};
-        verified3TouchMatches.forEach(m => freq[m.targetJodi] = (freq[m.targetJodi] || 0) + 1);
-        let topTarget = Object.keys(freq).sort((a, b) => freq[b] - freq[a])[0];
-        let targetFam = FAMILY[fam(topTarget)] || [topTarget];
-
-        outputHtml = `
-            <div class="alert-box">
-                🔥 <b>VERIFIED 3-TOUCH PATTERN FOUND! [Row ${rowIdx + 1} - ${targetDay}]</b><br>
-                3-Touch Sequences Detected across Rows ${bestMatch.t1_row + 1}, ${bestMatch.t2_row + 1}, and ${bestMatch.t3_row + 1}.<br>
-                🎯 <b>Predicted Target Jodi: <span style="color:var(--gold); font-size:16px;">${topTarget}</span> (Family: ${targetFam.join(",")})</b>
-            </div>
-        `;
-    } else {
-        outputHtml = `
-            <div class="explanation-box">
-                ℹ️ <b>[Row ${rowIdx + 1} - ${targetDay}]:</b><br>
-                इस सेल के लिए सीधा 3-Touch पैटर्न नहीं मिला। AI लाइव पैटर्न शेप सर्च कर रहा है।
-            </div>
-        `;
-    }
-
-    document.getElementById("scheme-output").innerHTML = outputHtml;
-    draw();
-    makeDynamicPatternForCell(rowIdx, colIdx);
-}
-
-function makeDynamicPatternForCell(r, c) {
-    targetCol = c;
-    let base = data[r][c] !== "**" ? data[r][c] : null;
-    
-    if(!base) {
-        for(let i = c - 1; i >= 0; i--) {
-            if(data[r][i] !== "**") { base = data[r][i]; break; }
-        }
-    }
-    if(!base && r > 0) {
-        for(let i = 5; i >= 0; i--) {
-            if(data[r-1][i] !== "**") { base = data[r-1][i]; break; }
-        }
-    }
-    
-    if(!base) return;
-
-    let shape = Array(12).fill(0).map(() => Array(6).fill(0));
-    let matchCount = 0;
-    let startRow = Math.max(0, r - 11);
-
-    for(let i = r; i >= startRow; i--) {
-        for(let j = 0; j < 6; j++) {
-            if(data[i][j] !== "**" && smartMatch(data[i][j], base)) {
-                if(matchCount < 3) {
-                    shape[i - startRow][j] = 1;
-                    matchCount++;
-                }
-            }
-        }
-        if(matchCount >= 3) break;
-    }
-    searchPattern(shape, base);
-}
-
-function autoAiSchemeSearch() {
-    let blankFound = null;
-    for(let r = data.length - 1; r >= 0; r--) {
-        for(let c = 0; c < 6; c++) {
-            if(data[r][c] === "**") {
-                blankFound = { r: r, c: c };
-                break;
-            }
-        }
-        if(blankFound) break;
-    }
-
-    if(blankFound) {
-        analyzeBlankCellScheme(blankFound.r, blankFound.c);
-    } else {
-        alert("कोई खाली सेल (**) नहीं मिला!");
-    }
-}
-
-function showChecks(shape, matches){
- document.getElementById("checks").innerHTML="";
- matches.forEach((m,i)=>{
-  let d = document.createElement("div");
-  d.style = "background:#2a2a2a; margin:4px 0; padding:6px; cursor:pointer; border-radius:6px; font-size:11px; border-left:3px solid #00ff88;";
-  d.innerText = `🔍 Verified 3-Touch Match at Row ${m.index + 1} (Click to View)`;
-  d.onclick = () => { activeMark={start:m.index, shape:shape}; crossHighlightCells = []; draw(); showOne(shape, m.index); };
-  document.getElementById("checks").appendChild(d);
- });
- updateAI(shape, matches);
-}
-
-function showOne(shape, idx){
- let html="<table id='popTbl' style='color:#000'>";
- for(let i=0; i<shape.length; i++){
-  html+="<tr>";
-  data[idx+i].forEach((v,j)=>{
-   html+=`<td class="${shape[i][j]?'circle':''}">${v}</td>`;
-  });
-  html+="</tr>";
- }
- document.getElementById("popData").innerHTML=html+"</table>";
- document.getElementById("popup").style.display="block";
- document.getElementById("overlay").style.display="block";
- setTimeout(()=>drawLines("popCanvas", document.getElementById("popTbl")), 120);
-}
-
-function closePopup(){ 
-    document.getElementById("popup").style.display="none"; 
-    document.getElementById("overlay").style.display="none"; 
-}
-
-function clearCanvas(cvsId) {
-    const cvs = document.getElementById(cvsId);
-    if(cvs) {
-        const ctx = cvs.getContext("2d");
-        ctx.clearRect(0, 0, cvs.width, cvs.height);
-    }
-}
-
-function clearActivePattern() {
-    activeMark = null;
-    selectedBlank = null;
-    highlightedFam = null;
-    crossHighlightCells = [];
-    draw();
 }
 
 function updateCell(r, c, el) {
@@ -491,6 +272,7 @@ function updateCell(r, c, el) {
     data[r][c] = val;
     el.innerText = val;
     calculateDayFrequency();
+    calculateCutAnk();
     updateTrendIndicator();
 }
 
@@ -502,18 +284,149 @@ function checkEnter(e, el) {
 }
 
 function deleteRow(rIndex) {
-    if (confirm(`Row ${rIndex + 1} को डिलीट करें?`)) {
+    if (confirm(`Row ${rIndex + 1} ko delete karein?`)) {
         data.splice(rIndex, 1);
         draw();
     }
 }
 
+function toggleMultiJodiMode() {
+    isMultiJodiSelectionMode = !isMultiJodiSelectionMode;
+    selectedJodis = [];
+    scanOffsetRow = -1;
+    const btn = document.getElementById("btn-3jodi-mode");
+    if(isMultiJodiSelectionMode) {
+        btn.classList.add("btn-active");
+        btn.innerText = "🎯 TAP 1ST JODI (YELLOW)";
+        document.getElementById("seq-predict").innerHTML = "<b style='color:var(--gold);'>Select 1st (Yellow), 2nd (Purple) & 3rd (Blue) Jodi in sequence...</b>";
+    } else {
+        btn.classList.remove("btn-active");
+        btn.innerText = "⚡ SELECT 3-JODI";
+    }
+    draw();
+}
+
 function handleCellClick(r, c, val) {
+    if (isMultiJodiSelectionMode) {
+        if (val === "**") return;
+        
+        let index = getSelectedJodiIndex(r, c);
+        if (index > -1) {
+            selectedJodis.splice(index, 1);
+        } else {
+            if (selectedJodis.length >= 3) selectedJodis = []; 
+            selectedJodis.push({ r: r, c: c, val: val });
+        }
+        
+        const btn = document.getElementById("btn-3jodi-mode");
+        if(selectedJodis.length === 1) {
+            btn.innerText = "🎯 TAP 2ND JODI (PURPLE)";
+        } else if(selectedJodis.length === 2) {
+            btn.innerText = "🎯 TAP 3RD JODI (BLUE)";
+        } else if(selectedJodis.length === 0) {
+            btn.innerText = "🎯 TAP 1ST JODI (YELLOW)";
+        }
+        
+        draw();
+        
+        if (selectedJodis.length === 3) {
+            runSelectedThreeJodiSearch();
+        }
+        return;
+    }
+
     if(val !== "**") {
         highlightedFam = (highlightedFam === fam(val)) ? null : fam(val);
-        makeDynamicPatternForCell(r, c);
+        draw();
     } else {
-        analyzeBlankCellScheme(r, c);
+        scanOffsetRow = r - 3;
+        makePattern(r, c);
+    }
+}
+
+function scrollToAndHighlightRow(rowIndex) {
+    const rowEl = document.getElementById(`table-row-${rowIndex}`);
+    if (rowEl) {
+        rowEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        rowEl.classList.add('row-highlight');
+        setTimeout(() => {
+            rowEl.classList.remove('row-highlight');
+        }, 2500);
+    }
+}
+
+function runSelectedThreeJodiSearch() {
+    let j1 = selectedJodis[0]; 
+    let j2 = selectedJodis[1]; 
+    let j3 = selectedJodis[2]; 
+
+    let dRow12 = j2.r - j1.r, dCol12 = j2.c - j1.c;
+    let dRow23 = j3.r - j2.r, dCol23 = j3.c - j2.c;
+
+    let weightedNextScores = {};
+    let totalScoreSum = 0;
+    let matchLogs = []; 
+    const totalRows = data.length;
+
+    for (let r1 = 0; r1 < totalRows; r1++) {
+        for (let c1 = 0; c1 < 6; c1++) {
+            if (smartMatch(data[r1][c1], j1.val)) {
+                let r2 = r1 + dRow12;
+                let c2 = c1 + dCol12;
+
+                if (r2 >= 0 && r2 < totalRows && c2 >= 0 && c2 < 6 && smartMatch(data[r2][c2], j2.val)) {
+                    let r3 = r2 + dRow23;
+                    let c3 = c2 + dCol23;
+
+                    if (r3 >= 0 && r3 < totalRows && c3 >= 0 && c3 < 6 && smartMatch(data[r3][c3], j3.val)) {
+                        let r4 = r3 + dRow23;
+                        let c4 = c3 + dCol23;
+
+                        if (r4 >= 0 && r4 < totalRows && c4 >= 0 && c4 < 6 && data[r4][c4] !== "**") {
+                            let targetVal = data[r4][c4];
+                            let weight = (r1 >= totalRows - 10) ? 2.5 : 1.0;
+                            weightedNextScores[targetVal] = (weightedNextScores[targetVal] || 0) + weight;
+                            totalScoreSum += weight;
+
+                            matchLogs.push({
+                                rowIndex: r1,
+                                rowDisplay: r1 + 1,
+                                matchedSeq: `${data[r1][c1]} ➔ ${data[r2][c2]} ➔ ${data[r3][c3]}`,
+                                followedBy: targetVal,
+                                targetRowDisplay: r4 + 1
+                            });
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if (totalScoreSum === 0) {
+        document.getElementById("seq-predict").innerHTML = `
+            <b>Selected Base 3-Jodi:</b> ${j1.val} ➔ ${j2.val} ➔ ${j3.val}<br>
+            <span style="color:#ff4444;">Is 3-Jodi sequence ka koi pattern purani history mein nahi mila!</span>
+        `;
+    } else {
+        let sortedJodis = Object.keys(weightedNextScores).sort((a,b) => weightedNextScores[b] - weightedNextScores[a]);
+        let topOutputs = sortedJodis.slice(0, 3).map(jodi => {
+            let probPercent = Math.round((weightedNextScores[jodi] / totalScoreSum) * 100);
+            return `${jodi} <span class="prob-badge">${probPercent}%</span>`;
+        });
+
+        let logHtml = matchLogs.slice(-5).map(m => 
+            `<span class="clickable-row-link" onclick="scrollToAndHighlightRow(${m.rowIndex})">👉 Row ${m.rowDisplay} par 3-Jodi pattern mila ➔ Row ${m.targetRowDisplay} mein agla aaya: <b>${m.followedBy}</b></span>`
+        ).join("");
+
+        document.getElementById("seq-predict").innerHTML = `
+            <b>Selected Base 3-Jodi:</b> ${j1.val} ➔ ${j2.val} ➔ ${j3.val}<br>
+            <b style="color:#00ff88; font-size:13px;">High Probable 4th Jodi: ${topOutputs.join(" | ")}</b>
+            <div class="explanation-box">
+                <b>🔍 AI Exact 3-Jodi Pattern Breakdown:</b><br>
+                1. Record mein kul <b>${matchLogs.length} bar</b> aisa 3-Jodi pattern bana.<br>
+                2. Purani history match records (Dekhne ke liye click karein):<br>${logHtml}
+            </div>
+        `;
     }
 }
 
@@ -521,6 +434,30 @@ function isPartOfPattern(ri, ci){
     if(!activeMark) return false;
     let i = ri - activeMark.start;
     return (i >= 0 && i < activeMark.shape.length && activeMark.shape[i][ci]);
+}
+
+function drawLines(cvsId, tblEl) {
+    const cvs = document.getElementById(cvsId);
+    const ctx = cvs.getContext("2d");
+    cvs.width = tblEl.offsetWidth; cvs.height = tblEl.offsetHeight;
+    ctx.clearRect(0,0,cvs.width,cvs.height);
+    const cells = tblEl.querySelectorAll(".circle");
+    if(cells.length < 2) return;
+    
+    const tRect = tblEl.getBoundingClientRect();
+    ctx.strokeStyle = "#00ff88"; 
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = "round";
+    
+    ctx.beginPath();
+    cells.forEach((c, idx) => {
+        const r = c.getBoundingClientRect();
+        const x = r.left - tRect.left + r.width/2;
+        const y = r.top - tRect.top + r.height/2;
+        if(idx === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
 }
 
 function addRow(){ data.push(["**","**","**","**","**","**"]); draw(); }
@@ -534,9 +471,6 @@ function clearData(){
     if(confirm("Permanently clear all data?")){ 
         localStorage.removeItem(STORAGE_KEY); 
         data = defaultData; 
-        activeMark = null;
-        selectedBlank = null;
-        crossHighlightCells = [];
         draw(); 
     }
 }
@@ -583,11 +517,62 @@ function calculateDayFrequency() {
     document.getElementById("day-freq-analysis").innerHTML = html;
 }
 
+function calculateCutAnk() {
+    let ankCounts = Array(10).fill(0);
+    let totalAnk = 0;
+
+    data.forEach(row => {
+        row.forEach(val => {
+            if (val && val !== "**" && val.length === 2) {
+                ankCounts[parseInt(val[0])]++;
+                ankCounts[parseInt(val[1])]++;
+                totalAnk += 2;
+            }
+        });
+    });
+
+    if(totalAnk === 0) return;
+
+    let cutAnks = [];
+    ankCounts.forEach((cnt, ank) => {
+        let prob = (cnt / totalAnk) * 100;
+        if(prob < 6.5) cutAnks.push(ank);
+    });
+
+    document.getElementById("cut-ank").innerHTML = cutAnks.length 
+        ? `<span class="cut-badge">REJECT</span> <b>Low Ank:</b> ${cutAnks.join(", ")}`
+        : "<b style='color:#00ff88;'>All Ank Balanced</b>";
+}
+
 function autoScanPatterns() {
     let totalRows = data.length;
     if(totalRows < 3) { alert("Need more data!"); return; }
     let blankRow = totalRows - 1;
-    makeDynamicPatternForCell(blankRow, 0);
+    scanOffsetRow = blankRow - 3;
+    makePattern(blankRow, 0);
+}
+
+function makePattern(r,c){
+ targetCol=c; let base="**";
+ for(let i=r;i>=0;i--){ if(data[i][c]!="**"){base=data[i][c]; break;}}
+ if(base=="**") return;
+
+ let shape = Array(9).fill(0).map(() => Array(6).fill(0)); 
+ let matchCount = 0;
+ let startRow = Math.max(0, r-8);
+
+ for(let i = r; i >= startRow; i--){
+    for(let j = 0; j < 6; j++){
+      if(data[i][j] != "**" && smartMatch(data[i][j], base)){
+        if(matchCount < 3){ 
+          shape[i - startRow][j] = 1;
+          matchCount++;
+        }
+      }
+    }
+    if(matchCount >= 3) break; 
+ }
+ searchPattern(shape, base);
 }
 
 function searchPattern(shape,base){
@@ -602,6 +587,34 @@ function searchPattern(shape,base){
   lastMatches.push({index:i});
  }
  showChecks(shape, lastMatches);
+ draw();
+}
+
+function showChecks(shape, matches){
+ document.getElementById("checks").innerHTML="";
+ matches.forEach((m,i)=>{
+  let d = document.createElement("div");
+  d.style = "background:#2a2a2a; margin:4px 0; padding:6px; cursor:pointer; border-radius:6px; font-size:11px; border-left:3px solid #0084ff;";
+  d.innerText = `Match Found at Row ${m.index + 1}`;
+  d.onclick = () => { activeMark={start:m.index, shape:shape}; draw(); showOne(shape, m.index); };
+  document.getElementById("checks").appendChild(d);
+ });
+ updateAI(shape, matches);
+}
+
+function showOne(shape, idx){
+ let html="<table id='popTbl' style='color:#000'>";
+ for(let i=0; i<shape.length; i++){
+  html+="<tr>";
+  data[idx+i].forEach((v,j)=>{
+   html+=`<td class="${shape[i][j]?'circle':''}">${v}</td>`;
+  });
+  html+="</tr>";
+ }
+ document.getElementById("popData").innerHTML=html+"</table>";
+ document.getElementById("popup").style.display="block";
+ document.getElementById("overlay").style.display="block";
+ setTimeout(()=>drawLines("popCanvas", document.getElementById("popTbl")), 100);
 }
 
 function updateAI(shape, matches){
@@ -616,15 +629,17 @@ function updateAI(shape, matches){
    }
   }
  });
- document.getElementById("ai").innerHTML = `<b>Top Line Jodi:</b> ${Object.keys(jc).slice(0,3).join(", ") || "-"}<br><b>Common Ank:</b> ${Object.keys(dc).slice(0,3).join(", ") || "-"}`;
+ document.getElementById("ai").innerHTML = `<b>Top Jodi:</b> ${Object.keys(jc).slice(0,3).join(", ") || "-"}<br><b>Common Ank:</b> ${Object.keys(dc).slice(0,3).join(", ") || "-"}`;
  
  let pool = [];
  matches.forEach(m => {
   let nextR = m.index + shape.length;
   if(nextR < data.length && data[nextR][targetCol] != "**") pool.push(data[nextR][targetCol]);
  });
- document.getElementById("future").innerHTML = pool.length ? `<b>Target Completion Jodi:</b> ${[...new Set(pool)].join(" , ")}` : "Analyzing...";
+ document.getElementById("future").innerHTML = pool.length ? `<b>Probable Next:</b> ${[...new Set(pool)].join(" , ")}` : "Analyzing...";
 }
+
+function closePopup(){ document.getElementById("popup").style.display="none"; document.getElementById("overlay").style.display="none"; }
 
 document.getElementById("csv").onchange = e => {
     let fr = new FileReader();
