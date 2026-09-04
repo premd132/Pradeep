@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalyan Pro AI – Ultimate 90% Pattern Matcher</title>
+    <title>Kalyan Pro AI – Ultimate Pattern Matcher & DOB Tool</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -39,6 +39,44 @@
             background: var(--panel); padding: 8px; border-radius: 12px; 
             margin-bottom: 12px; display: flex; gap: 4px; flex-wrap: wrap; 
             justify-content: center; border: 1px solid rgba(255,255,255,0.1); 
+        }
+
+        /* DOB Card Styling */
+        .dob-card {
+            background: var(--panel);
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border: 1px solid var(--astro-orange);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .dob-input-group {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+            max-width: 400px;
+            justify-content: center;
+        }
+        input[type="date"] {
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 1px solid #444;
+            background: #0f172a;
+            color: #fff;
+            font-size: 12px;
+            outline: none;
+        }
+        .dob-res-box {
+            display: flex;
+            gap: 15px;
+            background: rgba(255, 119, 0, 0.1);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            border: 1px dashed var(--astro-orange);
         }
 
         .chart-wrapper {
@@ -163,6 +201,19 @@
         <button onclick="clearData()" style="background:#dc3545; color:white;">🗑️ CLEAR</button>
     </div>
 
+    <!-- Date of Birth Calculator Section -->
+    <div class="dob-card">
+        <h4 style="margin:0; color:var(--astro-orange); font-size:12px;">🎂 Date of Birth Calculator</h4>
+        <div class="dob-input-group">
+            <input type="date" id="userDob">
+            <button onclick="calculateUserDOB()" style="background:var(--astro-orange); color:#fff;">Calculate Digit</button>
+        </div>
+        <div class="dob-res-box" id="dobResDisplay">
+            <div>Mulank (Day): <b id="mulankRes" style="color:var(--gold);">-</b></div>
+            <div>Bhagyank (Total): <b id="bhagyankRes" style="color:var(--gold);">-</b></div>
+        </div>
+    </div>
+
     <div class="chart-wrapper">
         <div class="table-container" id="printable-chart">
             <canvas id="mainCanvas"></canvas>
@@ -220,6 +271,8 @@ const STORAGE_KEY = "pdata_Kalyan_v10";
 let targetCol = null;
 let activeMark = null;
 let highlightedFam = null;
+let userMulank = null;
+let userBhagyank = null;
 
 function norm(v) {
     if (!v || v.trim() === "" || v === "**") return "**";
@@ -267,6 +320,32 @@ function scrollToTop() {
 
 function scrollToBottom() {
     window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+}
+
+// DOB Single Digit Logic
+function reduceToSingleDigit(num) {
+    while (num > 9) {
+        num = num.toString().split('').reduce((acc, curr) => acc + parseInt(curr), 0);
+    }
+    return num;
+}
+
+function calculateUserDOB() {
+    const dobVal = document.getElementById('userDob').value;
+    if (!dobVal) {
+        alert("Kripya Date of Birth chunein!");
+        return;
+    }
+    const parts = dobVal.split('-'); // YYYY-MM-DD
+    const day = parts[2];
+    const month = parts[1];
+    const year = parts[0];
+
+    userMulank = reduceToSingleDigit(day.split('').reduce((a, b) => parseInt(a) + parseInt(b), 0));
+    userBhagyank = reduceToSingleDigit((day + month + year).split('').reduce((a, b) => parseInt(a) + parseInt(b), 0));
+
+    document.getElementById('mulankRes').innerText = userMulank;
+    document.getElementById('bhagyankRes').innerText = userBhagyank;
 }
 
 function fam(v){for(let k in FAMILY) if(FAMILY[k].includes(v)) return k; return "NA";}
@@ -403,7 +482,7 @@ function calculate90PercentStrongJodies(targetRow, targetCol) {
     `;
 }
 
-// ASTROLOGY & NUMEROLOGY ENGINE (2 Subh Ank + 2 Subh Jodi)
+// ASTROLOGY & NUMEROLOGY ENGINE (2 Subh Ank + 2 Subh Jodi + DOB Integration)
 function calculateAstroNumerology(targetRow, targetCol) {
     let dayInfo = DAY_PLANETS[targetCol] || { name: "ज्योतिष", ank: [1, 6] };
     let prevJodi = (targetRow > 0) ? data[targetRow - 1][targetCol] : "25";
@@ -415,18 +494,20 @@ function calculateAstroNumerology(targetRow, targetCol) {
         prevSum = 5;
     }
 
-    // 2 Subh Ank (Lucky Single Digits)
-    let subhAnk1 = dayInfo.ank[0];
-    let subhAnk2 = (dayInfo.ank[1] + prevSum) % 10;
+    // Single Digits (Using DOB if available)
+    let subhAnk1 = userMulank !== null ? userMulank : dayInfo.ank[0];
+    let subhAnk2 = userBhagyank !== null ? userBhagyank : (dayInfo.ank[1] + prevSum) % 10;
     if (subhAnk1 === subhAnk2) subhAnk2 = (subhAnk2 + 3) % 10;
 
-    // 2 Subh Jodi (Astro Combination)
+    // Astro Jodi Combination
     let astroJodi1 = `${subhAnk1}${subhAnk2}`;
     let astroJodi2 = `${subhAnk2}${(subhAnk1 + 5) % 10}`;
 
+    let dobStatusText = userMulank !== null ? ` | DOB Sync: <b>M:${userMulank}, B:${userBhagyank}</b>` : '';
+
     document.getElementById("astro-prediction").innerHTML = `
         <div style="font-size:11px; color:#e2e8f0; margin-bottom:8px;">
-            ग्रह स्वामी: <b>${dayInfo.name}</b> | अंक योग: <b>${prevSum}</b>
+            ग्रह स्वामी: <b>${dayInfo.name}</b> | अंक योग: <b>${prevSum}</b>${dobStatusText}
         </div>
         <div style="margin-bottom:6px;">
             <span style="font-size:11px; color:var(--gold);">🌟 2 शुभ अंक (Single):</span>
