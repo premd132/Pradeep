@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rajdhani Pro AI - Pattern Chart & Market Engine</title>
+  <title>DPBoss Style Smart AI - Pattern Chart Engine</title>
   <style>
     :root {
       --bg-color: #121212;
@@ -22,16 +22,16 @@
       background-color: var(--bg-color);
       color: var(--text-color);
       margin: 0;
-      padding: 20px;
+      padding: 15px;
     }
 
-    h1, h2, h3 { color: #fff; text-align: center; }
+    h1, h2, h3 { color: #fff; text-align: center; margin-bottom: 10px; }
 
     .control-panel {
       background: var(--card-bg);
       padding: 15px;
       border-radius: 8px;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
@@ -39,7 +39,7 @@
       align-items: center;
     }
 
-    button, input[type="file"], .btn {
+    button, input[type="file"] {
       background: #2979ff;
       color: white;
       border: none;
@@ -55,20 +55,22 @@
       background: var(--card-bg);
       padding: 15px;
       border-radius: 8px;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
+      border: 1px solid #333;
     }
 
     .check-line-btn {
-      background: #333;
+      background: #262626;
       border: 1px solid var(--accent-color);
       color: var(--accent-color);
       display: block;
       width: 100%;
       text-align: left;
-      margin: 5px 0;
-      padding: 10px;
+      margin: 6px 0;
+      padding: 10px 12px;
       border-radius: 4px;
       cursor: pointer;
+      font-size: 0.95em;
     }
 
     .check-line-btn:hover {
@@ -94,19 +96,21 @@
 
     th, td {
       border: 1px solid var(--border-color);
-      padding: 12px 8px;
-      min-width: 50px;
+      padding: 12px 6px;
+      min-width: 48px;
       cursor: pointer;
       user-select: none;
     }
 
-    th { background: #252525; color: #888; }
+    th { background: #252525; color: #aaa; }
 
+    /* Interactive Color Highlights */
     td.selected-cell {
       background-color: var(--selected-bg) !important;
       color: var(--selected-text) !important;
       font-weight: bold;
       border-radius: 50%;
+      box-shadow: 0 0 10px var(--selected-bg);
     }
 
     td.source-cell {
@@ -114,6 +118,7 @@
       color: var(--source-text) !important;
       font-weight: bold;
       border-radius: 50%;
+      box-shadow: 0 0 10px var(--source-bg);
     }
 
     #chartCanvas {
@@ -138,12 +143,13 @@
 
     .modal-content {
       background-color: var(--card-bg);
-      margin: 5% auto;
+      margin: 8% auto;
       padding: 20px;
       border-radius: 8px;
-      width: 80%;
-      max-width: 600px;
+      width: 85%;
+      max-width: 550px;
       position: relative;
+      box-shadow: 0 0 15px rgba(0,230,118,0.3);
     }
 
     .close {
@@ -161,7 +167,8 @@
       color: #a5d6a7;
       padding: 15px;
       border-radius: 8px;
-      margin-top: 20px;
+      margin-top: 15px;
+      text-align: center;
     }
 
     .ai-box h3 { color: #fff; margin-top: 0; }
@@ -169,22 +176,22 @@
 </head>
 <body>
 
-  <h1>Rajdhani Pro AI Engine</h1>
+  <h1>Pattern Chart & Market Analysis Engine</h1>
 
-  <!-- Control Panel -->
+  <!-- Control Panel: Import, Add Row, Reset Storage -->
   <div class="control-panel">
     <input type="file" id="csvFileInput" accept=".csv">
-    <button onclick="addDefaultRow()">Add Row</button>
+    <button onclick="addRowPrompt()">Add Row</button>
     <button onclick="clearStorage()" style="background:#d32f2f;">Reset Storage</button>
   </div>
 
-  <!-- Check Lines Area (Max 4) -->
+  <!-- Check Lines Area (Max 4 Check Lines) -->
   <div class="check-lines-container">
-    <h3>Auto Check Lines (Pattern Derived)</h3>
-    <div id="checkLinesList">Generating patterns...</div>
+    <h3>Auto Check Lines (Last 10 Weeks Pattern)</h3>
+    <div id="checkLinesList">Generating dynamic patterns...</div>
   </div>
 
-  <!-- Main Chart Area -->
+  <!-- Main Chart Table & Canvas -->
   <div class="chart-wrapper" id="chartWrapper">
     <canvas id="chartCanvas"></canvas>
     <table id="marketTable">
@@ -202,26 +209,26 @@
     </table>
   </div>
 
-  <!-- AI Predictions Box -->
+  <!-- AI 3-Pair Prediction Box -->
   <div class="ai-box">
     <h3>Advanced AI - 3 Pair Predictions</h3>
     <div id="aiPredictions">Analyzing historical trends...</div>
   </div>
 
-  <!-- Pattern View Popup Modal -->
+  <!-- Modal Popup for Check Line Connection -->
   <div id="patternModal" class="modal">
     <div class="modal-content">
       <span class="close" onclick="closeModal()">&times;</span>
-      <h3>Check Line Visual Pattern</h3>
-      <p id="modalDescription"></p>
-      <div id="modalCanvasContainer" style="text-align:center; padding: 20px; font-size: 24px; font-weight: bold; color: var(--accent-color);">
-        <!-- Popup Visual Highlight -->
+      <h3 style="color: var(--accent-color);">Check Line Visual Pattern</h3>
+      <p id="modalDescription" style="font-size:1.1em; color:#fff; text-align:center;"></p>
+      <div id="modalVisualBox" style="margin-top:15px; border: 2px dashed var(--accent-color); padding: 20px; border-radius: 8px; text-align:center;">
+        <!-- Dynamic Popup Mark & Connection Line -->
       </div>
     </div>
   </div>
 
 <script>
-  // Initial Sample Data (Monday to Friday format)
+  // Initial Historical Data (Monday to Friday format)
   const defaultChartData = [
     ["W1", "12", "34", "56", "78", "90"],
     ["W2", "21", "43", "65", "87", "09"],
@@ -237,22 +244,22 @@
 
   let chartData = [];
 
-  // Initialize App
+  // Cut Digit Map for Family Jodi Engine (0-5, 1-6, 2-7, 3-8, 4-9)
+  const cutMap = { '0':'5', '1':'6', '2':'7', '3':'8', '4':'9', '5':'0', '6':'1', '7':'2', '8':'3', '9':'4' };
+
   window.onload = function() {
     loadChartData();
-    renderTable();
-    generateCheckLines();
-    generateAIPredictions();
+    refreshAll();
     window.addEventListener('resize', clearCanvas);
   };
 
-  // Local Storage & CSV Functions
+  // Local Storage Management
   function loadChartData() {
     const saved = localStorage.getItem('rajdhani_chart_data');
     if (saved) {
       chartData = JSON.parse(saved);
     } else {
-      chartData = [...defaultChartData];
+      chartData = JSON.parse(JSON.stringify(defaultChartData));
       saveChartData();
     }
   }
@@ -263,30 +270,43 @@
 
   function clearStorage() {
     localStorage.removeItem('rajdhani_chart_data');
-    chartData = [...defaultChartData];
+    chartData = JSON.parse(JSON.stringify(defaultChartData));
     saveChartData();
     refreshAll();
   }
 
+  // CSV File Import Logic
   document.getElementById('csvFileInput').addEventListener('change', function(e) {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
     reader.onload = function(evt) {
       const lines = evt.target.result.split('\n');
-      chartData = lines.map((line, idx) => {
+      const parsedData = [];
+      lines.forEach((line, idx) => {
         const parts = line.split(',').map(s => s.trim());
-        return [`W${idx+1}`, parts[0]||'00', parts[1]||'00', parts[2]||'00', parts[3]||'00', parts[4]||'00'];
-      }).filter(row => row.length >= 6);
-      saveChartData();
-      refreshAll();
+        if (parts.length >= 5) {
+          parsedData.push([`W${idx+1}`, parts[0]||'00', parts[1]||'00', parts[2]||'00', parts[3]||'00', parts[4]||'00']);
+        }
+      });
+      if (parsedData.length > 0) {
+        chartData = parsedData;
+        saveChartData();
+        refreshAll();
+      }
     };
     reader.readAsText(file);
   });
 
-  function addDefaultRow() {
-    const nextIndex = chartData.length + 1;
-    chartData.push([`W${nextIndex}`, "12", "34", "56", "78", "90"]);
+  function addRowPrompt() {
+    const nextW = chartData.length + 1;
+    const p1 = prompt("Enter Mon Jodi (2 Digits):", "12") || "00";
+    const p2 = prompt("Enter Tue Jodi (2 Digits):", "34") || "00";
+    const p3 = prompt("Enter Wed Jodi (2 Digits):", "56") || "00";
+    const p4 = prompt("Enter Thu Jodi (2 Digits):", "78") || "00";
+    const p5 = prompt("Enter Fri Jodi (2 Digits):", "90") || "00";
+
+    chartData.push([`W${nextW}`, p1, p2, p3, p4, p5]);
     saveChartData();
     refreshAll();
   }
@@ -298,11 +318,11 @@
     clearCanvas();
   }
 
-  // Render Chart Table
+  // Render Table Grid
   function renderTable() {
     const tbody = document.getElementById('tableBody');
     tbody.innerHTML = '';
-    
+
     chartData.forEach((row, rIdx) => {
       const tr = document.createElement('tr');
       row.forEach((cell, cIdx) => {
@@ -319,15 +339,51 @@
     });
   }
 
-  // Cell Click Handling (Derivation Color Highlighting)
+  // Family / Cut Digit Matching Rules
+  function getFamilyJodis(jodiStr) {
+    if (!jodiStr || jodiStr.length < 2) return [jodiStr];
+    const d1 = jodiStr[0], d2 = jodiStr[1];
+    const c1 = cutMap[d1] || d1, c2 = cutMap[d2] || d2;
+
+    return [
+      d1 + d2,           // Direct
+      c1 + c2,           // Full Cut
+      d1 + c2,           // Half Cut 1
+      c1 + d2,           // Half Cut 2
+      d2 + d1,           // Reverse Direct
+      c2 + c1,           // Reverse Cut
+      d2 + c1,           // Reverse Half Cut 1
+      c2 + d1            // Reverse Half Cut 2
+    ];
+  }
+
+  function isFamilyMatch(jodi1, jodi2) {
+    const familyList = getFamilyJodis(jodi1);
+    return familyList.includes(jodi2);
+  }
+
+  // Find historical source within 10 weeks
+  function findHistoricalSource(row, col, value) {
+    const minRow = Math.max(0, row - 10);
+    for (let r = row - 1; r >= minRow; r--) {
+      // Check row directly above or last pair in adjacent days
+      for (let c = 1; c <= 5; c++) {
+        if (isFamilyMatch(value, chartData[r][c])) {
+          return { row: r, col: c, value: chartData[r][c] };
+        }
+      }
+    }
+    return null;
+  }
+
+  // Cell Click Action
   function onCellClick(row, col, value, element) {
-    clearCellHighlights();
+    clearHighlights();
     clearCanvas();
 
     element.classList.add('selected-cell');
 
-    // Search historical source within last 10 weeks
-    const source = findSourcePair(row, col, value);
+    const source = findHistoricalSource(row, col, value);
     if (source) {
       const sourceCell = document.querySelector(`td[data-row='${source.row}'][data-col='${source.col}']`);
       if (sourceCell) {
@@ -337,53 +393,29 @@
     }
   }
 
-  function clearCellHighlights() {
+  function clearHighlights() {
     document.querySelectorAll('td').forEach(td => {
       td.classList.remove('selected-cell', 'source-cell');
     });
   }
 
-  // Logic: Family Match / Direct Cut match helper
-  function isFamilyOrDirectMatch(pair1, pair2) {
-    if (!pair1 || !pair2) return false;
-    if (pair1 === pair2) return true;
-    // Difference divisible by 5 check (Digit cut logic)
-    const p1 = parseInt(pair1, 10);
-    const p2 = parseInt(pair2, 10);
-    return !isNaN(p1) && !isNaN(p2) && (Math.abs(p1 - p2) % 5 === 0);
-  }
-
-  // Search Source Pair within 10 weeks scope
-  function findSourcePair(row, col, value) {
-    const startRow = Math.max(0, row - 10);
-    for (let r = row - 1; r >= startRow; r--) {
-      // Check same column or adjacent column directly above
-      for (let c = 1; c <= 5; c++) {
-        if (isFamilyOrDirectMatch(value, chartData[r][c])) {
-          return { row: r, col: c, value: chartData[r][c] };
-        }
-      }
-    }
-    return null;
-  }
-
-  // Canvas Connection Line Rendering
+  // Draw Connection Lines on Canvas
   function drawConnectionLine(elem1, elem2) {
     const canvas = document.getElementById('chartCanvas');
     const wrapper = document.getElementById('chartWrapper');
-    
+
     canvas.width = wrapper.scrollWidth;
     canvas.height = wrapper.scrollHeight;
 
     const ctx = canvas.getContext('2d');
-    const rect1 = elem1.getBoundingClientRect();
-    const rect2 = elem2.getBoundingClientRect();
-    const wrapperRect = wrapper.getBoundingClientRect();
+    const r1 = elem1.getBoundingClientRect();
+    const r2 = elem2.getBoundingClientRect();
+    const wRect = wrapper.getBoundingClientRect();
 
-    const x1 = rect1.left + rect1.width / 2 - wrapperRect.left + wrapper.scrollLeft;
-    const y1 = rect1.top + rect1.height / 2 - wrapperRect.top + wrapper.scrollTop;
-    const x2 = rect2.left + rect2.width / 2 - wrapperRect.left + wrapper.scrollLeft;
-    const y2 = rect2.top + rect2.height / 2 - wrapperRect.top + wrapper.scrollTop;
+    const x1 = r1.left + r1.width / 2 - wRect.left + wrapper.scrollLeft;
+    const y1 = r1.top + r1.height / 2 - wRect.top + wrapper.scrollTop;
+    const x2 = r2.left + r2.width / 2 - wRect.left + wrapper.scrollLeft;
+    const y2 = r2.top + r2.height / 2 - wRect.top + wrapper.scrollTop;
 
     ctx.beginPath();
     ctx.moveTo(x1, y1);
@@ -400,23 +432,24 @@
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
 
-  // Dynamic Pattern Check Lines Generator (Max 4)
+  // Auto Check Lines Generator (Max 4)
   function generateCheckLines() {
     const container = document.getElementById('checkLinesList');
     container.innerHTML = '';
-    
+
     const totalRows = chartData.length;
     const checkLines = [];
-    const minScope = Math.max(0, totalRows - 10);
+    const minRow = Math.max(0, totalRows - 10);
 
-    for (let r = totalRows - 1; r > minScope; r--) {
+    for (let r = totalRows - 1; r > minRow; r--) {
       for (let c = 1; c <= 5; c++) {
         const val = chartData[r][c];
-        const source = findSourcePair(r, c, val);
-        if (source && (r - source.row <= 10)) {
+        const src = findHistoricalSource(r, c, val);
+        if (src) {
+          const dayNames = ["", "Mon", "Tue", "Wed", "Thu", "Fri"];
           checkLines.push({
-            title: `Check Line: ${chartData[r][0]} (Day ${c}) connected to ${chartData[source.row][0]} (Day ${source.col})`,
-            details: `Pair '${val}' derived from historical Pair '${source.value}' [Row/Col relation verified]`
+            title: `Check Line ${checkLines.length + 1}: ${chartData[r][0]} (${dayNames[c]}) Pair '${val}' ➔ ${chartData[src.row][0]} (${dayNames[src.col]}) Pair '${src.value}'`,
+            desc: `Result derived from Row ${chartData[src.row][0]} within 10-week range.`
           });
           if (checkLines.length >= 4) break;
         }
@@ -425,48 +458,49 @@
     }
 
     if (checkLines.length === 0) {
-      container.innerHTML = '<i>No patterns derived in the last 10 weeks.</i>';
+      container.innerHTML = '<span style="color:#aaa;">No dynamic patterns found in recent 10 weeks.</span>';
       return;
     }
 
-    checkLines.forEach(line => {
+    checkLines.forEach(item => {
       const btn = document.createElement('button');
       btn.className = 'check-line-btn';
-      btn.innerText = line.title;
-      btn.onclick = () => openModal(line.title, line.details);
+      btn.innerText = item.title;
+      btn.onclick = () => openModal(item.title, item.desc);
       container.appendChild(btn);
     });
   }
 
-  // AI Prediction Engine (3 Pair Recommendation)
+  // Separate Future AI Engine - 3 Pair Prediction
   function generateAIPredictions() {
+    if (chartData.length === 0) return;
     const lastRow = chartData[chartData.length - 1];
-    if (!lastRow) return;
 
-    const baseVal1 = parseInt(lastRow[1] || "12", 10);
-    const baseVal2 = parseInt(lastRow[5] || "90", 10);
+    const val1 = parseInt(lastRow[1] || "12", 10);
+    const val2 = parseInt(lastRow[5] || "90", 10);
 
-    const p1 = String((baseVal1 + 5) % 100).padStart(2, '0');
-    const p2 = String((baseVal2 + 11) % 100).padStart(2, '0');
-    const p3 = String((baseVal1 + baseVal2) % 100).padStart(2, '0');
+    const pair1 = String((val1 + 7) % 100).padStart(2, '0');
+    const pair2 = String((val2 + 13) % 100).padStart(2, '0');
+    const pair3 = String((val1 + val2) % 100).padStart(2, '0');
 
     document.getElementById('aiPredictions').innerHTML = `
-      <strong>Predicted 3-Pair Sequence for Next Session:</strong> 
-      <span style="font-size: 1.2em; color:#fff; background:#2e7d32; padding:4px 10px; border-radius:4px; margin-left:10px;">
-        ${p1} - ${p2} - ${p3}
+      <strong>Predicted 3-Pair Sequence:</strong> 
+      <span style="font-size: 1.25em; color:#fff; background:#2e7d32; padding:5px 12px; border-radius:4px; margin-left:10px;">
+        ${pair1} - ${pair2} - ${pair3}
       </span>
     `;
   }
 
   // Modal Functions
-  function openModal(title, details) {
-    document.getElementById('modalDescription').innerText = details;
-    document.getElementById('modalCanvasContainer').innerHTML = `
-      <div style="border: 2px dashed var(--accent-color); padding: 20px; border-radius: 8px;">
-        <span style="color:#ffeb3b;">● Derived Target</span> ────── <span style="color:#00bcd4;">● Historical Pair</span>
-        <br><br>
-        <small>${title}</small>
+  function openModal(title, desc) {
+    document.getElementById('modalDescription').innerText = title;
+    document.getElementById('modalVisualBox').innerHTML = `
+      <div style="font-size:1.2em; color:var(--accent-color); font-weight:bold;">
+        <span style="background:var(--selected-bg); color:#000; padding:6px 12px; border-radius:50%;">Target Pair</span>
+        <span style="margin: 0 10px;">════════►</span>
+        <span style="background:var(--source-bg); color:#fff; padding:6px 12px; border-radius:50%;">Old Source Pair</span>
       </div>
+      <p style="color:#aaa; font-size:0.9em; margin-top:15px;">${desc}</p>
     `;
     document.getElementById('patternModal').style.display = 'block';
   }
