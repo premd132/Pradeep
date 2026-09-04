@@ -1,667 +1,479 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalyan Pro AI – Deep 8-Row & Family Pattern Engine</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <style>
-        :root { 
-            --gold: #ffd700; 
-            --blue-circle: #0084ff; 
-            --green-line: #00ff88; 
-            --orange-family: #f97316;
-            --bg: #0f172a; 
-            --panel: #1e293b; 
-            --red: #ff4444;
-            --purple: #a855f7;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rajdhani Pro AI - Pattern Chart & Market Engine</title>
+  <style>
+    :root {
+      --bg-color: #121212;
+      --card-bg: #1e1e1e;
+      --text-color: #e0e0e0;
+      --accent-color: #00e676;
+      --selected-bg: #ffeb3b;
+      --selected-text: #000;
+      --source-bg: #00bcd4;
+      --source-text: #fff;
+      --border-color: #333;
+    }
 
-        * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
-        body { margin: 0; background: var(--bg); color: #fff; overflow-x: hidden; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 20px;
+    }
 
-        #home-screen {
-            height: 100vh; width: 100vw; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; text-align: center;
-            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
-            padding: 20px;
-        }
-        .hero-title { font-size: 2.2rem; color: var(--gold); margin: 0; text-shadow: 0 0 20px rgba(255,215,0,0.3); }
-        .hero-sub { opacity: 0.7; letter-spacing: 1.5px; margin-bottom: 30px; font-size: 0.85rem; }
-        .enter-btn {
-            background: var(--gold); color: #000; padding: 14px 35px;
-            font-size: 1.1rem; font-weight: 800; border: none; border-radius: 50px;
-            cursor: pointer; transition: 0.3s; box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-        }
+    h1, h2, h3 { color: #fff; text-align: center; }
 
-        #main-app { display: none; padding: 8px; width: 100vw; max-width: 100%; box-sizing: border-box; }
-        .toolbar { 
-            background: var(--panel); padding: 8px; border-radius: 12px; 
-            margin-bottom: 12px; display: flex; gap: 4px; flex-wrap: wrap; 
-            justify-content: center; border: 1px solid rgba(255,255,255,0.1); 
-        }
+    .control-panel {
+      background: var(--card-bg);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      align-items: center;
+    }
 
-        .chart-wrapper {
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            padding: 5px 0;
-            display: block;
-        }
+    button, input[type="file"], .btn {
+      background: #2979ff;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
 
-        .table-container { 
-            position: relative; background: #fff; border-radius: 10px; 
-            padding: 4px; box-shadow: 0 0 20px rgba(0,0,0,0.5); 
-            display: table; margin: 0 auto; min-width: 320px;
-        }
-        
-        table { border-collapse: collapse; color: #000; font-size: 12px; position: relative; z-index: 5; margin: 0 auto; width: 100%; }
-        td, th { 
-            border: 1px solid #ddd; padding: 2px; text-align: center; 
-            font-weight: bold; width: 36px; height: 36px; cursor: pointer; 
-            user-select: none; transition: background 0.3s ease;
-        }
-        td[contenteditable="true"] { outline: none; background: #fff; }
-        td[contenteditable="true"]:focus { background: #e0f2fe; border: 2px solid var(--blue-circle); }
-        th { background: #1e293b; color: white; font-size: 10px; }
-        .action-th, .action-td { width: 26px; background: #f8fafc; }
-        .btn-del-row { background: var(--red); color: white; border: none; border-radius: 3px; padding: 2px 4px; font-size: 9px; cursor: pointer; }
-        
-        .circle { 
-            border: 3px solid var(--blue-circle) !important; 
-            border-radius: 50% !important; 
-            background: rgba(0, 132, 255, 0.2); 
-            z-index: 10;
-        }
-        .fam-circle { 
-            border: 3px dashed var(--orange-family) !important; 
-            border-radius: 50% !important; 
-            background: rgba(249, 115, 22, 0.2); 
-            z-index: 10;
-        }
-        .fam-highlight { background: rgba(255, 215, 0, 0.4) !important; font-weight: 900; }
-        .red-jodi { color: #ff0000 !important; font-weight: 900; }
-        .scan-zone { background: rgba(255, 215, 0, 0.15) !important; }
+    button:hover { background: #2962ff; }
 
-        canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 4; }
+    .check-lines-container {
+      background: var(--card-bg);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
 
-        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; margin-top: 12px; }
-        .card { background: var(--panel); padding: 10px; border-radius: 10px; border-top: 3px solid var(--gold); }
-        .card h3 { margin: 0 0 6px 0; color: var(--gold); font-size: 11px; text-transform: uppercase; }
+    .check-line-btn {
+      background: #333;
+      border: 1px solid var(--accent-color);
+      color: var(--accent-color);
+      display: block;
+      width: 100%;
+      text-align: left;
+      margin: 5px 0;
+      padding: 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
 
-        .day-ank-table { width: 100%; color: white; font-size: 10px; border-collapse: collapse; margin-top: 4px; }
-        .day-ank-table th { background: #0f172a; color: var(--gold); border: 1px solid #334155; padding: 3px; }
-        .day-ank-table td { border: 1px solid #334155; padding: 3px; text-align: center; color: #00ff88; }
+    .check-line-btn:hover {
+      background: var(--accent-color);
+      color: #000;
+    }
 
-        .trend-badge { background: var(--purple); color: #fff; padding: 3px 6px; border-radius: 6px; font-size: 10px; font-weight: bold; }
+    .chart-wrapper {
+      position: relative;
+      overflow-x: auto;
+      background: var(--card-bg);
+      border-radius: 8px;
+      padding: 10px;
+    }
 
-        .strong-jodi-btn {
-            display: inline-block; background: linear-gradient(135deg, #00ff88, #0084ff); color: #000;
-            padding: 5px 10px; margin: 3px; border-radius: 6px; font-weight: 800; font-size: 12px;
-            box-shadow: 0 3px 8px rgba(0,255,136,0.3);
-        }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
 
-        #popup { 
-            position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); 
-            background: #1e293b; border-radius: 12px; display: none; z-index: 100; 
-            padding: 15px; color: #fff; width: 95%; max-width: 400px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.8); border: 1px solid var(--gold);
-        }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; z-index: 90; }
-        button { cursor: pointer; border-radius: 6px; border: none; font-weight: bold; padding: 6px 8px; font-size: 10px; }
-    </style>
+    th, td {
+      border: 1px solid var(--border-color);
+      padding: 12px 8px;
+      min-width: 50px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    th { background: #252525; color: #888; }
+
+    td.selected-cell {
+      background-color: var(--selected-bg) !important;
+      color: var(--selected-text) !important;
+      font-weight: bold;
+      border-radius: 50%;
+    }
+
+    td.source-cell {
+      background-color: var(--source-bg) !important;
+      color: var(--source-text) !important;
+      font-weight: bold;
+      border-radius: 50%;
+    }
+
+    #chartCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Modal Styling */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 100;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.85);
+    }
+
+    .modal-content {
+      background-color: var(--card-bg);
+      margin: 5% auto;
+      padding: 20px;
+      border-radius: 8px;
+      width: 80%;
+      max-width: 600px;
+      position: relative;
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover { color: #fff; }
+
+    .ai-box {
+      background: #1b5e20;
+      color: #a5d6a7;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+
+    .ai-box h3 { color: #fff; margin-top: 0; }
+  </style>
 </head>
 <body>
 
-<div id="home-screen">
-    <h1 class="hero-title">Kalyan PRO AI</h1>
-    <p class="hero-sub">DEEP 8-ROW & FAMILY PATTERN ENGINE</p>
-    <button class="enter-btn" onclick="startApp()">START ANALYSIS</button>
-</div>
+  <h1>Rajdhani Pro AI Engine</h1>
 
-<div id="main-app">
-    <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom:5px;">
-        <h3 style="color:var(--gold); margin:0; font-size: 1rem;">Kalyan Ultra Visual AI</h3>
-        <span id="trend-bar" class="trend-badge">Trend: Scanning...</span>
+  <!-- Control Panel -->
+  <div class="control-panel">
+    <input type="file" id="csvFileInput" accept=".csv">
+    <button onclick="addDefaultRow()">Add Row</button>
+    <button onclick="clearStorage()" style="background:#d32f2f;">Reset Storage</button>
+  </div>
+
+  <!-- Check Lines Area (Max 4) -->
+  <div class="check-lines-container">
+    <h3>Auto Check Lines (Pattern Derived)</h3>
+    <div id="checkLinesList">Generating patterns...</div>
+  </div>
+
+  <!-- Main Chart Area -->
+  <div class="chart-wrapper" id="chartWrapper">
+    <canvas id="chartCanvas"></canvas>
+    <table id="marketTable">
+      <thead>
+        <tr>
+          <th>Week / Day</th>
+          <th>Mon</th>
+          <th>Tue</th>
+          <th>Wed</th>
+          <th>Thu</th>
+          <th>Fri</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+
+  <!-- AI Predictions Box -->
+  <div class="ai-box">
+    <h3>Advanced AI - 3 Pair Predictions</h3>
+    <div id="aiPredictions">Analyzing historical trends...</div>
+  </div>
+
+  <!-- Pattern View Popup Modal -->
+  <div id="patternModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h3>Check Line Visual Pattern</h3>
+      <p id="modalDescription"></p>
+      <div id="modalCanvasContainer" style="text-align:center; padding: 20px; font-size: 24px; font-weight: bold; color: var(--accent-color);">
+        <!-- Popup Visual Highlight -->
+      </div>
     </div>
-
-    <div class="toolbar">
-        <input type="file" id="csv" accept=".csv" style="display:none">
-        <input type="file" id="importJson" accept=".json" style="display:none">
-        
-        <button onclick="document.getElementById('csv').click()" style="background:#444; color:white;">📂 CSV</button>
-        <button onclick="addRow()" style="background:#0284c7; color:white;">➕ ADD</button>
-        <button onclick="autoScanPatterns()" style="background:var(--purple); color:white;">🔍 SCAN (8+ ROW)</button>
-        <button onclick="saveData()" style="background:#28a745; color:white;">💾 SAVE</button>
-        <button onclick="exportData()" style="background:#eab308; color:#000;">📥 EXPORT</button>
-        <button onclick="document.getElementById('importJson').click()" style="background:#06b6d4; color:white;">📤 IMPORT</button>
-        <button onclick="clearData()" style="background:#dc3545; color:white;">🗑️ CLEAR</button>
-    </div>
-
-    <div class="chart-wrapper">
-        <div class="table-container" id="printable-chart">
-            <canvas id="mainCanvas"></canvas>
-            <table id="tbl"></table>
-        </div>
-    </div>
-
-    <div class="dashboard">
-        <div class="card" style="grid-column: 1 / -1; background: #0f172a; border-top: 3px solid #00ff88;">
-            <h3>🧮 Blank Cell Prediction: Top 4 Strong Jodies</h3>
-            <div id="blank-4jodi-prediction"><i style="color:#94a3b8; font-size:11px;">किसी भी (**) ब्लैंक सेल पर क्लिक करें...</i></div>
-        </div>
-        <div class="card">
-            <h3>✔ Check Lines (4+ Row Deep Match)</h3>
-            <div id="checks" style="font-size:11px;">Click blank cell...</div>
-        </div>
-        <div class="card">
-            <h3>🤖 AI Analysis</h3>
-            <div id="ai" style="font-size:11px;">Wait for input...</div>
-        </div>
-        <div class="card">
-            <h3>🔮 Future Prediction</h3>
-            <div id="future" style="font-size:11px;">Select a match...</div>
-        </div>
-        <div class="card" style="grid-column: 1 / -1;">
-            <h3>📊 Day-by-Day Top 4 Frequent Ank</h3>
-            <div id="day-freq-analysis">Calculating...</div>
-        </div>
-    </div>
-</div>
-
-<div class="overlay" id="overlay" onclick="closePopup()"></div>
-<div id="popup">
-    <button onclick="closePopup()" style="float:right; background:var(--red); color:white; padding:3px 6px;">✕ CLOSE</button>
-    <h4 style="margin: 0 0 8px 0; font-size: 13px; color: var(--gold);">8+ Row Pattern View (Popup)</h4>
-    <center>
-        <div class="table-container" style="border: 1px solid #475569; max-width: 100%; overflow-x: auto; background:#fff;">
-            <canvas id="popCanvas"></canvas>
-            <div id="popData"></div>
-        </div>
-    </center>
-</div>
+  </div>
 
 <script>
-const STORAGE_KEY = "pdata_Kalyan_v11";
-let targetCol = null;
-let activeMark = null;
-let highlightedFam = null;
-let scanOffsetRow = -1;
+  // Initial Sample Data (Monday to Friday format)
+  const defaultChartData = [
+    ["W1", "12", "34", "56", "78", "90"],
+    ["W2", "21", "43", "65", "87", "09"],
+    ["W3", "17", "39", "51", "73", "95"],
+    ["W4", "62", "84", "06", "28", "40"],
+    ["W5", "12", "34", "56", "78", "90"],
+    ["W6", "67", "89", "01", "23", "45"],
+    ["W7", "21", "43", "65", "87", "09"],
+    ["W8", "17", "34", "51", "78", "95"],
+    ["W9", "62", "43", "06", "87", "40"],
+    ["W10", "12", "89", "56", "23", "90"]
+  ];
 
-function norm(v) {
-    if (!v || v.trim() === "" || v === "**") return "**";
-    let n = v.replace(/[^0-9]/g, "");
-    if (n === "") return "**";
-    if (n.length === 1) n = "0" + n;
-    return n.substring(0, 2);
-}
+  let chartData = [];
 
-// Single Digit Cut Helper
-function getCut(digit) {
-    return (parseInt(digit) + 5) % 10;
-}
+  // Initialize App
+  window.onload = function() {
+    loadChartData();
+    renderTable();
+    generateCheckLines();
+    generateAIPredictions();
+    window.addEventListener('resize', clearCanvas);
+  };
 
-// Dynamic Family Jodi Generator Engine
-function getJodiFamily(jodiStr) {
-    if (!jodiStr || jodiStr === "**" || jodiStr.length < 2) return [];
-    let o = parseInt(jodiStr[0]);
-    let c = parseInt(jodiStr[1]);
-    let openCut = getCut(o);
-    let closeCut = getCut(c);
-
-    let familySet = new Set([
-        `${o}${c}`, `${o}${closeCut}`, `${openCut}${c}`, `${openCut}${closeCut}`,
-        `${c}${o}`, `${c}${openCut}`, `${closeCut}${o}`, `${closeCut}${openCut}`
-    ]);
-    return Array.from(familySet);
-}
-
-const defaultData = [
-    ["10","20","30","40","50","60"],
-    ["15","25","35","45","55","65"],
-    ["12","27","62","77","18","81"],
-    ["11","22","33","44","55","66"],
-    ["13","24","35","46","57","68"],
-    ["14","25","36","47","58","69"],
-    ["15","26","37","48","59","60"],
-    ["16","27","38","49","50","61"],
-    ["17","28","39","40","51","62"],
-    ["**","**","**","**","**","**"]
-];
-
-let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || defaultData;
-
-function startApp() {
-    document.getElementById('home-screen').style.display = 'none';
-    document.getElementById('main-app').style.display = 'block';
-    draw();
-}
-
-function palti(v){ return v[1]+v[0]; }
-
-// Family & Direct Smart Match
-function smartMatch(a1, b1) { 
-    if (a1 === "**" || b1 === "**") return false; 
-    let famA = getJodiFamily(a1);
-    return famA.includes(b1);
-}
-
-function isRedJodi(v){ return v !== "**" && (v[0] === v[1] || Math.abs(parseInt(v[0]) - parseInt(v[1])) === 5); }
-
-function draw() {
-    let days = ["MON", "TUE", "WED", "THU", "FRI", "SAT"];
-    let h = "<tr>";
-    days.forEach(d => h += `<th>${d}</th>`);
-    h += "<th class='action-th'>❌</th></tr>";
-
-    data.forEach((r, ri) => {
-        h += `<tr id="table-row-${ri}">`;
-        r.forEach((c, ci) => {
-            let cls = "";
-            if (activeMark && isPartOfPattern(ri, ci)) {
-                let cellVal = data[ri][ci];
-                let isExact = (activeMark.targetVal === cellVal);
-                cls = isExact ? "circle" : "fam-circle";
-            }
-            
-            if (highlightedFam && getJodiFamily(c).includes(highlightedFam)) cls += " fam-highlight";
-            if (isRedJodi(c)) cls += " red-jodi";
-            if (ri === scanOffsetRow) cls += " scan-zone";
-            if (c == "**") cls += " blank";
-            
-            h += `<td class="${cls}" contenteditable="true" onblur="updateCell(${ri},${ci},this)" onkeydown="checkEnter(event, this)" onclick="handleCellClick(${ri},${ci},'${c}')">${c}</td>`;
-        });
-        h += `<td class="action-td"><button class="btn-del-row" onclick="deleteRow(${ri})">✕</button></td>`;
-        h += "</tr>";
-    });
-    document.getElementById("tbl").innerHTML = h;
-    if (activeMark) setTimeout(() => drawLines("mainCanvas", document.getElementById("tbl")), 50);
-    
-    calculateDayFrequency();
-    updateTrendIndicator();
-}
-
-function updateCell(r, c, el) {
-    let val = norm(el.innerText.trim());
-    data[r][c] = val;
-    el.innerText = val;
-    saveDataSilent();
-    calculateDayFrequency();
-    updateTrendIndicator();
-}
-
-function checkEnter(e, el) {
-    if (e.key === "Enter") {
-        e.preventDefault();
-        el.blur();
-    }
-}
-
-function deleteRow(rIndex) {
-    if (confirm(`Row ${rIndex + 1} delete करें?`)) {
-        data.splice(rIndex, 1);
-        saveDataSilent();
-        draw();
-    }
-}
-
-function handleCellClick(r, c, val) {
-    if (val !== "**") {
-        highlightedFam = (highlightedFam === val) ? null : val;
-        draw();
+  // Local Storage & CSV Functions
+  function loadChartData() {
+    const saved = localStorage.getItem('rajdhani_chart_data');
+    if (saved) {
+      chartData = JSON.parse(saved);
     } else {
-        scanOffsetRow = Math.max(0, r - 8);
-        make2JodiCrossPatternDeep(r, c);
-        predictFourStrongJodiesForBlankCell(r, c);
+      chartData = [...defaultChartData];
+      saveChartData();
     }
-}
+  }
 
-// DEEP 8-ROW PATTERN MATCHING ENGINE
-function make2JodiCrossPatternDeep(blankR, blankC) {
-    targetCol = blankC;
-    let pickedNodes = [];
-    let minLookbackRow = Math.max(0, blankR - 8);
+  function saveChartData() {
+    localStorage.setItem('rajdhani_chart_data', JSON.stringify(chartData));
+  }
+
+  function clearStorage() {
+    localStorage.removeItem('rajdhani_chart_data');
+    chartData = [...defaultChartData];
+    saveChartData();
+    refreshAll();
+  }
+
+  document.getElementById('csvFileInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      const lines = evt.target.result.split('\n');
+      chartData = lines.map((line, idx) => {
+        const parts = line.split(',').map(s => s.trim());
+        return [`W${idx+1}`, parts[0]||'00', parts[1]||'00', parts[2]||'00', parts[3]||'00', parts[4]||'00'];
+      }).filter(row => row.length >= 6);
+      saveChartData();
+      refreshAll();
+    };
+    reader.readAsText(file);
+  });
+
+  function addDefaultRow() {
+    const nextIndex = chartData.length + 1;
+    chartData.push([`W${nextIndex}`, "12", "34", "56", "78", "90"]);
+    saveChartData();
+    refreshAll();
+  }
+
+  function refreshAll() {
+    renderTable();
+    generateCheckLines();
+    generateAIPredictions();
+    clearCanvas();
+  }
+
+  // Render Chart Table
+  function renderTable() {
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = '';
     
-    for (let i = blankR - 1; i >= minLookbackRow; i--) {
-        for (let j = 0; j < 6; j++) {
-            if (data[i][j] !== "**") {
-                if (pickedNodes.length === 0 || pickedNodes[pickedNodes.length - 1].col !== j || (blankR - i) >= 4) {
-                    pickedNodes.push({ 
-                        dRow: blankR - i, 
-                        dCol: blankC - j, 
-                        col: j,
-                        val: data[i][j] 
-                    });
-                }
-            }
-            if (pickedNodes.length === 3) break;
+    chartData.forEach((row, rIdx) => {
+      const tr = document.createElement('tr');
+      row.forEach((cell, cIdx) => {
+        const elem = cIdx === 0 ? document.createElement('th') : document.createElement('td');
+        elem.innerText = cell;
+        if (cIdx > 0) {
+          elem.dataset.row = rIdx;
+          elem.dataset.col = cIdx;
+          elem.onclick = () => onCellClick(rIdx, cIdx, cell, elem);
         }
-        if (pickedNodes.length === 3) break;
-    }
-
-    if (pickedNodes.length < 2) {
-        makePatternDeep(blankR, blankC);
-        return;
-    }
-
-    let maxDRow = Math.max(...pickedNodes.map(n => n.dRow));
-    let shape = Array(maxDRow + 1).fill(0).map(() => Array(6).fill(0));
-    
-    shape[maxDRow][blankC] = 1; 
-    pickedNodes.forEach(node => {
-        shape[maxDRow - node.dRow][node.col] = 1;
+        tr.appendChild(elem);
+      });
+      tbody.appendChild(tr);
     });
+  }
 
-    searchPatternInHistoryDeep(shape, pickedNodes, blankR, blankC);
-}
+  // Cell Click Handling (Derivation Color Highlighting)
+  function onCellClick(row, col, value, element) {
+    clearCellHighlights();
+    clearCanvas();
 
-function searchPatternInHistoryDeep(shape, pickedNodes, currentBlankR, currentBlankC) {
-    let matches = [];
-    let shapeLen = shape.length;
+    element.classList.add('selected-cell');
 
-    for (let r = 0; r <= data.length - shapeLen; r++) {
-        let historicalTargetRow = r + shapeLen - 1;
-        if (historicalTargetRow === currentBlankR) continue;
-
-        let isMatch = true;
-        let isFamilyMatchPattern = false;
-
-        for (let node of pickedNodes) {
-            let histRow = historicalTargetRow - node.dRow;
-            let histCol = node.col;
-
-            if (histRow < 0 || histRow >= data.length) { isMatch = false; break; }
-            let historicalVal = data[histRow][histCol];
-            
-            if (!smartMatch(historicalVal, node.val)) {
-                isMatch = false;
-                break;
-            } else if (historicalVal !== node.val) {
-                isFamilyMatchPattern = true; // Family/Cut Match Tag
-            }
-        }
-
-        if (isMatch) {
-            matches.push({ index: r, isFamily: isFamilyMatchPattern });
-        }
+    // Search historical source within last 10 weeks
+    const source = findSourcePair(row, col, value);
+    if (source) {
+      const sourceCell = document.querySelector(`td[data-row='${source.row}'][data-col='${source.col}']`);
+      if (sourceCell) {
+        sourceCell.classList.add('source-cell');
+        drawConnectionLine(element, sourceCell);
+      }
     }
+  }
 
-    showChecks(shape, matches, pickedNodes[0] ? pickedNodes[0].val : "");
-    draw();
-}
+  function clearCellHighlights() {
+    document.querySelectorAll('td').forEach(td => {
+      td.classList.remove('selected-cell', 'source-cell');
+    });
+  }
 
-function makePatternDeep(r, c){
- targetCol = c;
- let shape = Array(9).fill(0).map(() => Array(6).fill(0)); 
- let matchCount = 0;
- let startRow = Math.max(0, r - 8);
+  // Logic: Family Match / Direct Cut match helper
+  function isFamilyOrDirectMatch(pair1, pair2) {
+    if (!pair1 || !pair2) return false;
+    if (pair1 === pair2) return true;
+    // Difference divisible by 5 check (Digit cut logic)
+    const p1 = parseInt(pair1, 10);
+    const p2 = parseInt(pair2, 10);
+    return !isNaN(p1) && !isNaN(p2) && (Math.abs(p1 - p2) % 5 === 0);
+  }
 
- for(let i = r - 1; i >= startRow; i--){
-    for(let j = 0; j < 6; j++){
-      if(data[i][j] != "**"){
-        if(matchCount < 3){ 
-          shape[i - startRow][j] = 1;
-          matchCount++;
+  // Search Source Pair within 10 weeks scope
+  function findSourcePair(row, col, value) {
+    const startRow = Math.max(0, row - 10);
+    for (let r = row - 1; r >= startRow; r--) {
+      // Check same column or adjacent column directly above
+      for (let c = 1; c <= 5; c++) {
+        if (isFamilyOrDirectMatch(value, chartData[r][c])) {
+          return { row: r, col: c, value: chartData[r][c] };
         }
       }
     }
-    if(matchCount >= 3) break; 
- }
- shape[r - startRow][c] = 1; 
- searchPatternInHistoryDeep(shape, [], r, c);
-}
+    return null;
+  }
 
-function predictFourStrongJodiesForBlankCell(r, c) {
-    const days = ["MON", "TUE", "WED", "THU", "FRI", "SAT"];
-    let dayName = days[c];
-    let candidateScores = {};
-
-    function addScore(jodi, score) {
-        if (!jodi || jodi === "**" || jodi.length !== 2) return;
-        candidateScores[jodi] = (candidateScores[jodi] || 0) + score;
-    }
-
-    let totalRows = data.length;
-    for (let rowIdx = 0; rowIdx < totalRows; rowIdx++) {
-        let val = data[rowIdx][c];
-        if (val !== "**") {
-            let recencyWeight = (rowIdx + 1) / totalRows;
-            addScore(val, 3.0 * recencyWeight);
-            addScore(palti(val), 1.5 * recencyWeight);
-        }
-    }
-
-    if (r > 0) {
-        let aboveVal = data[r - 1][c];
-        if (aboveVal !== "**") {
-            let d1 = parseInt(aboveVal[0]), d2 = parseInt(aboveVal[1]);
-            let cut1 = getCut(d1), cut2 = getCut(d2);
-            let cutPair = `${cut1}${cut2}`;
-            addScore(cutPair, 2.8);
-            addScore(palti(cutPair), 2.0);
-        }
-    }
-
-    let sortedJodies = Object.keys(candidateScores).sort((a, b) => candidateScores[b] - candidateScores[a]);
-    let top4 = sortedJodies.slice(0, 4);
-
-    if (top4.length < 4) {
-        let fallbackList = ["12", "34", "56", "78"];
-        fallbackList.forEach(f => { if (!top4.includes(f) && top4.length < 4) top4.push(f); });
-    }
-
-    let buttonsHtml = top4.map((j, i) => `<span class="strong-jodi-btn">#${i + 1} Jodi: ${j}</span>`).join("");
-
-    document.getElementById("blank-4jodi-prediction").innerHTML = `
-        <div style="font-size:11px; margin-bottom:4px;">
-            Position: Row ${r + 1}, Day: <b style="color:var(--gold);">${dayName}</b>
-        </div>
-        <div>${buttonsHtml}</div>
-    `;
-}
-
-function isPartOfPattern(ri, ci){
-    if(!activeMark) return false;
-    let i = ri - activeMark.start;
-    return (i >= 0 && i < activeMark.shape.length && activeMark.shape[i][ci]);
-}
-
-function drawLines(cvsId, tblEl) {
-    const cvs = document.getElementById(cvsId);
-    const ctx = cvs.getContext("2d");
-    cvs.width = tblEl.offsetWidth; cvs.height = tblEl.offsetHeight;
-    ctx.clearRect(0,0,cvs.width,cvs.height);
-    const cells = tblEl.querySelectorAll(".circle, .fam-circle");
-    if(cells.length < 2) return;
+  // Canvas Connection Line Rendering
+  function drawConnectionLine(elem1, elem2) {
+    const canvas = document.getElementById('chartCanvas');
+    const wrapper = document.getElementById('chartWrapper');
     
-    const tRect = tblEl.getBoundingClientRect();
-    let isFam = activeMark && activeMark.isFamily;
-    ctx.strokeStyle = isFam ? "#f97316" : "#00ff88"; 
-    ctx.lineWidth = 3;
-    ctx.lineCap = "round";
-    
-    if (isFam) ctx.setLineDash([6, 5]);
-    else ctx.setLineDash([]);
+    canvas.width = wrapper.scrollWidth;
+    canvas.height = wrapper.scrollHeight;
+
+    const ctx = canvas.getContext('2d');
+    const rect1 = elem1.getBoundingClientRect();
+    const rect2 = elem2.getBoundingClientRect();
+    const wrapperRect = wrapper.getBoundingClientRect();
+
+    const x1 = rect1.left + rect1.width / 2 - wrapperRect.left + wrapper.scrollLeft;
+    const y1 = rect1.top + rect1.height / 2 - wrapperRect.top + wrapper.scrollTop;
+    const x2 = rect2.left + rect2.width / 2 - wrapperRect.left + wrapper.scrollLeft;
+    const y2 = rect2.top + rect2.height / 2 - wrapperRect.top + wrapper.scrollTop;
 
     ctx.beginPath();
-    cells.forEach((c, idx) => {
-        const r = c.getBoundingClientRect();
-        const x = r.left - tRect.left + r.width/2;
-        const y = r.top - tRect.top + r.height/2;
-        if(idx === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-    });
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.strokeStyle = '#00e676';
+    ctx.lineWidth = 3;
+    ctx.setLineDash([6, 3]);
     ctx.stroke();
-}
-
-function addRow(){ data.push(["**","**","**","**","**","**"]); saveDataSilent(); draw(); }
-
-function saveData(){ 
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); 
-    alert("डेटा सफलतापूर्वक सेव हो गया!");
-}
-
-function saveDataSilent(){
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
-
-function exportData() {
-    let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
-    let downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", "kalyan_data_backup.json");
-    document.body.appendChild(downloadAnchor);
-    downloadAnchor.click();
-    downloadAnchor.remove();
-}
-
-document.getElementById("importJson").onchange = e => {
-    let fr = new FileReader();
-    fr.onload = () => {
-        try {
-            data = JSON.parse(fr.result);
-            saveDataSilent();
-            draw();
-            alert("डेटा सफलतापूर्वक इम्पोर्ट हो गया!");
-        } catch (err) {
-            alert("फ़ाइल फॉर्मेट गलत है!");
-        }
-    };
-    fr.readAsText(e.target.files[0]);
-};
-
-function clearData(){ 
-    if(confirm("डेटा क्लियर करना चाहते हैं?")){ 
-        localStorage.removeItem(STORAGE_KEY); 
-        data = defaultData; 
-        draw(); 
-    }
-}
-
-function updateTrendIndicator() {
-    let redCount = 0, total = 0;
-    data.slice(-10).forEach(row => {
-        row.forEach(cell => {
-            if(cell !== "**") {
-                total++;
-                if(isRedJodi(cell)) redCount++;
-            }
-        });
-    });
-    let redRatio = total ? Math.round((redCount / total) * 100) : 0;
-    document.getElementById("trend-bar").innerText = `Trend: ${redRatio}% Red`;
-}
-
-function calculateDayFrequency() {
-    const days = ["MON", "TUE", "WED", "THU", "FRI", "SAT"];
-    let dayFreq = [{}, {}, {}, {}, {}, {}];
-
-    data.forEach(row => {
-        row.forEach((val, dayIdx) => {
-            if (val && val !== "**" && val.length === 2) {
-                let d1 = val[0], d2 = val[1];
-                dayFreq[dayIdx][d1] = (dayFreq[dayIdx][d1] || 0) + 1;
-                dayFreq[dayIdx][d2] = (dayFreq[dayIdx][d2] || 0) + 1;
-            }
-        });
-    });
-
-    let html = `<table class="day-ank-table"><tr>`;
-    days.forEach(d => html += `<th>${d}</th>`);
-    html += `</tr><tr>`;
-
-    dayFreq.forEach(freqMap => {
-        let sorted = Object.keys(freqMap).sort((a, b) => freqMap[b] - freqMap[a]);
-        let top4 = sorted.slice(0, 4).join(",");
-        html += `<td>${top4 || "-"}</td>`;
-    });
-
-    html += `</tr></table>`;
-    document.getElementById("day-freq-analysis").innerHTML = html;
-}
-
-function autoScanPatterns() {
-    let totalRows = data.length;
-    if(totalRows < 8) { alert("कम से कम 8+ Rows डेटा होना चाहिए!"); return; }
-    let blankRow = totalRows - 1;
-    make2JodiCrossPatternDeep(blankRow, 0);
-}
-
-function showChecks(shape, matches, targetVal){
- document.getElementById("checks").innerHTML="";
- if (matches.length === 0) {
-     document.getElementById("checks").innerHTML = "<i style='color:#94a3b8;'>8+ Row upper pattern match नहीं मिला।</i>";
- }
- matches.forEach((m,i)=>{
-  let d = document.createElement("div");
-  let badge = m.isFamily ? "<span style='color:#f97316;'>[Family/Cut Match]</span>" : "<span style='color:#00ff88;'>[Exact Match]</span>";
-  d.style = "background:#2a2a2a; margin:4px 0; padding:6px; cursor:pointer; border-radius:6px; font-size:11px; border-left:3px solid " + (m.isFamily ? "#f97316" : "#0084ff") + ";";
-  d.innerHTML = `Row ${m.index + 1} Pattern ${badge}`;
-  d.onclick = () => { 
-      activeMark = { start: m.index, shape: shape, isFamily: m.isFamily, targetVal: targetVal }; 
-      draw(); 
-      showOne(shape, m.index, m.isFamily); 
-  };
-  document.getElementById("checks").appendChild(d);
- });
- updateAI(shape, matches);
-}
-
-function showOne(shape, idx, isFamily){
- let html="<table id='popTbl' style='color:#000'>";
- for(let i=0; i<shape.length; i++){
-  html+="<tr>";
-  data[idx+i].forEach((v,j)=>{
-   let cls = shape[i][j] ? (isFamily ? 'fam-circle' : 'circle') : '';
-   html+=`<td class="${cls}">${v}</td>`;
-  });
-  html+="</tr>";
- }
- document.getElementById("popData").innerHTML=html+"</table>";
- document.getElementById("popup").style.display="block";
- document.getElementById("overlay").style.display="block";
- setTimeout(()=>drawLines("popCanvas", document.getElementById("popTbl")), 100);
-}
-
-function updateAI(shape, matches){
- let jc={}, dc={};
- matches.forEach(m=>{
-  for(let i=0; i<shape.length; i++){
-   for(let j=0; j<6; j++){
-    if(shape[i][j]){
-     let v = data[m.index+i][j];
-     jc[v]=(jc[v]||0)+1; dc[v[0]]=(dc[v[0]]||0)+1; dc[v[1]]=(dc[v[1]]||0)+1;
-    }
-   }
   }
- });
- document.getElementById("ai").innerHTML = `<b>Top Jodi:</b> ${Object.keys(jc).slice(0,3).join(", ") || "-"}<br><b>Common Ank:</b> ${Object.keys(dc).slice(0,3).join(", ") || "-"}`;
- 
- let pool = [];
- matches.forEach(m => {
-  let nextR = m.index + shape.length - 1;
-  if(nextR < data.length && data[nextR][targetCol] != "**") pool.push(data[nextR][targetCol]);
- });
- document.getElementById("future").innerHTML = pool.length ? `<b>Probable Next:</b> ${[...new Set(pool)].join(" , ")}` : "Analyzing...";
-}
 
-function closePopup(){ document.getElementById("popup").style.display="none"; document.getElementById("overlay").style.display="none"; }
+  function clearCanvas() {
+    const canvas = document.getElementById('chartCanvas');
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
 
-document.getElementById("csv").onchange = e => {
-    let fr = new FileReader();
-    fr.onload = () => {
-        let lines = fr.result.split('\n');
-        data = lines.filter(l=>l.trim()).map(l => {
-            let row = l.split(',').map(v => norm(v.trim()));
-            while(row.length < 6) row.push("**"); 
-            return row.slice(0,6);
-        });
-        saveDataSilent();
-        draw();
-        alert("CSV डेटा लोड हो गया!");
-    };
-    fr.readAsText(e.target.files[0]);
-};
+  // Dynamic Pattern Check Lines Generator (Max 4)
+  function generateCheckLines() {
+    const container = document.getElementById('checkLinesList');
+    container.innerHTML = '';
+    
+    const totalRows = chartData.length;
+    const checkLines = [];
+    const minScope = Math.max(0, totalRows - 10);
+
+    for (let r = totalRows - 1; r > minScope; r--) {
+      for (let c = 1; c <= 5; c++) {
+        const val = chartData[r][c];
+        const source = findSourcePair(r, c, val);
+        if (source && (r - source.row <= 10)) {
+          checkLines.push({
+            title: `Check Line: ${chartData[r][0]} (Day ${c}) connected to ${chartData[source.row][0]} (Day ${source.col})`,
+            details: `Pair '${val}' derived from historical Pair '${source.value}' [Row/Col relation verified]`
+          });
+          if (checkLines.length >= 4) break;
+        }
+      }
+      if (checkLines.length >= 4) break;
+    }
+
+    if (checkLines.length === 0) {
+      container.innerHTML = '<i>No patterns derived in the last 10 weeks.</i>';
+      return;
+    }
+
+    checkLines.forEach(line => {
+      const btn = document.createElement('button');
+      btn.className = 'check-line-btn';
+      btn.innerText = line.title;
+      btn.onclick = () => openModal(line.title, line.details);
+      container.appendChild(btn);
+    });
+  }
+
+  // AI Prediction Engine (3 Pair Recommendation)
+  function generateAIPredictions() {
+    const lastRow = chartData[chartData.length - 1];
+    if (!lastRow) return;
+
+    const baseVal1 = parseInt(lastRow[1] || "12", 10);
+    const baseVal2 = parseInt(lastRow[5] || "90", 10);
+
+    const p1 = String((baseVal1 + 5) % 100).padStart(2, '0');
+    const p2 = String((baseVal2 + 11) % 100).padStart(2, '0');
+    const p3 = String((baseVal1 + baseVal2) % 100).padStart(2, '0');
+
+    document.getElementById('aiPredictions').innerHTML = `
+      <strong>Predicted 3-Pair Sequence for Next Session:</strong> 
+      <span style="font-size: 1.2em; color:#fff; background:#2e7d32; padding:4px 10px; border-radius:4px; margin-left:10px;">
+        ${p1} - ${p2} - ${p3}
+      </span>
+    `;
+  }
+
+  // Modal Functions
+  function openModal(title, details) {
+    document.getElementById('modalDescription').innerText = details;
+    document.getElementById('modalCanvasContainer').innerHTML = `
+      <div style="border: 2px dashed var(--accent-color); padding: 20px; border-radius: 8px;">
+        <span style="color:#ffeb3b;">● Derived Target</span> ────── <span style="color:#00bcd4;">● Historical Pair</span>
+        <br><br>
+        <small>${title}</small>
+      </div>
+    `;
+    document.getElementById('patternModal').style.display = 'block';
+  }
+
+  function closeModal() {
+    document.getElementById('patternModal').style.display = 'none';
+  }
 </script>
 </body>
 </html>
