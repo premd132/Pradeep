@@ -104,6 +104,19 @@
             display: block;
         }
 
+        /* Nav Scroll Buttons */
+        .btn-scroll {
+            background: #f59e0b; color: #000; font-weight: bold; border-radius: 6px; border: none; padding: 6px 10px; font-size: 10px; cursor: pointer;
+        }
+        .scroll-bottom-container {
+            display: flex; justify-content: center; margin: 15px 0 25px 0;
+        }
+        .btn-go-top {
+            background: linear-gradient(135deg, #0284c7, #0084ff);
+            color: #fff; padding: 10px 20px; border-radius: 30px; font-size: 12px; font-weight: bold; border: none;
+            box-shadow: 0 4px 12px rgba(0, 132, 255, 0.4); cursor: pointer;
+        }
+
         #popup { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 12px; display: none; z-index: 100; padding: 10px; color: #000; width: 95%; max-width: 360px; }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; z-index: 90; }
         button { cursor: pointer; border-radius: 6px; border: none; font-weight: bold; padding: 6px 8px; font-size: 10px; }
@@ -118,6 +131,7 @@
 </div>
 
 <div id="main-app">
+    <div id="top-anchor"></div>
     <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom:5px;">
         <h3 style="color:var(--gold); margin:0; font-size: 1rem;">Kalyan Ultra Visual AI</h3>
         <span id="trend-bar" style="background:var(--purple); color:#fff; padding:3px 6px; border-radius:6px; font-size:10px; font-weight:bold;">Accuracy Mode: 90%</span>
@@ -127,6 +141,7 @@
         <input type="file" id="csv" accept=".csv" style="display:none">
         <input type="file" id="importJson" accept=".json" style="display:none">
         
+        <button onclick="scrollToBottom()" class="btn-scroll">👇 Bottom</button>
         <button onclick="document.getElementById('csv').click()" style="background:#444; color:white;">📂 CSV</button>
         <button onclick="addRow()" style="background:#0284c7; color:white;">➕ ADD</button>
         <button onclick="autoScanPatterns()" style="background:var(--purple); color:white;">🔍 SCAN</button>
@@ -143,7 +158,7 @@
         </div>
     </div>
 
-    <div class="dashboard">
+    <div class="dashboard" id="dashboard-section">
         <div class="card" style="grid-column: 1 / -1; background: #0f172a; border-top: 3px solid #00ff88;">
             <h3>🎯 90% Accuracy Target: 4 Ultimate Strong Jodies</h3>
             <div id="blank-4jodi-prediction"><i style="color:#94a3b8; font-size:11px;">किसी भी (**) ब्लैंक सेल पर क्लिक करें...</i></div>
@@ -161,6 +176,11 @@
             <div id="future" style="font-size:11px;">Select a match...</div>
         </div>
     </div>
+
+    <div class="scroll-bottom-container">
+        <button onclick="scrollToTop()" class="btn-go-top">👆 Go To Top</button>
+    </div>
+    <div id="bottom-anchor"></div>
 </div>
 
 <div class="overlay" id="overlay" onclick="closePopup()"></div>
@@ -180,7 +200,6 @@ const STORAGE_KEY = "pdata_Kalyan_v10";
 let targetCol = null;
 let activeMark = null;
 let highlightedFam = null;
-let scanOffsetRow = -1;
 
 function norm(v) {
     if (!v || v.trim() === "" || v === "**") return "**";
@@ -211,6 +230,14 @@ function startApp() {
     document.getElementById('home-screen').style.display = 'none';
     document.getElementById('main-app').style.display = 'block';
     draw();
+}
+
+function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function scrollToBottom() {
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 }
 
 function fam(v){for(let k in FAMILY) if(FAMILY[k].includes(v)) return k; return "NA";}
@@ -266,13 +293,11 @@ function handleCellClick(r, c, val) {
     }
 }
 
-// 90% ACCURACY HISTORICAL PATTERN ANALYSIS ENGINE
 function calculate90PercentStrongJodies(targetRow, targetCol) {
     let days = ["MON", "TUE", "WED", "THU", "FRI", "SAT"];
     let dayName = days[targetCol];
 
     let patternScores = {};
-    let originLogs = [];
 
     function addJodi(jodi, score, reason) {
         if (!jodi || jodi === "**" || jodi.length !== 2) return;
@@ -282,7 +307,6 @@ function calculate90PercentStrongJodies(targetRow, targetCol) {
         patternScores[jodi].score += score;
     }
 
-    // A. Past Pattern Scanning: इतिहास में जब भी ऊपर का स्ट्रक्चर ऐसा था, तब क्या आया था?
     let prevJodiSameCol = (targetRow > 0) ? data[targetRow - 1][targetCol] : "**";
     let prevJodiCrossCol = (targetRow > 0 && targetCol > 0) ? data[targetRow - 1][targetCol - 1] : "**";
 
@@ -291,7 +315,6 @@ function calculate90PercentStrongJodies(targetRow, targetCol) {
         let histAbove = data[r - 1][targetCol];
 
         if (histVal !== "**" && histAbove !== "**") {
-            // अगर इतिहास में ऊपर का अंक सेम फैमिली का था
             if (prevJodiSameCol !== "**" && fam(histAbove) === fam(prevJodiSameCol)) {
                 addJodi(histVal, 15, `Hist Row ${r+1} Direct Repeat`);
                 addJodi(palti(histVal), 12, `Hist Row ${r+1} Palti Match`);
@@ -299,7 +322,6 @@ function calculate90PercentStrongJodies(targetRow, targetCol) {
         }
     }
 
-    // B. Line/Touch Direct Logic (90% Precision Rules)
     if (prevJodiSameCol !== "**") {
         addJodi(prevJodiSameCol, 25, "Direct Line Repeat");
         addJodi(palti(prevJodiSameCol), 20, "Direct Palti Line");
@@ -317,7 +339,6 @@ function calculate90PercentStrongJodies(targetRow, targetCol) {
         addJodi(palti(prevJodiCrossCol), 10, "Cross Day Palti");
     }
 
-    // C. Best 4 Jodies Sorting
     let sortedKeys = Object.keys(patternScores).sort((a, b) => patternScores[b].score - patternScores[a].score);
     let top4 = sortedKeys.slice(0, 4);
 
