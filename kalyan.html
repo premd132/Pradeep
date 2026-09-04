@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalyan Pro AI – Visual 3-Jodi Exact Pattern & Direction Engine</title>
+    <title>Kalyan Pro AI – Full Visual & Ank-Ganit Engine</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -123,7 +123,7 @@
 
 <div id="home-screen">
     <h1 class="hero-title">Kalyan PRO AI</h1>
-    <p class="hero-sub">3-JODI EXACT DIRECTION & PATTERN ENGINE V16.0</p>
+    <p class="hero-sub">VISUAL PATTERN & ANK-GANIT HYBRID ENGINE</p>
     <button class="enter-btn" onclick="startApp()">START ANALYSIS</button>
 </div>
 
@@ -154,8 +154,8 @@
 
     <div class="dashboard">
         <div class="card" style="grid-column: 1 / -1; background: #0f172a; border-top: 3px solid #00ff88;">
-            <h3>🎯 Blank Click Auto-Scan: Top 4 Strong Jodies</h3>
-            <div id="blank-4jodi-prediction"><i style="color:#94a3b8;">Table ke kisi bhi blank (**) cell par click karein to poore record scan karke top 4 strong jodies yahan aayengi...</i></div>
+            <h3>🧮 Blank Cell Ank-Ganit Scan: Top 4 Strong Jodies</h3>
+            <div id="blank-4jodi-prediction"><i style="color:#94a3b8;">Table ke kisi bhi blank (**) cell par click karein to poora Ank-Ganit (Weighted Score, Cut Pair, Delta Shift) scan hoker Top 4 Strong Jodies aayengi...</i></div>
         </div>
         <div class="card">
             <h3>✔ Matches Found</h3>
@@ -358,6 +358,7 @@ function handleCellClick(r, c, val) {
     }
 }
 
+// Complete Ank-Ganit Engine Integration
 function predictFourStrongJodiesForBlankCell(r, c) {
     const days = ["MON", "TUE", "WED", "THU", "FRI", "SAT"];
     let dayName = days[c];
@@ -368,46 +369,46 @@ function predictFourStrongJodiesForBlankCell(r, c) {
         candidateScores[jodi] = (candidateScores[jodi] || 0) + score;
     }
 
-    // 1. Column Vertical Pattern Scan (Specific Day Weight)
-    for (let rowIdx = 0; rowIdx < data.length; rowIdx++) {
+    // 1. Weighted Recency Score (10-Week Arithmetic Weight)
+    let totalRows = data.length;
+    for (let rowIdx = 0; rowIdx < totalRows; rowIdx++) {
         let val = data[rowIdx][c];
         if (val !== "**") {
-            let recencyWeight = (rowIdx >= data.length - 10) ? 3.0 : 1.5;
-            addScore(val, recencyWeight);
-            addScore(palti(val), recencyWeight * 0.7);
+            let recencyWeight = (rowIdx + 1) / totalRows; // Naye records ko zyada weight
+            addScore(val, 3.0 * recencyWeight);
+            addScore(palti(val), 1.5 * recencyWeight);
         }
     }
 
-    // 2. Cross & Horizontal Vector Pattern Scan
+    // 2. Mod 10 Cut & Family Pair Arithmetic
     if (r > 0) {
-        if (c > 0 && data[r - 1][c - 1] !== "**") {
-            let crossVal = data[r - 1][c - 1];
-            addScore(crossVal, 2.5);
-            addScore(palti(crossVal), 1.8);
-        }
-        if (c < 5 && data[r - 1][c + 1] !== "**") {
-            let crossVal = data[r - 1][c + 1];
-            addScore(crossVal, 2.5);
-            addScore(palti(crossVal), 1.8);
-        }
-        if (data[r - 1][c] !== "**") {
-            let directAbove = data[r - 1][c];
-            addScore(directAbove, 2.0);
-            addScore(palti(directAbove), 1.5);
+        let aboveVal = data[r - 1][c];
+        if (aboveVal !== "**") {
+            let d1 = parseInt(aboveVal[0]), d2 = parseInt(aboveVal[1]);
+            let cut1 = (d1 + 5) % 10;
+            let cut2 = (d2 + 5) % 10;
+            let cutPair = `${cut1}${cut2}`;
+            addScore(cutPair, 2.8);
+            addScore(palti(cutPair), 2.0);
         }
     }
 
-    // 3. Recent 5 Weeks Family Match Scan
-    let recentRows = data.slice(-5);
-    recentRows.forEach(row => {
-        row.forEach(val => {
-            if (val !== "**") {
-                addScore(val, 1.0);
-            }
-        });
-    });
+    // 3. Vertical Delta Shift Shift Math (Step Diff Pattern)
+    if (r >= 2) {
+        let p1 = data[r - 1][c];
+        let p2 = data[r - 2][c];
+        if (p1 !== "**" && p2 !== "**") {
+            let diffD1 = (parseInt(p1[0]) - parseInt(p2[0]) + 10) % 10;
+            let diffD2 = (parseInt(p1[1]) - parseInt(p2[1]) + 10) % 10;
+            
+            let nextD1 = (parseInt(p1[0]) + diffD1) % 10;
+            let nextD2 = (parseInt(p1[1]) + diffD2) % 10;
+            let deltaShiftPair = `${nextD1}${nextD2}`;
+            addScore(deltaShiftPair, 3.2);
+        }
+    }
 
-    // 4. Day-Wise Top Ank Frequency Combo Scan
+    // 4. Day-wise High Frequency Digit Sum Combination
     let dayAnkFreq = {};
     data.forEach(row => {
         let val = row[c];
@@ -419,9 +420,9 @@ function predictFourStrongJodiesForBlankCell(r, c) {
 
     let sortedAnks = Object.keys(dayAnkFreq).sort((a, b) => dayAnkFreq[b] - dayAnkFreq[a]);
     if (sortedAnks.length >= 2) {
-        let a1 = sortedAnks[0], a2 = sortedAnks[1];
-        addScore(a1 + a2, 2.2);
-        addScore(a2 + a1, 2.2);
+        let topPair = sortedAnks[0] + sortedAnks[1];
+        addScore(topPair, 2.5);
+        addScore(palti(topPair), 2.0);
     }
 
     let sortedJodies = Object.keys(candidateScores).sort((a, b) => candidateScores[b] - candidateScores[a]);
@@ -437,14 +438,14 @@ function predictFourStrongJodiesForBlankCell(r, c) {
     document.getElementById("blank-4jodi-prediction").innerHTML = `
         <div style="font-size:12px; margin-bottom:6px;">
             <b>Selected Position:</b> Row ${r + 1}, Day: <b style="color:var(--gold);">${dayName}</b><br>
-            <b>AI Full Record Multi-Pattern Scan Result:</b>
+            <b>Ank-Ganit Multi-Formula Result:</b>
         </div>
         <div>${buttonsHtml}</div>
         <div class="explanation-box" style="margin-top:8px;">
-            <b>💡 Formula Analysis Breakdown:</b><br>
-            • <b>Vertical Trend:</b> ${dayName} ke purane records se highest frequency matches.<br>
-            • <b>Diagonal Vector:</b> Cross/Upper cell connections aur palti combinations.<br>
-            • <b>Frequency Combination:</b> Top active Ank pairs for ${dayName}.
+            <b>🧮 Applied Ank-Ganit Logic:</b><br>
+            • <b>Weighted Recency:</b> ${dayName} ke pichhle records par time-decay weights.<br>
+            • <b>Cut Pair Math:</b> Direct upper cell ka Mod 10 opposite transformation.<br>
+            • <b>Vertical Delta Shift:</b> Last 2 weeks ka step-shift difference calculation.
         </div>
     `;
 }
