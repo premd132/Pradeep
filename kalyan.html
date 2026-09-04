@@ -73,7 +73,6 @@
         .fam-highlight { background: rgba(255, 215, 0, 0.4) !important; font-weight: 900; }
         .red-jodi { color: #ff0000 !important; font-weight: 900; }
         
-        /* Highlight colors for 3-Jodi sequence selection */
         .seq-selected-1 { background: #facc15 !important; color: #000 !important; font-weight: 900; border: 2px solid #b45309 !important; border-radius: 50%; }
         .seq-selected-2 { background: #c084fc !important; color: #000 !important; font-weight: 900; border: 2px solid #7e22ce !important; border-radius: 50%; }
         .seq-selected-3 { background: #38bdf8 !important; color: #000 !important; font-weight: 900; border: 2px solid #0284c7 !important; border-radius: 50%; }
@@ -107,6 +106,12 @@
             color: #38bdf8; text-decoration: underline; cursor: pointer; font-weight: bold; display: block; margin: 4px 0;
         }
         .clickable-row-link:hover { color: var(--gold); }
+
+        .strong-jodi-btn {
+            display: inline-block; background: linear-gradient(135deg, #00ff88, #0084ff); color: #000;
+            padding: 6px 12px; margin: 4px; border-radius: 8px; font-weight: 800; font-size: 14px;
+            box-shadow: 0 4px 10px rgba(0,255,136,0.3);
+        }
 
         #popup { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 15px; display: none; z-index: 100; padding: 12px; color: #000; width: 92%; max-width: 380px; }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; z-index: 90; }
@@ -148,6 +153,10 @@
     </center>
 
     <div class="dashboard">
+        <div class="card" style="grid-column: 1 / -1; background: #0f172a; border-top: 3px solid #00ff88;">
+            <h3>🎯 Blank Click Auto-Scan: Top 4 Strong Jodies</h3>
+            <div id="blank-4jodi-prediction"><i style="color:#94a3b8;">Table ke kisi bhi blank (**) cell par click karein to poore record scan karke top 4 strong jodies yahan aayengi...</i></div>
+        </div>
         <div class="card">
             <h3>✔ Matches Found</h3>
             <div id="checks">Click blank cell or scan...</div>
@@ -238,7 +247,11 @@ function getSelectedJodiIndex(r, c) {
 }
 
 function draw(){
- let h="<tr><th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th><th>SAT</th><th class='action-th'>❌</th></tr>";
+ let days = ["MON", "TUE", "WED", "THU", "FRI", "SAT"];
+ let h="<tr>";
+ days.forEach(d => h += `<th>${d}</th>`);
+ h += "<th class='action-th'>❌</th></tr>";
+
  data.forEach((r,ri)=>{
   h+=`<tr id="table-row-${ri}">`;
   r.forEach((c,ci)=>{
@@ -341,7 +354,99 @@ function handleCellClick(r, c, val) {
     } else {
         scanOffsetRow = r - 3;
         makePattern(r, c);
+        predictFourStrongJodiesForBlankCell(r, c);
     }
+}
+
+function predictFourStrongJodiesForBlankCell(r, c) {
+    const days = ["MON", "TUE", "WED", "THU", "FRI", "SAT"];
+    let dayName = days[c];
+    let candidateScores = {};
+
+    function addScore(jodi, score) {
+        if (!jodi || jodi === "**" || jodi.length !== 2) return;
+        candidateScores[jodi] = (candidateScores[jodi] || 0) + score;
+    }
+
+    // 1. Column Vertical Pattern Scan (Specific Day Weight)
+    for (let rowIdx = 0; rowIdx < data.length; rowIdx++) {
+        let val = data[rowIdx][c];
+        if (val !== "**") {
+            let recencyWeight = (rowIdx >= data.length - 10) ? 3.0 : 1.5;
+            addScore(val, recencyWeight);
+            addScore(palti(val), recencyWeight * 0.7);
+        }
+    }
+
+    // 2. Cross & Horizontal Vector Pattern Scan
+    if (r > 0) {
+        if (c > 0 && data[r - 1][c - 1] !== "**") {
+            let crossVal = data[r - 1][c - 1];
+            addScore(crossVal, 2.5);
+            addScore(palti(crossVal), 1.8);
+        }
+        if (c < 5 && data[r - 1][c + 1] !== "**") {
+            let crossVal = data[r - 1][c + 1];
+            addScore(crossVal, 2.5);
+            addScore(palti(crossVal), 1.8);
+        }
+        if (data[r - 1][c] !== "**") {
+            let directAbove = data[r - 1][c];
+            addScore(directAbove, 2.0);
+            addScore(palti(directAbove), 1.5);
+        }
+    }
+
+    // 3. Recent 5 Weeks Family Match Scan
+    let recentRows = data.slice(-5);
+    recentRows.forEach(row => {
+        row.forEach(val => {
+            if (val !== "**") {
+                addScore(val, 1.0);
+            }
+        });
+    });
+
+    // 4. Day-Wise Top Ank Frequency Combo Scan
+    let dayAnkFreq = {};
+    data.forEach(row => {
+        let val = row[c];
+        if (val !== "**") {
+            dayAnkFreq[val[0]] = (dayAnkFreq[val[0]] || 0) + 1;
+            dayAnkFreq[val[1]] = (dayAnkFreq[val[1]] || 0) + 1;
+        }
+    });
+
+    let sortedAnks = Object.keys(dayAnkFreq).sort((a, b) => dayAnkFreq[b] - dayAnkFreq[a]);
+    if (sortedAnks.length >= 2) {
+        let a1 = sortedAnks[0], a2 = sortedAnks[1];
+        addScore(a1 + a2, 2.2);
+        addScore(a2 + a1, 2.2);
+    }
+
+    let sortedJodies = Object.keys(candidateScores).sort((a, b) => candidateScores[b] - candidateScores[a]);
+    let top4 = sortedJodies.slice(0, 4);
+
+    if (top4.length < 4) {
+        let fallbackList = ["12", "34", "56", "78"];
+        fallbackList.forEach(f => { if (!top4.includes(f) && top4.length < 4) top4.push(f); });
+    }
+
+    let buttonsHtml = top4.map((j, i) => `<span class="strong-jodi-btn">#${i + 1} Jodi: ${j}</span>`).join("");
+
+    document.getElementById("blank-4jodi-prediction").innerHTML = `
+        <div style="font-size:12px; margin-bottom:6px;">
+            <b>Selected Position:</b> Row ${r + 1}, Day: <b style="color:var(--gold);">${dayName}</b><br>
+            <b>AI Full Record Multi-Pattern Scan Result:</b>
+        </div>
+        <div>${buttonsHtml}</div>
+        <div class="explanation-box" style="margin-top:8px;">
+            <b>💡 Formula Analysis Breakdown:</b><br>
+            • <b>Vertical Trend:</b> ${dayName} ke purane records se highest frequency matches.<br>
+            • <b>Diagonal Vector:</b> Cross/Upper cell connections aur palti combinations.<br>
+            • <b>Frequency Combination:</b> Top active Ank pairs for ${dayName}.
+        </div>
+    `;
 }
 
 function scrollToAndHighlightRow(rowIndex) {
