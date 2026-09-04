@@ -3,8 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalyan Pro AI – Sync Engine</title>
+    <title>Kalyan Ultra AI – Cloud Data Engine</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- Firebase Compat SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
     <style>
         :root { 
             --gold: #ffd700; 
@@ -14,6 +19,7 @@
             --panel: #1e293b; 
             --red: #ff4444;
             --purple: #a855f7;
+            --pink: #ec4899;
         }
 
         * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
@@ -33,127 +39,133 @@
             cursor: pointer; transition: 0.3s; box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
 
-        #main-app { display: none; padding: 8px; width: 100vw; max-width: 100%; box-sizing: border-box; }
+        #main-app { display: none; padding: 10px; }
         .toolbar { 
-            background: var(--panel); padding: 8px; border-radius: 12px; 
-            margin-bottom: 12px; display: flex; gap: 4px; flex-wrap: wrap; 
+            background: var(--panel); padding: 10px; border-radius: 12px; 
+            margin-bottom: 15px; display: flex; gap: 6px; flex-wrap: wrap; 
             justify-content: center; border: 1px solid rgba(255,255,255,0.1); 
         }
-
-        /* Mobile Responsive Table Wrapper */
-        .chart-wrapper {
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            padding: 5px 0;
-            display: block;
+        
+        .sync-status {
+            font-size: 11px; padding: 6px 12px; border-radius: 6px; font-weight: bold; margin-bottom: 10px; text-align: center;
+            display: inline-block;
         }
+        .sync-online { background: #059669; color: white; }
+        .sync-offline { background: #b91c1c; color: white; }
 
         .table-container { 
             position: relative; background: #fff; border-radius: 10px; 
-            padding: 4px; box-shadow: 0 0 20px rgba(0,0,0,0.5); 
-            display: table; margin: 0 auto; min-width: 320px;
+            padding: 5px; box-shadow: 0 0 20px rgba(0,0,0,0.5); 
+            display: inline-block; max-width: 100%; overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
-        
-        table { border-collapse: collapse; color: #000; font-size: 12px; position: relative; z-index: 5; margin: 0 auto; width: 100%; }
+        table { border-collapse: collapse; color: #000; font-size: 13px; position: relative; z-index: 5; margin: 0 auto; }
         td, th { 
-            border: 1px solid #ddd; padding: 2px; text-align: center; 
-            font-weight: bold; width: 36px; height: 36px; cursor: pointer; 
+            border: 1px solid #ddd; padding: 4px 2px; text-align: center; 
+            font-weight: bold; width: 38px; height: 38px; cursor: pointer; 
             user-select: none; transition: background 0.3s ease;
         }
         td[contenteditable="true"] { outline: none; background: #fff; }
         td[contenteditable="true"]:focus { background: #e0f2fe; border: 2px solid var(--blue-circle); }
         th { background: #1e293b; color: white; font-size: 10px; }
-        .action-th, .action-td { width: 26px; background: #f8fafc; }
-        .btn-del-row { background: var(--red); color: white; border: none; border-radius: 3px; padding: 2px 4px; font-size: 9px; cursor: pointer; }
+        .action-th, .action-td { width: 30px; background: #f8fafc; }
+        .btn-del-row { background: var(--red); color: white; border: none; border-radius: 3px; padding: 2px 5px; font-size: 10px; cursor: pointer; }
         
         .circle { 
             border: 3px solid var(--blue-circle) !important; 
             border-radius: 50% !important; 
-            background: rgba(0, 132, 255, 0.2); 
+            background: rgba(0, 132, 255, 0.25); 
             z-index: 10;
         }
-        .fam-highlight { background: rgba(255, 215, 0, 0.4) !important; font-weight: 900; }
-        .red-jodi { color: #ff0000 !important; font-weight: 900; }
-        .scan-zone { background: rgba(255, 215, 0, 0.15) !important; }
-
-        canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 4; }
-
-        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; margin-top: 12px; }
-        .card { background: var(--panel); padding: 10px; border-radius: 10px; border-top: 3px solid var(--gold); }
-        .card h3 { margin: 0 0 6px 0; color: var(--gold); font-size: 11px; text-transform: uppercase; }
-
-        .day-ank-table { width: 100%; color: white; font-size: 10px; border-collapse: collapse; margin-top: 4px; }
-        .day-ank-table th { background: #0f172a; color: var(--gold); border: 1px solid #334155; padding: 3px; }
-        .day-ank-table td { border: 1px solid #334155; padding: 3px; text-align: center; color: #00ff88; }
-
-        .trend-badge { background: var(--purple); color: #fff; padding: 3px 6px; border-radius: 6px; font-size: 10px; font-weight: bold; }
-
-        .strong-jodi-btn {
-            display: inline-block; background: linear-gradient(135deg, #00ff88, #0084ff); color: #000;
-            padding: 5px 10px; margin: 3px; border-radius: 6px; font-weight: 800; font-size: 12px;
-            box-shadow: 0 3px 8px rgba(0,255,136,0.3);
+        .cross-mark {
+            border: 3px solid #ec4899 !important;
+            border-radius: 50% !important;
+            background: rgba(236, 72, 153, 0.3);
+            z-index: 10;
+        }
+        .blank-selected {
+            background: #fef08a !important;
+            border: 2px dashed #ca8a04 !important;
         }
 
-        #popup { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 12px; display: none; z-index: 100; padding: 10px; color: #000; width: 95%; max-width: 360px; }
+        .fam-highlight { background: rgba(255, 215, 0, 0.4) !important; font-weight: 900; }
+        .red-jodi { color: #ff0000 !important; font-weight: 900; }
+
+        canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 6; }
+
+        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; }
+        .card { background: var(--panel); padding: 12px; border-radius: 12px; border-top: 3px solid var(--gold); }
+        .card h3 { margin: 0 0 8px 0; color: var(--gold); font-size: 12px; text-transform: uppercase; }
+
+        .day-ank-table { width: 100%; color: white; font-size: 11px; border-collapse: collapse; margin-top: 5px; }
+        .day-ank-table th { background: #0f172a; color: var(--gold); border: 1px solid #334155; padding: 4px; }
+        .day-ank-table td { border: 1px solid #334155; padding: 4px; text-align: center; color: #00ff88; font-weight: bold; }
+
+        .alert-box {
+            font-size: 11px; line-height: 1.6; color: #fff; background: #065f46; padding: 10px; border-radius: 6px; border-left: 4px solid #10b981; margin-top: 6px;
+        }
+
+        #popup { 
+            position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); 
+            background: #fff; border-radius: 15px; display: none; z-index: 100; 
+            padding: 15px; color: #000; width: 92%; max-width: 400px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.8);
+        }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; z-index: 90; }
-        button { cursor: pointer; border-radius: 6px; border: none; font-weight: bold; padding: 6px 8px; font-size: 10px; }
+        button { cursor: pointer; border-radius: 6px; border: none; font-weight: bold; padding: 8px 10px; font-size: 11px; }
     </style>
 </head>
 <body>
 
 <div id="home-screen">
     <h1 class="hero-title">Kalyan PRO AI</h1>
-    <p class="hero-sub">VISUAL PATTERN & ANK-GANIT HYBRID ENGINE</p>
-    <button class="enter-btn" onclick="startApp()">START ANALYSIS</button>
+    <p class="hero-sub">CLOUD INTEGRATED DATA ENGINE</p>
+    <button class="enter-btn" onclick="startApp()">START APP</button>
 </div>
 
 <div id="main-app">
     <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom:5px;">
-        <h3 style="color:var(--gold); margin:0; font-size: 1rem;">Kalyan Ultra Visual AI</h3>
-        <span id="trend-bar" class="trend-badge">Trend: Scanning...</span>
+        <h3 style="color:var(--gold); margin:0; font-size: 1.1rem;">Kalyan Ultra AI</h3>
+        <span id="sync-indicator" class="sync-status sync-offline">☁️ Cloud Disconnected</span>
     </div>
 
     <div class="toolbar">
         <input type="file" id="csv" accept=".csv" style="display:none">
-        <input type="file" id="importJson" accept=".json" style="display:none">
-        
         <button onclick="document.getElementById('csv').click()" style="background:#444; color:white;">📂 CSV</button>
-        <button onclick="addRow()" style="background:#0284c7; color:white;">➕ ADD</button>
-        <button onclick="autoScanPatterns()" style="background:var(--purple); color:white;">🔍 SCAN</button>
-        <button onclick="saveData()" style="background:#28a745; color:white;">💾 SAVE</button>
-        <button onclick="exportData()" style="background:#eab308; color:#000;">📥 EXPORT</button>
-        <button onclick="document.getElementById('importJson').click()" style="background:#06b6d4; color:white;">📤 IMPORT</button>
-        <button onclick="clearData()" style="background:#dc3545; color:white;">🗑️ CLEAR</button>
+        <button onclick="addRow()" style="background:#0284c7; color:white;">➕ ADD ROW</button>
+        <button onclick="saveToCloud()" style="background:#a855f7; color:white;">☁️ SAVE TO CLOUD</button>
+        <button onclick="loadFromCloud()" style="background:#0284c7; color:white;">🔄 LOAD FROM CLOUD</button>
+        <button onclick="clearActivePattern()" style="background:#eab308; color:black;">❌ CLEAR SELECTION</button>
+        <button onclick="saveData()" style="background:#28a745; color:white;">💾 LOCAL SAVE</button>
+        <button onclick="clearData()" style="background:#dc3545; color:white;">🗑️ CLEAR ALL</button>
     </div>
 
-    <!-- Mobile Scroll Container Fix -->
-    <div class="chart-wrapper">
+    <center>
         <div class="table-container" id="printable-chart">
             <canvas id="mainCanvas"></canvas>
             <table id="tbl"></table>
         </div>
-    </div>
+    </center>
 
     <div class="dashboard">
-        <div class="card" style="grid-column: 1 / -1; background: #0f172a; border-top: 3px solid #00ff88;">
-            <h3>🧮 Blank Cell Prediction: Top 4 Strong Jodies</h3>
-            <div id="blank-4jodi-prediction"><i style="color:#94a3b8; font-size:11px;">किसी भी (**) ब्लैंक सेल पर क्लिक करें...</i></div>
+        <div class="card" style="grid-column: 1 / -1; border-top: 3px solid var(--pink);">
+            <h3>🚨 Pattern Output</h3>
+            <div id="scheme-output">किसी भी सेल पर क्लिक करें।</div>
         </div>
         <div class="card">
             <h3>✔ Matches Found</h3>
-            <div id="checks" style="font-size:11px;">Click blank cell...</div>
+            <div id="checks"></div>
         </div>
         <div class="card">
-            <h3>🤖 AI Analysis</h3>
-            <div id="ai" style="font-size:11px;">Wait for input...</div>
+            <h3>🤖 Day Line Prediction</h3>
+            <div id="ai">Select a day cell...</div>
         </div>
         <div class="card">
-            <h3>🔮 Future Prediction</h3>
-            <div id="future" style="font-size:11px;">Select a match...</div>
+            <h3>🔮 Day Target Jodi</h3>
+            <div id="future">Waiting for input...</div>
         </div>
         <div class="card" style="grid-column: 1 / -1;">
-            <h3>📊 Day-by-Day Top 4 Frequent Ank</h3>
+            <h3>📊 Day-by-Day Frequency</h3>
             <div id="day-freq-analysis">Calculating...</div>
         </div>
     </div>
@@ -161,10 +173,10 @@
 
 <div class="overlay" id="overlay" onclick="closePopup()"></div>
 <div id="popup">
-    <button onclick="closePopup()" style="float:right; background:#000; color:white; padding:3px 6px;">CLOSE</button>
-    <h4 style="margin: 0 0 8px 0; font-size: 12px;">Pattern View</h4>
+    <button onclick="closePopup()" style="float:right; background:#000; color:white; padding:4px 8px; border-radius:4px;">✕ CLOSE</button>
+    <h4 style="margin: 0 0 10px 0; color:#0f172a;">📐 Pattern Popup View</h4>
     <center>
-        <div class="table-container" style="border: 1px solid #ddd; max-width: 100%; overflow-x: auto;">
+        <div class="table-container" style="border: 1px solid #ccc; margin-top:5px; background:#fff;">
             <canvas id="popCanvas"></canvas>
             <div id="popData"></div>
         </div>
@@ -172,11 +184,37 @@
 </div>
 
 <script>
-const STORAGE_KEY = "pdata_Kalyan_v10";
+// ==================== FIREBASE CONFIGURATION ====================
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    databaseURL: "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+};
+
+// Initialize Firebase
+let db = null;
+try {
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.database();
+    document.getElementById("sync-indicator").className = "sync-status sync-online";
+    document.getElementById("sync-indicator").innerText = "☁️ Cloud Connected";
+} catch(e) {
+    console.warn("Firebase config is missing or invalid. Operating in local mode.");
+}
+
+// ==================== LOCAL APP ENGINE ====================
+const STORAGE_KEY = "pdata_Kalyan_v20_cloud";
+const DAY_NAMES = ["सोमवार", "मंगलवार", "बुधवार", "गुरुवार", "शुक्रवार", "शनिवार"];
+
 let targetCol = null;
 let activeMark = null;
 let highlightedFam = null;
-let scanOffsetRow = -1;
+let selectedBlank = null; 
+let crossHighlightCells = []; 
 
 function norm(v) {
     if (!v || v.trim() === "" || v === "**") return "**";
@@ -198,6 +236,7 @@ const defaultData = [
     ["10","20","30","40","50","60"],
     ["15","25","35","45","55","65"],
     ["12","27","62","77","18","81"],
+    ["10","20","30","40","50","60"],
     ["**","**","**","**","**","**"]
 ];
 
@@ -207,6 +246,7 @@ function startApp() {
     document.getElementById('home-screen').style.display = 'none';
     document.getElementById('main-app').style.display = 'block';
     draw();
+    if(db) loadFromCloud(); // Auto-load on app start if cloud is available
 }
 
 function fam(v){for(let k in FAMILY) if(FAMILY[k].includes(v)) return k; return "NA";}
@@ -215,210 +255,97 @@ function smartMatch(a1,b1){ if(a1=="**"||b1=="**") return false; return a1===b1 
 function isRedJodi(v){ return v!=="**" && (v[0]===v[1] || Math.abs(parseInt(v[0])-parseInt(v[1]))===5); }
 
 function draw(){
- let days = ["MON", "TUE", "WED", "THU", "FRI", "SAT"];
- let h="<tr>";
- days.forEach(d => h += `<th>${d}</th>`);
- h += "<th class='action-th'>❌</th></tr>";
-
+ let h="<tr><th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th><th>SAT</th><th class='action-th'>❌</th></tr>";
  data.forEach((r,ri)=>{
   h+=`<tr id="table-row-${ri}">`;
   r.forEach((c,ci)=>{
+   let isCross = crossHighlightCells.some(pt => pt.r === ri && pt.c === ci);
    let cls = (activeMark && isPartOfPattern(ri, ci)) ? "circle" : "";
+   if(isCross) cls += " cross-mark";
    if(highlightedFam && fam(c) === highlightedFam) cls += " fam-highlight";
    if(isRedJodi(c)) cls += " red-jodi";
-   if(ri === scanOffsetRow) cls += " scan-zone";
+   if(selectedBlank && selectedBlank.r === ri && selectedBlank.c === ci) cls += " blank-selected";
    if(c=="**") cls += " blank";
    
-   h+=`<td class="${cls}" contenteditable="true" onblur="updateCell(${ri},${ci},this)" onkeydown="checkEnter(event, this)" onclick="handleCellClick(${ri},${ci},'${c}')">${c}</td>`;
+   h+=`<td class="${cls}" data-row="${ri}" data-col="${ci}" contenteditable="true" onblur="updateCell(${ri},${ci},this)" onkeydown="checkEnter(event, this)" onclick="handleCellClick(${ri},${ci},'${c}')">${c}</td>`;
   });
   h+=`<td class="action-td"><button class="btn-del-row" onclick="deleteRow(${ri})">✕</button></td>`;
   h+="</tr>";
  });
  document.getElementById("tbl").innerHTML=h;
- if(activeMark) setTimeout(() => drawLines("mainCanvas", document.getElementById("tbl")), 50);
  
  calculateDayFrequency();
- updateTrendIndicator();
 }
 
-function updateCell(r, c, el) {
-    let val = norm(el.innerText.trim());
-    data[r][c] = val;
-    el.innerText = val;
-    saveDataSilent();
-    calculateDayFrequency();
-    updateTrendIndicator();
-}
-
-function checkEnter(e, el) {
-    if (e.key === "Enter") {
-        e.preventDefault();
-        el.blur();
+// ==================== CLOUD DATABASE ACTIONS ====================
+function saveToCloud() {
+    if(!db) {
+        alert("Firebase Config setup nahi hai!");
+        return;
     }
-}
-
-function deleteRow(rIndex) {
-    if (confirm(`Row ${rIndex + 1} delete करें?`)) {
-        data.splice(rIndex, 1);
-        saveDataSilent();
-        draw();
-    }
-}
-
-function handleCellClick(r, c, val) {
-    if(val !== "**") {
-        highlightedFam = (highlightedFam === fam(val)) ? null : fam(val);
-        draw();
-    } else {
-        scanOffsetRow = r - 3;
-        makePattern(r, c);
-        predictFourStrongJodiesForBlankCell(r, c);
-    }
-}
-
-function predictFourStrongJodiesForBlankCell(r, c) {
-    const days = ["MON", "TUE", "WED", "THU", "FRI", "SAT"];
-    let dayName = days[c];
-    let candidateScores = {};
-
-    function addScore(jodi, score) {
-        if (!jodi || jodi === "**" || jodi.length !== 2) return;
-        candidateScores[jodi] = (candidateScores[jodi] || 0) + score;
-    }
-
-    let totalRows = data.length;
-    for (let rowIdx = 0; rowIdx < totalRows; rowIdx++) {
-        let val = data[rowIdx][c];
-        if (val !== "**") {
-            let recencyWeight = (rowIdx + 1) / totalRows;
-            addScore(val, 3.0 * recencyWeight);
-            addScore(palti(val), 1.5 * recencyWeight);
-        }
-    }
-
-    if (r > 0) {
-        let aboveVal = data[r - 1][c];
-        if (aboveVal !== "**") {
-            let d1 = parseInt(aboveVal[0]), d2 = parseInt(aboveVal[1]);
-            let cut1 = (d1 + 5) % 10;
-            let cut2 = (d2 + 5) % 10;
-            let cutPair = `${cut1}${cut2}`;
-            addScore(cutPair, 2.8);
-            addScore(palti(cutPair), 2.0);
-        }
-    }
-
-    let sortedJodies = Object.keys(candidateScores).sort((a, b) => candidateScores[b] - candidateScores[a]);
-    let top4 = sortedJodies.slice(0, 4);
-
-    if (top4.length < 4) {
-        let fallbackList = ["12", "34", "56", "78"];
-        fallbackList.forEach(f => { if (!top4.includes(f) && top4.length < 4) top4.push(f); });
-    }
-
-    let buttonsHtml = top4.map((j, i) => `<span class="strong-jodi-btn">#${i + 1} Jodi: ${j}</span>`).join("");
-
-    document.getElementById("blank-4jodi-prediction").innerHTML = `
-        <div style="font-size:11px; margin-bottom:4px;">
-            Position: Row ${r + 1}, Day: <b style="color:var(--gold);">${dayName}</b>
-        </div>
-        <div>${buttonsHtml}</div>
-    `;
-}
-
-function isPartOfPattern(ri, ci){
-    if(!activeMark) return false;
-    let i = ri - activeMark.start;
-    return (i >= 0 && i < activeMark.shape.length && activeMark.shape[i][ci]);
-}
-
-function drawLines(cvsId, tblEl) {
-    const cvs = document.getElementById(cvsId);
-    const ctx = cvs.getContext("2d");
-    cvs.width = tblEl.offsetWidth; cvs.height = tblEl.offsetHeight;
-    ctx.clearRect(0,0,cvs.width,cvs.height);
-    const cells = tblEl.querySelectorAll(".circle");
-    if(cells.length < 2) return;
-    
-    const tRect = tblEl.getBoundingClientRect();
-    ctx.strokeStyle = "#00ff88"; 
-    ctx.lineWidth = 2;
-    ctx.lineCap = "round";
-    
-    ctx.beginPath();
-    cells.forEach((c, idx) => {
-        const r = c.getBoundingClientRect();
-        const x = r.left - tRect.left + r.width/2;
-        const y = r.top - tRect.top + r.height/2;
-        if(idx === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
+    db.ref("kalyan_records/chartData").set(data)
+    .then(() => {
+        alert("☁️ Data Cloud par safaltapoorvak Save ho gaya!");
+        saveData(); // Save locally as well
+    })
+    .catch((err) => {
+        alert("Cloud Error: " + err.message);
     });
-    ctx.stroke();
 }
 
-function addRow(){ data.push(["**","**","**","**","**","**"]); saveDataSilent(); draw(); }
-
-function saveData(){ 
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); 
-    alert("डेटा सेव हो गया!");
-}
-
-function saveDataSilent(){
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
-
-function exportData() {
-    let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
-    let downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", "kalyan_data_backup.json");
-    document.body.appendChild(downloadAnchor);
-    downloadAnchor.click();
-    downloadAnchor.remove();
-}
-
-document.getElementById("importJson").onchange = e => {
-    let fr = new FileReader();
-    fr.onload = () => {
-        try {
-            data = JSON.parse(fr.result);
-            saveDataSilent();
+function loadFromCloud() {
+    if(!db) return;
+    db.ref("kalyan_records/chartData").once("value")
+    .then((snapshot) => {
+        if(snapshot.exists()) {
+            data = snapshot.val();
+            saveData();
             draw();
-            alert("मोबाइल पर डेटा सफलतापूर्वक इम्पोर्ट हो गया!");
-        } catch (err) {
-            alert("गलत फाइल फॉर्मेट!");
+            console.log("Cloud Data Synced");
         }
-    };
-    fr.readAsText(e.target.files[0]);
-};
-
-function clearData(){ 
-    if(confirm("डेटा क्लियर करें?")){ 
-        localStorage.removeItem(STORAGE_KEY); 
-        data = defaultData; 
-        draw(); 
-    }
+    })
+    .catch((err) => console.error("Cloud fetch error:", err));
 }
 
-function updateTrendIndicator() {
-    let redCount = 0, total = 0;
-    data.slice(-10).forEach(row => {
-        row.forEach(cell => {
-            if(cell !== "**") {
-                total++;
-                if(isRedJodi(cell)) redCount++;
-            }
-        });
-    });
-    let redRatio = total ? Math.round((redCount / total) * 100) : 0;
-    document.getElementById("trend-bar").innerText = `Trend: ${redRatio}% Red`;
+function analyzeBlankCellScheme(rowIdx, colIdx) {
+    selectedBlank = { r: rowIdx, c: colIdx };
+    activeMark = null;
+    crossHighlightCells = [];
+    
+    let targetDay = DAY_NAMES[colIdx];
+    let historicalJodis = {};
+
+    for(let r = 0; r < rowIdx; r++) {
+        let cellVal = data[r][colIdx];
+        if(cellVal !== "**" && cellVal.length === 2) {
+            historicalJodis[cellVal] = (historicalJodis[cellVal] || 0) + 1;
+        }
+    }
+
+    let sortedJodis = Object.keys(historicalJodis).sort((a, b) => historicalJodis[b] - historicalJodis[a]);
+    let top4Jodis = sortedJodis.slice(0, 4);
+
+    while(top4Jodis.length < 4) top4Jodis.push("--");
+
+    let outputHtml = `
+        <div class="alert-box">
+            🎯 <b>[${targetDay} - Row ${rowIdx + 1}] TOP 4 HISTORICAL MATCHES:</b><br>
+            <div style="display: flex; gap: 8px; margin-top: 8px;">
+                ${top4Jodis.map(j => `<span style="background:#0f172a; color:#00ff88; padding:5px 10px; border-radius:5px; font-weight:bold; font-size:14px; border:1px solid #10b981;">${j}</span>`).join('')}
+            </div>
+        </div>
+    `;
+
+    document.getElementById("scheme-output").innerHTML = outputHtml;
+    document.getElementById("future").innerHTML = `<b>Top 4 Pattern Jodis:</b> ${top4Jodis.join(", ")}`;
+    draw();
 }
 
 function calculateDayFrequency() {
     const days = ["MON", "TUE", "WED", "THU", "FRI", "SAT"];
     let dayFreq = [{}, {}, {}, {}, {}, {}];
 
-    data.forEach(row => {
+    data.forEach((row, rIdx) => {
         row.forEach((val, dayIdx) => {
             if (val && val !== "**" && val.length === 2) {
                 let d1 = val[0], d2 = val[1];
@@ -442,102 +369,66 @@ function calculateDayFrequency() {
     document.getElementById("day-freq-analysis").innerHTML = html;
 }
 
-function autoScanPatterns() {
-    let totalRows = data.length;
-    if(totalRows < 3) { alert("और डेटा चाहिए!"); return; }
-    let blankRow = totalRows - 1;
-    scanOffsetRow = blankRow - 3;
-    makePattern(blankRow, 0);
+function clearActivePattern() {
+    activeMark = null;
+    selectedBlank = null;
+    highlightedFam = null;
+    crossHighlightCells = [];
+    draw();
 }
 
-function makePattern(r,c){
- targetCol=c; let base="**";
- for(let i=r;i>=0;i--){ if(data[i][c]!="**"){base=data[i][c]; break;}}
- if(base=="**") return;
+function updateCell(r, c, el) {
+    let val = norm(el.innerText.trim());
+    data[r][c] = val;
+    el.innerText = val;
+    calculateDayFrequency();
+}
 
- let shape = Array(9).fill(0).map(() => Array(6).fill(0)); 
- let matchCount = 0;
- let startRow = Math.max(0, r-8);
-
- for(let i = r; i >= startRow; i--){
-    for(let j = 0; j < 6; j++){
-      if(data[i][j] != "**" && smartMatch(data[i][j], base)){
-        if(matchCount < 3){ 
-          shape[i - startRow][j] = 1;
-          matchCount++;
-        }
-      }
+function checkEnter(e, el) {
+    if (e.key === "Enter") {
+        e.preventDefault();
+        el.blur();
     }
-    if(matchCount >= 3) break; 
- }
- searchPattern(shape, base);
 }
 
-function searchPattern(shape,base){
- let lastMatches=[];
- for(let i=0; i<=data.length-shape.length; i++){
-  let ok=true;
-  for(let k=0; k<shape.length; k++){
-   for(let j=0; j<6; j++){ if(shape[k][j] && !smartMatch(data[i+k][j],base)){ok=false; break;}}
-   if(!ok) break;
-  }
-  if(!ok) continue;
-  lastMatches.push({index:i});
- }
- showChecks(shape, lastMatches);
- draw();
-}
-
-function showChecks(shape, matches){
- document.getElementById("checks").innerHTML="";
- matches.forEach((m,i)=>{
-  let d = document.createElement("div");
-  d.style = "background:#2a2a2a; margin:4px 0; padding:6px; cursor:pointer; border-radius:6px; font-size:11px; border-left:3px solid #0084ff;";
-  d.innerText = `Match Found at Row ${m.index + 1}`;
-  d.onclick = () => { activeMark={start:m.index, shape:shape}; draw(); showOne(shape, m.index); };
-  document.getElementById("checks").appendChild(d);
- });
- updateAI(shape, matches);
-}
-
-function showOne(shape, idx){
- let html="<table id='popTbl' style='color:#000'>";
- for(let i=0; i<shape.length; i++){
-  html+="<tr>";
-  data[idx+i].forEach((v,j)=>{
-   html+=`<td class="${shape[i][j]?'circle':''}">${v}</td>`;
-  });
-  html+="</tr>";
- }
- document.getElementById("popData").innerHTML=html+"</table>";
- document.getElementById("popup").style.display="block";
- document.getElementById("overlay").style.display="block";
- setTimeout(()=>drawLines("popCanvas", document.getElementById("popTbl")), 100);
-}
-
-function updateAI(shape, matches){
- let jc={}, dc={};
- matches.forEach(m=>{
-  for(let i=0; i<shape.length; i++){
-   for(let j=0; j<6; j++){
-    if(shape[i][j]){
-     let v = data[m.index+i][j];
-     jc[v]=(jc[v]||0)+1; dc[v[0]]=(dc[v[0]]||0)+1; dc[v[1]]=(dc[v[1]]||0)+1;
+function deleteRow(rIndex) {
+    if (confirm(`Row ${rIndex + 1} को डिलीट करें?`)) {
+        data.splice(rIndex, 1);
+        draw();
     }
-   }
-  }
- });
- document.getElementById("ai").innerHTML = `<b>Top Jodi:</b> ${Object.keys(jc).slice(0,3).join(", ") || "-"}<br><b>Common Ank:</b> ${Object.keys(dc).slice(0,3).join(", ") || "-"}`;
- 
- let pool = [];
- matches.forEach(m => {
-  let nextR = m.index + shape.length;
-  if(nextR < data.length && data[nextR][targetCol] != "**") pool.push(data[nextR][targetCol]);
- });
- document.getElementById("future").innerHTML = pool.length ? `<b>Probable Next:</b> ${[...new Set(pool)].join(" , ")}` : "Analyzing...";
 }
 
-function closePopup(){ document.getElementById("popup").style.display="none"; document.getElementById("overlay").style.display="none"; }
+function handleCellClick(r, c, val) {
+    if(val !== "**") {
+        highlightedFam = (highlightedFam === fam(val)) ? null : fam(val);
+        draw();
+    } else {
+        analyzeBlankCellScheme(r, c);
+    }
+}
+
+function isPartOfPattern(ri, ci){
+    if(!activeMark) return false;
+    let i = ri - activeMark.start;
+    return (i >= 0 && i < activeMark.shape.length && activeMark.shape[i][ci]);
+}
+
+function addRow(){ data.push(["**","**","**","**","**","**"]); draw(); }
+
+function saveData(){ 
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); 
+}
+
+function clearData(){ 
+    if(confirm("Permanently clear all data?")){ 
+        localStorage.removeItem(STORAGE_KEY); 
+        data = defaultData; 
+        activeMark = null;
+        selectedBlank = null;
+        crossHighlightCells = [];
+        draw(); 
+    }
+}
 
 document.getElementById("csv").onchange = e => {
     let fr = new FileReader();
@@ -548,7 +439,7 @@ document.getElementById("csv").onchange = e => {
             while(row.length < 6) row.push("**"); 
             return row.slice(0,6);
         });
-        saveDataSilent();
+        saveData();
         draw();
         alert("CSV Loaded!");
     };
