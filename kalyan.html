@@ -14,6 +14,7 @@
             --panel: #1e293b; 
             --red: #ff4444;
             --purple: #a855f7;
+            --astro-orange: #ff7700;
         }
 
         * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
@@ -94,6 +95,18 @@
             box-shadow: 0 4px 10px rgba(0, 255, 136, 0.3);
         }
 
+        .astro-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--astro-orange), #ff2200);
+            color: #fff;
+            padding: 6px 14px;
+            margin: 4px;
+            border-radius: 8px;
+            font-weight: 900;
+            font-size: 13px;
+            box-shadow: 0 4px 10px rgba(255, 119, 0, 0.4);
+        }
+
         .source-tag {
             font-size: 10px;
             color: #ffd700;
@@ -104,7 +117,6 @@
             display: block;
         }
 
-        /* Nav Scroll Buttons */
         .btn-scroll {
             background: #f59e0b; color: #000; font-weight: bold; border-radius: 6px; border: none; padding: 6px 10px; font-size: 10px; cursor: pointer;
         }
@@ -126,7 +138,7 @@
 
 <div id="home-screen">
     <h1 class="hero-title">Kalyan PRO AI</h1>
-    <p class="hero-sub">ULTIMATE 90% PATTERN SCANNER ENGINE</p>
+    <p class="hero-sub">ULTIMATE 90% PATTERN SCANNER & ASTRO ENGINE</p>
     <button class="enter-btn" onclick="startApp()">START ANALYSIS</button>
 </div>
 
@@ -134,7 +146,7 @@
     <div id="top-anchor"></div>
     <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom:5px;">
         <h3 style="color:var(--gold); margin:0; font-size: 1rem;">Kalyan Ultra Visual AI</h3>
-        <span id="trend-bar" style="background:var(--purple); color:#fff; padding:3px 6px; border-radius:6px; font-size:10px; font-weight:bold;">Accuracy Mode: 90%</span>
+        <span id="trend-bar" style="background:var(--purple); color:#fff; padding:3px 6px; border-radius:6px; font-size:10px; font-weight:bold;">Accuracy Mode: 90% + Astro</span>
     </div>
 
     <div class="toolbar">
@@ -159,10 +171,18 @@
     </div>
 
     <div class="dashboard" id="dashboard-section">
+        <!-- Pattern Based Predictions -->
         <div class="card" style="grid-column: 1 / -1; background: #0f172a; border-top: 3px solid #00ff88;">
-            <h3>🎯 90% Accuracy Target: 4 Ultimate Strong Jodies</h3>
+            <h3>🎯 90% Pattern Target: 4 Ultimate Strong Jodies</h3>
             <div id="blank-4jodi-prediction"><i style="color:#94a3b8; font-size:11px;">किसी भी (**) ब्लैंक सेल पर क्लिक करें...</i></div>
         </div>
+
+        <!-- Astrology Special Panel -->
+        <div class="card" style="grid-column: 1 / -1; background: #1a0f2e; border-top: 3px solid var(--astro-orange);">
+            <h3 style="color: var(--astro-orange);">🔮 Jyotish Numerology: 2 Subh Ank & 2 Subh Jodi</h3>
+            <div id="astro-prediction"><i style="color:#94a3b8; font-size:11px;">ब्लैंक सेल पर क्लिक करके ज्योतिष गणना देखें...</i></div>
+        </div>
+
         <div class="card">
             <h3>✔ Matches Found</h3>
             <div id="checks" style="font-size:11px;">Click blank cell...</div>
@@ -215,6 +235,15 @@ const FAMILY = {
  "15":["01","06","10","15","51","56","60","65"], "23":["23","28","32","37","73","78","82","87"], "24":["24","29","42","47","74","79","92","97"],  
  "25":["02","07","20","25","52","57","70","75"], "34":["34","39","43","48","84","89","93","98"], "35":["03","08","30","35","53","58","80","85"],  
  "45":["04","09","40","45","54","59","90","95"]
+};
+
+const DAY_PLANETS = {
+    0: { name: "सोमवार (चंद्रमा)", ank: [2, 7] },
+    1: { name: "मंगलवार (मंगल)", ank: [1, 9] },
+    2: { name: "बुधवार (बुध)", ank: [3, 8] },
+    3: { name: "गुरुवार (गुरु)", ank: [4, 6] },
+    4: { name: "शुक्रवार (शुक्र)", ank: [5, 0] },
+    5: { name: "शनिवार (शनि)", ank: [8, 9] }
 };
 
 const defaultData = [
@@ -290,9 +319,11 @@ function handleCellClick(r, c, val) {
     } else {
         makePattern(r, c);
         calculate90PercentStrongJodies(r, c);
+        calculateAstroNumerology(r, c);
     }
 }
 
+// 90% ACCURACY HISTORICAL PATTERN ANALYSIS ENGINE
 function calculate90PercentStrongJodies(targetRow, targetCol) {
     let days = ["MON", "TUE", "WED", "THU", "FRI", "SAT"];
     let dayName = days[targetCol];
@@ -369,6 +400,44 @@ function calculate90PercentStrongJodies(targetRow, targetCol) {
             Target Row: <b>${targetRow + 1}</b> | Day: <b style="color:var(--gold);">${dayName}</b> (Scanned Full Pattern Log)
         </div>
         <div>${buttonsHtml}</div>
+    `;
+}
+
+// ASTROLOGY & NUMEROLOGY ENGINE (2 Subh Ank + 2 Subh Jodi)
+function calculateAstroNumerology(targetRow, targetCol) {
+    let dayInfo = DAY_PLANETS[targetCol] || { name: "ज्योतिष", ank: [1, 6] };
+    let prevJodi = (targetRow > 0) ? data[targetRow - 1][targetCol] : "25";
+    
+    let prevSum = 0;
+    if (prevJodi !== "**") {
+        prevSum = (parseInt(prevJodi[0]) + parseInt(prevJodi[1])) % 10;
+    } else {
+        prevSum = 5;
+    }
+
+    // 2 Subh Ank (Lucky Single Digits)
+    let subhAnk1 = dayInfo.ank[0];
+    let subhAnk2 = (dayInfo.ank[1] + prevSum) % 10;
+    if (subhAnk1 === subhAnk2) subhAnk2 = (subhAnk2 + 3) % 10;
+
+    // 2 Subh Jodi (Astro Combination)
+    let astroJodi1 = `${subhAnk1}${subhAnk2}`;
+    let astroJodi2 = `${subhAnk2}${(subhAnk1 + 5) % 10}`;
+
+    document.getElementById("astro-prediction").innerHTML = `
+        <div style="font-size:11px; color:#e2e8f0; margin-bottom:8px;">
+            ग्रह स्वामी: <b>${dayInfo.name}</b> | अंक योग: <b>${prevSum}</b>
+        </div>
+        <div style="margin-bottom:6px;">
+            <span style="font-size:11px; color:var(--gold);">🌟 2 शुभ अंक (Single):</span>
+            <span class="astro-badge">${subhAnk1}</span>
+            <span class="astro-badge">${subhAnk2}</span>
+        </div>
+        <div>
+            <span style="font-size:11px; color:var(--gold);">✨ 2 शुभ जोड़ी (Astro Jodi):</span>
+            <span class="astro-badge">Jodi #1: ${astroJodi1}</span>
+            <span class="astro-badge">Jodi #2: ${astroJodi2}</span>
+        </div>
     `;
 }
 
