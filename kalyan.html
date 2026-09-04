@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalyan Pro AI – Full Visual & Ank-Ganit Engine</title>
+    <title>Kalyan Pro AI – Visual Pattern & Ank-Ganit Engine</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -14,7 +14,6 @@
             --panel: #1e293b; 
             --red: #ff4444;
             --purple: #a855f7;
-            --selected: #c084fc;
         }
 
         * { box-sizing: border-box; font-family: 'Poppins', sans-serif; }
@@ -72,18 +71,7 @@
         }
         .fam-highlight { background: rgba(255, 215, 0, 0.4) !important; font-weight: 900; }
         .red-jodi { color: #ff0000 !important; font-weight: 900; }
-        
-        .seq-selected-1 { background: #facc15 !important; color: #000 !important; font-weight: 900; border: 2px solid #b45309 !important; border-radius: 50%; }
-        .seq-selected-2 { background: #c084fc !important; color: #000 !important; font-weight: 900; border: 2px solid #7e22ce !important; border-radius: 50%; }
-        .seq-selected-3 { background: #38bdf8 !important; color: #000 !important; font-weight: 900; border: 2px solid #0284c7 !important; border-radius: 50%; }
-        
         .scan-zone { background: rgba(255, 215, 0, 0.15) !important; }
-
-        tr.row-highlight td {
-            background-color: #e9d5ff !important;
-            border-top: 2px solid #a855f7 !important;
-            border-bottom: 2px solid #a855f7 !important;
-        }
 
         canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 4; }
 
@@ -95,17 +83,12 @@
         .day-ank-table th { background: #0f172a; color: var(--gold); border: 1px solid #334155; padding: 4px; }
         .day-ank-table td { border: 1px solid #334155; padding: 4px; text-align: center; color: #00ff88; }
 
-        .prob-badge { background: #00ff88; color: #000; border-radius: 4px; padding: 2px 5px; font-weight: bold; font-size: 10px; margin-left: 4px; }
         .cut-badge { background: var(--red); color: #fff; border-radius: 4px; padding: 2px 5px; font-weight: bold; font-size: 10px; }
         .trend-badge { background: var(--purple); color: #fff; padding: 3px 6px; border-radius: 6px; font-size: 11px; font-weight: bold; }
 
         .explanation-box {
             font-size: 11px; line-height: 1.6; color: #cbd5e1; background: #0f172a; padding: 10px; border-radius: 6px; border-left: 3px solid var(--gold); margin-top: 6px;
         }
-        .clickable-row-link {
-            color: #38bdf8; text-decoration: underline; cursor: pointer; font-weight: bold; display: block; margin: 4px 0;
-        }
-        .clickable-row-link:hover { color: var(--gold); }
 
         .strong-jodi-btn {
             display: inline-block; background: linear-gradient(135deg, #00ff88, #0084ff); color: #000;
@@ -116,7 +99,6 @@
         #popup { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 15px; display: none; z-index: 100; padding: 12px; color: #000; width: 92%; max-width: 380px; }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; z-index: 90; }
         button { cursor: pointer; border-radius: 6px; border: none; font-weight: bold; padding: 8px 10px; font-size: 11px; }
-        .btn-active { outline: 2px solid var(--gold); box-shadow: 0 0 10px var(--gold); }
     </style>
 </head>
 <body>
@@ -140,7 +122,6 @@
         <button onclick="document.getElementById('csv').click()" style="background:#444; color:white;">📂 CSV</button>
         <button onclick="addRow()" style="background:#0284c7; color:white;">➕ ADD ROW</button>
         <button onclick="autoScanPatterns()" style="background:var(--purple); color:white;">🔍 AUTO SCAN</button>
-        <button id="btn-3jodi-mode" onclick="toggleMultiJodiMode()" style="background:#0084ff; color:white;">⚡ SELECT 3-JODI</button>
         <button onclick="saveData()" style="background:#28a745; color:white;">💾 SAVE DATA</button>
         <button onclick="clearData()" style="background:#dc3545; color:white;">🗑️ CLEAR</button>
     </div>
@@ -169,10 +150,6 @@
             <h3>🔮 Future Prediction</h3>
             <div id="future">Select a match...</div>
         </div>
-        <div class="card" style="grid-column: 1 / -1;">
-            <h3>🎯 3-Jodi Exact Pattern Prediction Engine</h3>
-            <div id="seq-predict">Click "SELECT 3-JODI" then tap 3 cells on table in sequence...</div>
-        </div>
         <div class="card">
             <h3>🚫 High Risk Cut-Ank</h3>
             <div id="cut-ank">Calculating...</div>
@@ -187,7 +164,7 @@
 <div class="overlay" id="overlay" onclick="closePopup()"></div>
 <div id="popup">
     <button onclick="closePopup()" style="float:right; background:#000; color:white; padding:4px 8px;">CLOSE</button>
-    <h4 style="margin: 0 0 10px 0;">Sequence View</h4>
+    <h4 style="margin: 0 0 10px 0;">Pattern View</h4>
     <center>
         <div class="table-container" style="border: 1px solid #ddd;">
             <canvas id="popCanvas"></canvas>
@@ -202,9 +179,6 @@ let targetCol = null;
 let activeMark = null;
 let highlightedFam = null;
 let scanOffsetRow = -1;
-
-let isMultiJodiSelectionMode = false;
-let selectedJodis = []; 
 
 function norm(v) {
     if (!v || v.trim() === "" || v === "**") return "**";
@@ -242,10 +216,6 @@ function palti(v){return v[1]+v[0];}
 function smartMatch(a1,b1){ if(a1=="**"||b1=="**") return false; return a1===b1 || palti(a1)===b1 || fam(a1)===fam(b1); }
 function isRedJodi(v){ return v!=="**" && (v[0]===v[1] || Math.abs(parseInt(v[0])-parseInt(v[1]))===5); }
 
-function getSelectedJodiIndex(r, c) {
-    return selectedJodis.findIndex(item => item.r === r && item.c === c);
-}
-
 function draw(){
  let days = ["MON", "TUE", "WED", "THU", "FRI", "SAT"];
  let h="<tr>";
@@ -259,12 +229,6 @@ function draw(){
    if(highlightedFam && fam(c) === highlightedFam) cls += " fam-highlight";
    if(isRedJodi(c)) cls += " red-jodi";
    if(ri === scanOffsetRow) cls += " scan-zone";
-   
-   let selIdx = getSelectedJodiIndex(ri, ci);
-   if(selIdx === 0) cls += " seq-selected-1";
-   else if(selIdx === 1) cls += " seq-selected-2";
-   else if(selIdx === 2) cls += " seq-selected-3";
-   
    if(c=="**") cls += " blank";
    
    h+=`<td class="${cls}" contenteditable="true" onblur="updateCell(${ri},${ci},this)" onkeydown="checkEnter(event, this)" onclick="handleCellClick(${ri},${ci},'${c}')">${c}</td>`;
@@ -303,51 +267,7 @@ function deleteRow(rIndex) {
     }
 }
 
-function toggleMultiJodiMode() {
-    isMultiJodiSelectionMode = !isMultiJodiSelectionMode;
-    selectedJodis = [];
-    scanOffsetRow = -1;
-    const btn = document.getElementById("btn-3jodi-mode");
-    if(isMultiJodiSelectionMode) {
-        btn.classList.add("btn-active");
-        btn.innerText = "🎯 TAP 1ST JODI (YELLOW)";
-        document.getElementById("seq-predict").innerHTML = "<b style='color:var(--gold);'>Select 1st (Yellow), 2nd (Purple) & 3rd (Blue) Jodi in sequence...</b>";
-    } else {
-        btn.classList.remove("btn-active");
-        btn.innerText = "⚡ SELECT 3-JODI";
-    }
-    draw();
-}
-
 function handleCellClick(r, c, val) {
-    if (isMultiJodiSelectionMode) {
-        if (val === "**") return;
-        
-        let index = getSelectedJodiIndex(r, c);
-        if (index > -1) {
-            selectedJodis.splice(index, 1);
-        } else {
-            if (selectedJodis.length >= 3) selectedJodis = []; 
-            selectedJodis.push({ r: r, c: c, val: val });
-        }
-        
-        const btn = document.getElementById("btn-3jodi-mode");
-        if(selectedJodis.length === 1) {
-            btn.innerText = "🎯 TAP 2ND JODI (PURPLE)";
-        } else if(selectedJodis.length === 2) {
-            btn.innerText = "🎯 TAP 3RD JODI (BLUE)";
-        } else if(selectedJodis.length === 0) {
-            btn.innerText = "🎯 TAP 1ST JODI (YELLOW)";
-        }
-        
-        draw();
-        
-        if (selectedJodis.length === 3) {
-            runSelectedThreeJodiSearch();
-        }
-        return;
-    }
-
     if(val !== "**") {
         highlightedFam = (highlightedFam === fam(val)) ? null : fam(val);
         draw();
@@ -358,7 +278,6 @@ function handleCellClick(r, c, val) {
     }
 }
 
-// Complete Ank-Ganit Engine Integration
 function predictFourStrongJodiesForBlankCell(r, c) {
     const days = ["MON", "TUE", "WED", "THU", "FRI", "SAT"];
     let dayName = days[c];
@@ -369,18 +288,18 @@ function predictFourStrongJodiesForBlankCell(r, c) {
         candidateScores[jodi] = (candidateScores[jodi] || 0) + score;
     }
 
-    // 1. Weighted Recency Score (10-Week Arithmetic Weight)
+    // 1. Weighted Recency Score
     let totalRows = data.length;
     for (let rowIdx = 0; rowIdx < totalRows; rowIdx++) {
         let val = data[rowIdx][c];
         if (val !== "**") {
-            let recencyWeight = (rowIdx + 1) / totalRows; // Naye records ko zyada weight
+            let recencyWeight = (rowIdx + 1) / totalRows;
             addScore(val, 3.0 * recencyWeight);
             addScore(palti(val), 1.5 * recencyWeight);
         }
     }
 
-    // 2. Mod 10 Cut & Family Pair Arithmetic
+    // 2. Mod 10 Cut Pair Arithmetic
     if (r > 0) {
         let aboveVal = data[r - 1][c];
         if (aboveVal !== "**") {
@@ -393,7 +312,7 @@ function predictFourStrongJodiesForBlankCell(r, c) {
         }
     }
 
-    // 3. Vertical Delta Shift Shift Math (Step Diff Pattern)
+    // 3. Vertical Delta Shift Math
     if (r >= 2) {
         let p1 = data[r - 1][c];
         let p2 = data[r - 2][c];
@@ -408,7 +327,7 @@ function predictFourStrongJodiesForBlankCell(r, c) {
         }
     }
 
-    // 4. Day-wise High Frequency Digit Sum Combination
+    // 4. Day-wise High Frequency Digit Combination
     let dayAnkFreq = {};
     data.forEach(row => {
         let val = row[c];
@@ -444,96 +363,10 @@ function predictFourStrongJodiesForBlankCell(r, c) {
         <div class="explanation-box" style="margin-top:8px;">
             <b>🧮 Applied Ank-Ganit Logic:</b><br>
             • <b>Weighted Recency:</b> ${dayName} ke pichhle records par time-decay weights.<br>
-            • <b>Cut Pair Math:</b> Direct upper cell ka Mod 10 opposite transformation.<br>
+            • <b>Cut Pair Math:</b> Upper cell ka Mod 10 opposite transformation.<br>
             • <b>Vertical Delta Shift:</b> Last 2 weeks ka step-shift difference calculation.
         </div>
     `;
-}
-
-function scrollToAndHighlightRow(rowIndex) {
-    const rowEl = document.getElementById(`table-row-${rowIndex}`);
-    if (rowEl) {
-        rowEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        rowEl.classList.add('row-highlight');
-        setTimeout(() => {
-            rowEl.classList.remove('row-highlight');
-        }, 2500);
-    }
-}
-
-function runSelectedThreeJodiSearch() {
-    let j1 = selectedJodis[0]; 
-    let j2 = selectedJodis[1]; 
-    let j3 = selectedJodis[2]; 
-
-    let dRow12 = j2.r - j1.r, dCol12 = j2.c - j1.c;
-    let dRow23 = j3.r - j2.r, dCol23 = j3.c - j2.c;
-
-    let weightedNextScores = {};
-    let totalScoreSum = 0;
-    let matchLogs = []; 
-    const totalRows = data.length;
-
-    for (let r1 = 0; r1 < totalRows; r1++) {
-        for (let c1 = 0; c1 < 6; c1++) {
-            if (smartMatch(data[r1][c1], j1.val)) {
-                let r2 = r1 + dRow12;
-                let c2 = c1 + dCol12;
-
-                if (r2 >= 0 && r2 < totalRows && c2 >= 0 && c2 < 6 && smartMatch(data[r2][c2], j2.val)) {
-                    let r3 = r2 + dRow23;
-                    let c3 = c2 + dCol23;
-
-                    if (r3 >= 0 && r3 < totalRows && c3 >= 0 && c3 < 6 && smartMatch(data[r3][c3], j3.val)) {
-                        let r4 = r3 + dRow23;
-                        let c4 = c3 + dCol23;
-
-                        if (r4 >= 0 && r4 < totalRows && c4 >= 0 && c4 < 6 && data[r4][c4] !== "**") {
-                            let targetVal = data[r4][c4];
-                            let weight = (r1 >= totalRows - 10) ? 2.5 : 1.0;
-                            weightedNextScores[targetVal] = (weightedNextScores[targetVal] || 0) + weight;
-                            totalScoreSum += weight;
-
-                            matchLogs.push({
-                                rowIndex: r1,
-                                rowDisplay: r1 + 1,
-                                matchedSeq: `${data[r1][c1]} ➔ ${data[r2][c2]} ➔ ${data[r3][c3]}`,
-                                followedBy: targetVal,
-                                targetRowDisplay: r4 + 1
-                            });
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    if (totalScoreSum === 0) {
-        document.getElementById("seq-predict").innerHTML = `
-            <b>Selected Base 3-Jodi:</b> ${j1.val} ➔ ${j2.val} ➔ ${j3.val}<br>
-            <span style="color:#ff4444;">Is 3-Jodi sequence ka koi pattern purani history mein nahi mila!</span>
-        `;
-    } else {
-        let sortedJodis = Object.keys(weightedNextScores).sort((a,b) => weightedNextScores[b] - weightedNextScores[a]);
-        let topOutputs = sortedJodis.slice(0, 3).map(jodi => {
-            let probPercent = Math.round((weightedNextScores[jodi] / totalScoreSum) * 100);
-            return `${jodi} <span class="prob-badge">${probPercent}%</span>`;
-        });
-
-        let logHtml = matchLogs.slice(-5).map(m => 
-            `<span class="clickable-row-link" onclick="scrollToAndHighlightRow(${m.rowIndex})">👉 Row ${m.rowDisplay} par 3-Jodi pattern mila ➔ Row ${m.targetRowDisplay} mein agla aaya: <b>${m.followedBy}</b></span>`
-        ).join("");
-
-        document.getElementById("seq-predict").innerHTML = `
-            <b>Selected Base 3-Jodi:</b> ${j1.val} ➔ ${j2.val} ➔ ${j3.val}<br>
-            <b style="color:#00ff88; font-size:13px;">High Probable 4th Jodi: ${topOutputs.join(" | ")}</b>
-            <div class="explanation-box">
-                <b>🔍 AI Exact 3-Jodi Pattern Breakdown:</b><br>
-                1. Record mein kul <b>${matchLogs.length} bar</b> aisa 3-Jodi pattern bana.<br>
-                2. Purani history match records (Dekhne ke liye click karein):<br>${logHtml}
-            </div>
-        `;
-    }
 }
 
 function isPartOfPattern(ri, ci){
