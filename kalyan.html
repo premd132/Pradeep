@@ -127,7 +127,6 @@
         <button onclick="clearData()" style="background:#dc3545; color:white;">🗑️ CLEAR</button>
     </div>
 
-    <!-- Mobile Scroll Container Fix -->
     <div class="chart-wrapper">
         <div class="table-container" id="printable-chart">
             <canvas id="mainCanvas"></canvas>
@@ -276,6 +275,7 @@ function handleCellClick(r, c, val) {
     }
 }
 
+// FIX: Dynamic Row-Based Strong Jodi Prediction
 function predictFourStrongJodiesForBlankCell(r, c) {
     const days = ["MON", "TUE", "WED", "THU", "FRI", "SAT"];
     let dayName = days[c];
@@ -286,41 +286,67 @@ function predictFourStrongJodiesForBlankCell(r, c) {
         candidateScores[jodi] = (candidateScores[jodi] || 0) + score;
     }
 
-    let totalRows = data.length;
-    for (let rowIdx = 0; rowIdx < totalRows; rowIdx++) {
+    // 1. Scan last 10 weeks relative to selected row 'r'
+    let startRow = Math.max(0, r - 10);
+    for (let rowIdx = startRow; rowIdx < r; rowIdx++) {
         let val = data[rowIdx][c];
         if (val !== "**") {
-            let recencyWeight = (rowIdx + 1) / totalRows;
-            addScore(val, 3.0 * recencyWeight);
-            addScore(palti(val), 1.5 * recencyWeight);
+            let proximityWeight = 1 + ((rowIdx - startRow) / 10); 
+            addScore(val, 2.0 * proximityWeight);
+            addScore(palti(val), 1.0 * proximityWeight);
         }
     }
 
+    // 2. Pair relation from the Direct Row Above (r-1)
     if (r > 0) {
         let aboveVal = data[r - 1][c];
         if (aboveVal !== "**") {
+            addScore(aboveVal, 4.5);        // Direct repeat chance
+            addScore(palti(aboveVal), 3.5);  // Palti chance
+            
             let d1 = parseInt(aboveVal[0]), d2 = parseInt(aboveVal[1]);
             let cut1 = (d1 + 5) % 10;
             let cut2 = (d2 + 5) % 10;
+            
             let cutPair = `${cut1}${cut2}`;
-            addScore(cutPair, 2.8);
-            addScore(palti(cutPair), 2.0);
+            let halfCut1 = `${cut1}${d2}`;
+            let halfCut2 = `${d1}${cut2}`;
+
+            addScore(cutPair, 3.0);      // Full Cut
+            addScore(halfCut1, 2.5);     // Half Cut 1
+            addScore(halfCut2, 2.5);     // Half Cut 2
+        }
+
+        // Cross Day Relation from Row Above
+        if (c > 0 && data[r - 1][c - 1] !== "**") {
+            let prevDayVal = data[r - 1][c - 1];
+            addScore(palti(prevDayVal), 2.0);
         }
     }
 
+    // 3. Sort Highest Scoring Jodies
     let sortedJodies = Object.keys(candidateScores).sort((a, b) => candidateScores[b] - candidateScores[a]);
     let top4 = sortedJodies.slice(0, 4);
 
-    if (top4.length < 4) {
-        let fallbackList = ["12", "34", "56", "78"];
-        fallbackList.forEach(f => { if (!top4.includes(f) && top4.length < 4) top4.push(f); });
-    }
+    // Fallback if less than 4 candidates
+    let fallbackSeed = (r > 0 && data[r-1][c] !== "**") ? data[r-1][c] : "12";
+    let f1 = parseInt(fallbackSeed[0]), f2 = parseInt(fallbackSeed[1]);
+    let fallbacks = [
+        `${f1}${f2}`, 
+        `${(f1+5)%10}${(f2+5)%10}`, 
+        `${f2}${f1}`, 
+        `${(f1+5)%10}${f2}`
+    ];
+    
+    fallbacks.forEach(f => {
+        if (!top4.includes(f) && top4.length < 4) top4.push(f);
+    });
 
     let buttonsHtml = top4.map((j, i) => `<span class="strong-jodi-btn">#${i + 1} Jodi: ${j}</span>`).join("");
 
     document.getElementById("blank-4jodi-prediction").innerHTML = `
         <div style="font-size:11px; margin-bottom:4px;">
-            Position: Row ${r + 1}, Day: <b style="color:var(--gold);">${dayName}</b>
+            Target Position: Row <b>${r + 1}</b> | Day: <b style="color:var(--gold);">${dayName}</b>
         </div>
         <div>${buttonsHtml}</div>
     `;
