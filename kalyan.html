@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalyan Pro AI – Visual Pattern & Ank-Ganit Engine</title>
+    <title>Kalyan Pro AI – Visual Pattern Engine</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -83,7 +83,6 @@
         .day-ank-table th { background: #0f172a; color: var(--gold); border: 1px solid #334155; padding: 4px; }
         .day-ank-table td { border: 1px solid #334155; padding: 4px; text-align: center; color: #00ff88; }
 
-        .cut-badge { background: var(--red); color: #fff; border-radius: 4px; padding: 2px 5px; font-weight: bold; font-size: 10px; }
         .trend-badge { background: var(--purple); color: #fff; padding: 3px 6px; border-radius: 6px; font-size: 11px; font-weight: bold; }
 
         .explanation-box {
@@ -236,7 +235,6 @@ function draw(){
  if(activeMark) setTimeout(() => drawLines("mainCanvas", document.getElementById("tbl")), 50);
  
  calculateDayFrequency();
- calculateCutAnk();
  updateTrendIndicator();
 }
 
@@ -245,7 +243,6 @@ function updateCell(r, c, el) {
     data[r][c] = val;
     el.innerText = val;
     calculateDayFrequency();
-    calculateCutAnk();
     updateTrendIndicator();
 }
 
@@ -450,33 +447,6 @@ function calculateDayFrequency() {
 
     html += `</tr></table>`;
     document.getElementById("day-freq-analysis").innerHTML = html;
-}
-
-function calculateCutAnk() {
-    let ankCounts = Array(10).fill(0);
-    let totalAnk = 0;
-
-    data.forEach(row => {
-        row.forEach(val => {
-            if (val && val !== "**" && val.length === 2) {
-                ankCounts[parseInt(val[0])]++;
-                ankCounts[parseInt(val[1])]++;
-                totalAnk += 2;
-            }
-        });
-    });
-
-    if(totalAnk === 0) return;
-
-    let cutAnks = [];
-    ankCounts.forEach((cnt, ank) => {
-        let prob = (cnt / totalAnk) * 100;
-        if(prob < 6.5) cutAnks.push(ank);
-    });
-
-    document.getElementById("cut-ank").innerHTML = cutAnks.length 
-        ? `<span class="cut-badge">REJECT</span> <b>Low Ank:</b> ${cutAnks.join(", ")}`
-        : "<b style='color:#00ff88;'>All Ank Balanced</b>";
 }
 
 function autoScanPatterns() {
