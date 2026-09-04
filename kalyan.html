@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalyan Pro AI – Multi-Jodi Sync Engine</title>
+    <title>Kalyan Pro AI – Deep 8-Row Pattern Engine</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -103,7 +103,7 @@
 
 <div id="home-screen">
     <h1 class="hero-title">Kalyan PRO AI</h1>
-    <p class="hero-sub">VISUAL PATTERN & ANK-GANIT HYBRID ENGINE</p>
+    <p class="hero-sub">DEEP 8-ROW PATTERN MATCHING ENGINE</p>
     <button class="enter-btn" onclick="startApp()">START ANALYSIS</button>
 </div>
 
@@ -119,7 +119,7 @@
         
         <button onclick="document.getElementById('csv').click()" style="background:#444; color:white;">📂 CSV</button>
         <button onclick="addRow()" style="background:#0284c7; color:white;">➕ ADD</button>
-        <button onclick="autoScanPatterns()" style="background:var(--purple); color:white;">🔍 SCAN</button>
+        <button onclick="autoScanPatterns()" style="background:var(--purple); color:white;">🔍 SCAN (8+ ROW)</button>
         <button onclick="saveData()" style="background:#28a745; color:white;">💾 SAVE</button>
         <button onclick="exportData()" style="background:#eab308; color:#000;">📥 EXPORT</button>
         <button onclick="document.getElementById('importJson').click()" style="background:#06b6d4; color:white;">📤 IMPORT</button>
@@ -139,7 +139,7 @@
             <div id="blank-4jodi-prediction"><i style="color:#94a3b8; font-size:11px;">किसी भी (**) ब्लैंक सेल पर क्लिक करें...</i></div>
         </div>
         <div class="card">
-            <h3>✔ Check Lines (Strict Relative Matches)</h3>
+            <h3>✔ Check Lines (8+ Row Deep Match)</h3>
             <div id="checks" style="font-size:11px;">Click blank cell...</div>
         </div>
         <div class="card">
@@ -160,7 +160,7 @@
 <div class="overlay" id="overlay" onclick="closePopup()"></div>
 <div id="popup">
     <button onclick="closePopup()" style="float:right; background:#000; color:white; padding:3px 6px;">CLOSE</button>
-    <h4 style="margin: 0 0 8px 0; font-size: 12px;">Pattern View</h4>
+    <h4 style="margin: 0 0 8px 0; font-size: 12px;">8+ Row Pattern View</h4>
     <center>
         <div class="table-container" style="border: 1px solid #ddd; max-width: 100%; overflow-x: auto;">
             <canvas id="popCanvas"></canvas>
@@ -196,6 +196,12 @@ const defaultData = [
     ["10","20","30","40","50","60"],
     ["15","25","35","45","55","65"],
     ["12","27","62","77","18","81"],
+    ["11","22","33","44","55","66"],
+    ["13","24","35","46","57","68"],
+    ["14","25","36","47","58","69"],
+    ["15","26","37","48","59","60"],
+    ["16","27","38","49","50","61"],
+    ["17","28","39","40","51","62"],
     ["**","**","**","**","**","**"]
 ];
 
@@ -268,24 +274,27 @@ function handleCellClick(r, c, val) {
         highlightedFam = (highlightedFam === fam(val)) ? null : fam(val);
         draw();
     } else {
-        scanOffsetRow = r - 3;
-        make2JodiCrossPattern(r, c);
+        scanOffsetRow = Math.max(0, r - 8);
+        make2JodiCrossPatternDeep(r, c);
         predictFourStrongJodiesForBlankCell(r, c);
     }
 }
 
-// =========== STRICT RELATIVE POSITIONAL PATTERN MATCHING ===========
-function make2JodiCrossPattern(blankR, blankC) {
+// =========== DEEP 8-ROW PATTERN MATCHING ENGINE ===========
+function make2JodiCrossPatternDeep(blankR, blankC) {
     targetCol = blankC;
     let pickedNodes = [];
     
-    // Pick 2 valid jodies relative to current blank row position
-    let maxLookback = Math.max(0, blankR - 8);
-    for (let i = blankR - 1; i >= maxLookback; i--) {
+    // Lookback at least 8 to 12 rows above
+    let lookbackLimit = 8;
+    let minLookbackRow = Math.max(0, blankR - lookbackLimit);
+    
+    // Collect up to 3 valid jodies spread across at least 8 rows above
+    for (let i = blankR - 1; i >= minLookbackRow; i--) {
         for (let j = 0; j < 6; j++) {
             if (data[i][j] !== "**") {
-                if (pickedNodes.length === 0 || pickedNodes[0].col !== j) {
-                    // dRow and dCol preserve exact positional direction
+                // Ensure nodes are not all on the same column
+                if (pickedNodes.length === 0 || pickedNodes[pickedNodes.length - 1].col !== j || (blankR - i) >= 4) {
                     pickedNodes.push({ 
                         dRow: blankR - i, 
                         dCol: blankC - j, 
@@ -294,35 +303,35 @@ function make2JodiCrossPattern(blankR, blankC) {
                     });
                 }
             }
-            if (pickedNodes.length === 2) break;
+            if (pickedNodes.length === 3) break;
         }
-        if (pickedNodes.length === 2) break;
+        if (pickedNodes.length === 3) break;
     }
 
+    // Fallback if less than 8 rows or few items available
     if (pickedNodes.length < 2) {
-        makePattern(blankR, blankC);
+        makePatternDeep(blankR, blankC);
         return;
     }
 
-    let maxDRow = Math.max(pickedNodes[0].dRow, pickedNodes[1].dRow);
+    let maxDRow = Math.max(...pickedNodes.map(n => n.dRow));
     let shape = Array(maxDRow + 1).fill(0).map(() => Array(6).fill(0));
     
-    shape[maxDRow][blankC] = 1; // Target Cell Marker
+    shape[maxDRow][blankC] = 1; // Target Blank Cell Marker
     pickedNodes.forEach(node => {
         shape[maxDRow - node.dRow][node.col] = 1;
     });
 
-    search2JodiPatternInHistoryStrict(shape, pickedNodes, blankR, blankC);
+    searchPatternInHistoryDeep(shape, pickedNodes, blankR, blankC);
 }
 
-function search2JodiPatternInHistoryStrict(shape, pickedNodes, currentBlankR, currentBlankC) {
+function searchPatternInHistoryDeep(shape, pickedNodes, currentBlankR, currentBlankC) {
     let matches = [];
     let shapeLen = shape.length;
 
-    // Scan backwards through historic records
     for (let r = 0; r <= data.length - shapeLen; r++) {
         let historicalTargetRow = r + shapeLen - 1;
-        if (historicalTargetRow === currentBlankR) continue; // skip current active target
+        if (historicalTargetRow === currentBlankR) continue;
 
         let isMatch = true;
         for (let node of pickedNodes) {
@@ -332,7 +341,6 @@ function search2JodiPatternInHistoryStrict(shape, pickedNodes, currentBlankR, cu
             if (histRow < 0 || histRow >= data.length) { isMatch = false; break; }
             let historicalVal = data[histRow][histCol];
             
-            // Check Exact Value, Palti or Family match in identical position
             if (!smartMatch(historicalVal, node.val)) {
                 isMatch = false;
                 break;
@@ -346,6 +354,28 @@ function search2JodiPatternInHistoryStrict(shape, pickedNodes, currentBlankR, cu
 
     showChecks(shape, matches);
     draw();
+}
+
+function makePatternDeep(r, c){
+ targetCol = c;
+ let shape = Array(9).fill(0).map(() => Array(6).fill(0)); 
+ let matchCount = 0;
+ let startRow = Math.max(0, r - 8);
+
+ // Mandatory 8-row search window
+ for(let i = r - 1; i >= startRow; i--){
+    for(let j = 0; j < 6; j++){
+      if(data[i][j] != "**"){
+        if(matchCount < 3){ 
+          shape[i - startRow][j] = 1;
+          matchCount++;
+        }
+      }
+    }
+    if(matchCount >= 3) break; 
+ }
+ shape[r - startRow][c] = 1; // Blank cell marker
+ searchPatternInHistoryDeep(shape, [], r, c);
 }
 
 function predictFourStrongJodiesForBlankCell(r, c) {
@@ -516,59 +546,20 @@ function calculateDayFrequency() {
 
 function autoScanPatterns() {
     let totalRows = data.length;
-    if(totalRows < 3) { alert("और डेटा चाहिए!"); return; }
+    if(totalRows < 8) { alert("कम से कम 8+ Rows डेटा चाहिए!"); return; }
     let blankRow = totalRows - 1;
-    scanOffsetRow = blankRow - 3;
-    make2JodiCrossPattern(blankRow, 0);
-}
-
-function makePattern(r,c){
- targetCol=c; let base="**";
- for(let i=r;i>=0;i--){ if(data[i][c]!="**"){base=data[i][c]; break;}}
- if(base=="**") return;
-
- let shape = Array(9).fill(0).map(() => Array(6).fill(0)); 
- let matchCount = 0;
- let startRow = Math.max(0, r-8);
-
- for(let i = r; i >= startRow; i--){
-    for(let j = 0; j < 6; j++){
-      if(data[i][j] != "**" && smartMatch(data[i][j], base)){
-        if(matchCount < 3){ 
-          shape[i - startRow][j] = 1;
-          matchCount++;
-        }
-      }
-    }
-    if(matchCount >= 3) break; 
- }
- searchPattern(shape, base);
-}
-
-function searchPattern(shape,base){
- let lastMatches=[];
- for(let i=0; i<=data.length-shape.length; i++){
-  let ok=true;
-  for(let k=0; k<shape.length; k++){
-   for(let j=0; j<6; j++){ if(shape[k][j] && !smartMatch(data[i+k][j],base)){ok=false; break;}}
-   if(!ok) break;
-  }
-  if(!ok) continue;
-  lastMatches.push({index:i});
- }
- showChecks(shape, lastMatches);
- draw();
+    make2JodiCrossPatternDeep(blankRow, 0);
 }
 
 function showChecks(shape, matches){
  document.getElementById("checks").innerHTML="";
  if (matches.length === 0) {
-     document.getElementById("checks").innerHTML = "<i style='color:#94a3b8;'>No cross-pattern match found.</i>";
+     document.getElementById("checks").innerHTML = "<i style='color:#94a3b8;'>8+ Row upper pattern match not found.</i>";
  }
  matches.forEach((m,i)=>{
   let d = document.createElement("div");
   d.style = "background:#2a2a2a; margin:4px 0; padding:6px; cursor:pointer; border-radius:6px; font-size:11px; border-left:3px solid #0084ff;";
-  d.innerText = `Match Line Found at Row ${m.index + 1}`;
+  d.innerText = `8+ Row Match Line Found at Row ${m.index + 1}`;
   d.onclick = () => { activeMark={start:m.index, shape:shape}; draw(); showOne(shape, m.index); };
   document.getElementById("checks").appendChild(d);
  });
