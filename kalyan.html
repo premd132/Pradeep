@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalyan Pro AI – Sync Engine</title>
+    <title>Kalyan Pro AI – Multi-Jodi Sync Engine</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -40,7 +40,6 @@
             justify-content: center; border: 1px solid rgba(255,255,255,0.1); 
         }
 
-        /* Mobile Responsive Table Wrapper */
         .chart-wrapper {
             width: 100%;
             overflow-x: auto;
@@ -127,7 +126,6 @@
         <button onclick="clearData()" style="background:#dc3545; color:white;">🗑️ CLEAR</button>
     </div>
 
-    <!-- Mobile Scroll Container Fix -->
     <div class="chart-wrapper">
         <div class="table-container" id="printable-chart">
             <canvas id="mainCanvas"></canvas>
@@ -141,7 +139,7 @@
             <div id="blank-4jodi-prediction"><i style="color:#94a3b8; font-size:11px;">किसी भी (**) ब्लैंक सेल पर क्लिक करें...</i></div>
         </div>
         <div class="card">
-            <h3>✔ Matches Found</h3>
+            <h3>✔ Check Lines (2-Jodi Matches)</h3>
             <div id="checks" style="font-size:11px;">Click blank cell...</div>
         </div>
         <div class="card">
@@ -271,9 +269,73 @@ function handleCellClick(r, c, val) {
         draw();
     } else {
         scanOffsetRow = r - 3;
-        makePattern(r, c);
+        make2JodiCrossPattern(r, c);
         predictFourStrongJodiesForBlankCell(r, c);
     }
+}
+
+// =========== 2-JODI MULTI-DAY CROSS SYNC PATTERN FORMULA ===========
+function make2JodiCrossPattern(blankR, blankC) {
+    targetCol = blankC;
+    let pickedNodes = [];
+    
+    // Look up to 7 rows above for 2 distinct valid jodies across different days
+    let maxLookback = Math.max(0, blankR - 7);
+    for (let i = blankR - 1; i >= maxLookback; i--) {
+        for (let j = 0; j < 6; j++) {
+            if (data[i][j] !== "**") {
+                // Ensure second jodi comes from a different day
+                if (pickedNodes.length === 0 || pickedNodes[0].col !== j) {
+                    pickedNodes.push({ rowRel: blankR - i, col: j, val: data[i][j] });
+                }
+            }
+            if (pickedNodes.length === 2) break;
+        }
+        if (pickedNodes.length === 2) break;
+    }
+
+    if (pickedNodes.length < 2) {
+        // Fallback to standard scanner if less than 2 jodies found
+        makePattern(blankR, blankC);
+        return;
+    }
+
+    // Build pattern shape dynamically relative to blank cell
+    let maxRelRow = Math.max(pickedNodes[0].rowRel, pickedNodes[1].rowRel);
+    let shape = Array(maxRelRow + 1).fill(0).map(() => Array(6).fill(0));
+    
+    shape[0][blankC] = 1; // Target Blank Cell Position
+    pickedNodes.forEach(node => {
+        shape[node.rowRel][node.col] = 1;
+    });
+
+    search2JodiPatternInHistory(shape, pickedNodes, blankR);
+}
+
+function search2JodiPatternInHistory(shape, pickedNodes, currentBlankR) {
+    let matches = [];
+    let shapeLen = shape.length;
+
+    for (let r = 0; r <= data.length - shapeLen; r++) {
+        // Skip current blank row context
+        if (r + shapeLen - 1 === currentBlankR) continue;
+
+        let isMatch = true;
+        for (let node of pickedNodes) {
+            let historicalVal = data[r + (shapeLen - 1 - node.rowRel)][node.col];
+            if (!smartMatch(historicalVal, node.val)) {
+                isMatch = false;
+                break;
+            }
+        }
+
+        if (isMatch) {
+            matches.push({ index: r });
+        }
+    }
+
+    showChecks(shape, matches);
+    draw();
 }
 
 function predictFourStrongJodiesForBlankCell(r, c) {
@@ -447,7 +509,7 @@ function autoScanPatterns() {
     if(totalRows < 3) { alert("और डेटा चाहिए!"); return; }
     let blankRow = totalRows - 1;
     scanOffsetRow = blankRow - 3;
-    makePattern(blankRow, 0);
+    make2JodiCrossPattern(blankRow, 0);
 }
 
 function makePattern(r,c){
@@ -490,10 +552,13 @@ function searchPattern(shape,base){
 
 function showChecks(shape, matches){
  document.getElementById("checks").innerHTML="";
+ if (matches.length === 0) {
+     document.getElementById("checks").innerHTML = "<i style='color:#94a3b8;'>No cross-pattern match found.</i>";
+ }
  matches.forEach((m,i)=>{
   let d = document.createElement("div");
   d.style = "background:#2a2a2a; margin:4px 0; padding:6px; cursor:pointer; border-radius:6px; font-size:11px; border-left:3px solid #0084ff;";
-  d.innerText = `Match Found at Row ${m.index + 1}`;
+  d.innerText = `Match Line Found at Row ${m.index + 1}`;
   d.onclick = () => { activeMark={start:m.index, shape:shape}; draw(); showOne(shape, m.index); };
   document.getElementById("checks").appendChild(d);
  });
@@ -531,7 +596,7 @@ function updateAI(shape, matches){
  
  let pool = [];
  matches.forEach(m => {
-  let nextR = m.index + shape.length;
+  let nextR = m.index + shape.length - 1;
   if(nextR < data.length && data[nextR][targetCol] != "**") pool.push(data[nextR][targetCol]);
  });
  document.getElementById("future").innerHTML = pool.length ? `<b>Probable Next:</b> ${[...new Set(pool)].join(" , ")}` : "Analyzing...";
