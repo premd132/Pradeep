@@ -290,6 +290,7 @@ const FAMILY = {
  "45":["04","09","40","45","54","59","90","95"]
 };
 
+// Mon to Sat Column Mapping (0: MON, 1: TUE, 2: WED, 3: THU, 4: FRI, 5: SAT)
 const DAY_PLANETS = {
     0: { name: "सोमवार (चंद्रमा)", ank: [2, 7] },
     1: { name: "मंगलवार (मंगल)", ank: [1, 9] },
@@ -482,7 +483,7 @@ function calculate90PercentStrongJodies(targetRow, targetCol) {
     `;
 }
 
-// ASTROLOGY & NUMEROLOGY ENGINE (2 Subh Ank + 2 Subh Jodi + DOB Integration)
+// DYNAMIC ASTROLOGY & NUMEROLOGY ENGINE (Per Day Calculation)
 function calculateAstroNumerology(targetRow, targetCol) {
     let dayInfo = DAY_PLANETS[targetCol] || { name: "ज्योतिष", ank: [1, 6] };
     let prevJodi = (targetRow > 0) ? data[targetRow - 1][targetCol] : "25";
@@ -491,15 +492,26 @@ function calculateAstroNumerology(targetRow, targetCol) {
     if (prevJodi !== "**") {
         prevSum = (parseInt(prevJodi[0]) + parseInt(prevJodi[1])) % 10;
     } else {
-        prevSum = 5;
+        prevSum = (targetRow + 1) * 2;
     }
 
-    // Single Digits (Using DOB if available)
-    let subhAnk1 = userMulank !== null ? userMulank : dayInfo.ank[0];
-    let subhAnk2 = userBhagyank !== null ? userBhagyank : (dayInfo.ank[1] + prevSum) % 10;
+    // Dynamic per Day
+    let dayBase1 = dayInfo.ank[0];
+    let dayBase2 = dayInfo.ank[1];
+
+    let subhAnk1, subhAnk2;
+
+    if (userMulank !== null && userBhagyank !== null) {
+        subhAnk1 = (userMulank + dayBase1 + targetCol) % 10;
+        subhAnk2 = (userBhagyank + dayBase2 + prevSum) % 10;
+    } else {
+        subhAnk1 = (dayBase1 + prevSum) % 10;
+        subhAnk2 = (dayBase2 + targetRow + targetCol) % 10;
+    }
+
     if (subhAnk1 === subhAnk2) subhAnk2 = (subhAnk2 + 3) % 10;
 
-    // Astro Jodi Combination
+    // Dynamic Astro Jodi Combination
     let astroJodi1 = `${subhAnk1}${subhAnk2}`;
     let astroJodi2 = `${subhAnk2}${(subhAnk1 + 5) % 10}`;
 
