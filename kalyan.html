@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalyan Ultra AI – Full Pattern Engine</title>
+    <title>Kalyan Ultra AI – Cloud Data Engine</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     
     <!-- Firebase Compat SDKs -->
@@ -101,11 +101,8 @@
         .day-ank-table th { background: #0f172a; color: var(--gold); border: 1px solid #334155; padding: 4px; }
         .day-ank-table td { border: 1px solid #334155; padding: 4px; text-align: center; color: #00ff88; font-weight: bold; }
 
-        .explanation-box {
-            font-size: 11px; line-height: 1.6; color: #cbd5e1; background: #0f172a; padding: 10px; border-radius: 6px; border-left: 3px solid var(--gold); margin-top: 6px;
-        }
         .alert-box {
-            font-size: 11px; line-height: 1.6; color: #fff; background: #831843; padding: 10px; border-radius: 6px; border-left: 4px solid var(--pink); margin-top: 6px;
+            font-size: 11px; line-height: 1.6; color: #fff; background: #065f46; padding: 10px; border-radius: 6px; border-left: 4px solid #10b981; margin-top: 6px;
         }
 
         #popup { 
@@ -122,7 +119,7 @@
 
 <div id="home-screen">
     <h1 class="hero-title">Kalyan PRO AI</h1>
-    <p class="hero-sub">RESTORED 3-TOUCH PATTERN & CLOUD ENGINE</p>
+    <p class="hero-sub">CLOUD INTEGRATED DATA ENGINE</p>
     <button class="enter-btn" onclick="startApp()">START APP</button>
 </div>
 
@@ -136,7 +133,6 @@
         <input type="file" id="csv" accept=".csv" style="display:none">
         <button onclick="document.getElementById('csv').click()" style="background:#444; color:white;">📂 CSV</button>
         <button onclick="addRow()" style="background:#0284c7; color:white;">➕ ADD ROW</button>
-        <button onclick="autoAiSchemeSearch()" style="background:var(--pink); color:white;">🎯 SCAN DAY BLANK</button>
         <button onclick="saveToCloud()" style="background:#a855f7; color:white;">☁️ SAVE TO CLOUD</button>
         <button onclick="loadFromCloud()" style="background:#0284c7; color:white;">🔄 LOAD FROM CLOUD</button>
         <button onclick="clearActivePattern()" style="background:#eab308; color:black;">❌ CLEAR SELECTION</button>
@@ -153,11 +149,11 @@
 
     <div class="dashboard">
         <div class="card" style="grid-column: 1 / -1; border-top: 3px solid var(--pink);">
-            <h3>🚨 Day-by-Day Cross Line Analysis</h3>
-            <div id="scheme-output">किसी भी दिन के <b>खाली खाने (Blank Cell)</b> पर क्लिक करें।</div>
+            <h3>🚨 Pattern Output</h3>
+            <div id="scheme-output">किसी भी सेल पर क्लिक करें।</div>
         </div>
         <div class="card">
-            <h3>✔ Matches Found (Popup View)</h3>
+            <h3>✔ Matches Found</h3>
             <div id="checks"></div>
         </div>
         <div class="card">
@@ -199,6 +195,7 @@ const firebaseConfig = {
     appId: "YOUR_APP_ID"
 };
 
+// Initialize Firebase
 let db = null;
 try {
     firebase.initializeApp(firebaseConfig);
@@ -206,11 +203,11 @@ try {
     document.getElementById("sync-indicator").className = "sync-status sync-online";
     document.getElementById("sync-indicator").innerText = "☁️ Cloud Connected";
 } catch(e) {
-    console.warn("Firebase config not set.");
+    console.warn("Firebase config is missing or invalid. Operating in local mode.");
 }
 
-// ==================== APP DATA & UTILS ====================
-const STORAGE_KEY = "pdata_Kalyan_v21_full";
+// ==================== LOCAL APP ENGINE ====================
+const STORAGE_KEY = "pdata_Kalyan_v20_cloud";
 const DAY_NAMES = ["सोमवार", "मंगलवार", "बुधवार", "गुरुवार", "शुक्रवार", "शनिवार"];
 
 let targetCol = null;
@@ -240,8 +237,6 @@ const defaultData = [
     ["15","25","35","45","55","65"],
     ["12","27","62","77","18","81"],
     ["10","20","30","40","50","60"],
-    ["15","25","35","45","55","65"],
-    ["12","27","62","77","18","81"],
     ["**","**","**","**","**","**"]
 ];
 
@@ -251,7 +246,7 @@ function startApp() {
     document.getElementById('home-screen').style.display = 'none';
     document.getElementById('main-app').style.display = 'block';
     draw();
-    if(db) loadFromCloud();
+    if(db) loadFromCloud(); // Auto-load on app start if cloud is available
 }
 
 function fam(v){for(let k in FAMILY) if(FAMILY[k].includes(v)) return k; return "NA";}
@@ -259,7 +254,6 @@ function palti(v){return v[1]+v[0];}
 function smartMatch(a1,b1){ if(a1=="**"||b1=="**") return false; return a1===b1 || palti(a1)===b1 || fam(a1)===fam(b1); }
 function isRedJodi(v){ return v!=="**" && (v[0]===v[1] || Math.abs(parseInt(v[0])-parseInt(v[1]))===5); }
 
-// ==================== RENDERING ENGINE ====================
 function draw(){
  let h="<tr><th>MON</th><th>TUE</th><th>WED</th><th>THU</th><th>FRI</th><th>SAT</th><th class='action-th'>❌</th></tr>";
  data.forEach((r,ri)=>{
@@ -280,210 +274,71 @@ function draw(){
  });
  document.getElementById("tbl").innerHTML=h;
  
- setTimeout(() => {
-     drawLines("mainCanvas", document.getElementById("tbl"));
- }, 60);
- 
  calculateDayFrequency();
 }
 
-function drawLines(cvsId, tblEl) {
-    const cvs = document.getElementById(cvsId);
-    if(!cvs || !tblEl) return;
-    const ctx = cvs.getContext("2d");
-    cvs.width = tblEl.offsetWidth; cvs.height = tblEl.offsetHeight;
-    ctx.clearRect(0,0,cvs.width,cvs.height);
-
-    let targetCells = [];
-    
-    if(crossHighlightCells.length > 0) {
-        crossHighlightCells.forEach(pt => {
-            let el = tblEl.querySelector(`td[data-row="${pt.r}"][data-col="${pt.c}"]`);
-            if(el) targetCells.push(el);
-        });
-    } else {
-        const circles = tblEl.querySelectorAll(".circle");
-        circles.forEach(c => targetCells.push(c));
+// ==================== CLOUD DATABASE ACTIONS ====================
+function saveToCloud() {
+    if(!db) {
+        alert("Firebase Config setup nahi hai!");
+        return;
     }
-
-    if(targetCells.length < 2) return;
-    
-    const tRect = tblEl.getBoundingClientRect();
-    ctx.strokeStyle = "#ec4899"; 
-    ctx.lineWidth = 3;
-    ctx.lineCap = "round";
-    ctx.shadowColor = 'rgba(236, 72, 153, 0.9)';
-    ctx.shadowBlur = 10;
-    
-    ctx.beginPath();
-    targetCells.forEach((c, idx) => {
-        const r = c.getBoundingClientRect();
-        const x = r.left - tRect.left + r.width/2;
-        const y = r.top - tRect.top + r.height/2;
-        if(idx === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
+    db.ref("kalyan_records/chartData").set(data)
+    .then(() => {
+        alert("☁️ Data Cloud par safaltapoorvak Save ho gaya!");
+        saveData(); // Save locally as well
+    })
+    .catch((err) => {
+        alert("Cloud Error: " + err.message);
     });
-    ctx.stroke();
 }
 
-// ==================== 3-TOUCH FORMULA SCANNER ====================
+function loadFromCloud() {
+    if(!db) return;
+    db.ref("kalyan_records/chartData").once("value")
+    .then((snapshot) => {
+        if(snapshot.exists()) {
+            data = snapshot.val();
+            saveData();
+            draw();
+            console.log("Cloud Data Synced");
+        }
+    })
+    .catch((err) => console.error("Cloud fetch error:", err));
+}
+
 function analyzeBlankCellScheme(rowIdx, colIdx) {
     selectedBlank = { r: rowIdx, c: colIdx };
     activeMark = null;
     crossHighlightCells = [];
     
     let targetDay = DAY_NAMES[colIdx];
-    let matches3Touch = [];
+    let historicalJodis = {};
 
-    for(let r = 0; r < rowIdx - 2; r++) {
-        let prevDayCol = colIdx > 0 ? colIdx - 1 : colIdx + 1;
-        let touch1 = data[r][colIdx]; 
-        let touch2 = data[r + 1][prevDayCol];
-        let touch3 = data[r + 2][colIdx];
-
-        if(touch1 !== "**" && touch2 !== "**" && touch3 !== "**") {
-            let currentDiag = data[rowIdx - 1][prevDayCol];
-            if(currentDiag !== "**" && smartMatch(currentDiag, touch2)) {
-                matches3Touch.push({
-                    t1_row: r, t1_col: colIdx,
-                    t2_row: r + 1, t2_col: prevDayCol,
-                    t3_row: r + 2, t3_col: colIdx,
-                    targetJodi: touch3,
-                    diagJodi: touch2
-                });
-            }
+    for(let r = 0; r < rowIdx; r++) {
+        let cellVal = data[r][colIdx];
+        if(cellVal !== "**" && cellVal.length === 2) {
+            historicalJodis[cellVal] = (historicalJodis[cellVal] || 0) + 1;
         }
     }
 
-    let outputHtml = "";
-    if(matches3Touch.length > 0) {
-        let bestMatch = matches3Touch[matches3Touch.length - 1];
-        
-        crossHighlightCells = [
-            { r: bestMatch.t1_row, c: bestMatch.t1_col },
-            { r: bestMatch.t2_row, c: bestMatch.t2_col },
-            { r: rowIdx, c: colIdx }
-        ];
+    let sortedJodis = Object.keys(historicalJodis).sort((a, b) => historicalJodis[b] - historicalJodis[a]);
+    let top4Jodis = sortedJodis.slice(0, 4);
 
-        let targetFam = FAMILY[fam(bestMatch.targetJodi)] || [bestMatch.targetJodi];
+    while(top4Jodis.length < 4) top4Jodis.push("--");
 
-        outputHtml = `
-            <div class="alert-box">
-                🔥 <b>[${targetDay}] 3-TOUCH CROSS MATCH FOUND!</b><br>
-                Touch 1: Row ${bestMatch.t1_row + 1} (${DAY_NAMES[bestMatch.t1_col]})<br>
-                Touch 2 (Diagonal): Row ${bestMatch.t2_row + 1} (${DAY_NAMES[bestMatch.t2_col]}) - Jodi: ${bestMatch.diagJodi}<br>
-                🎯 <b>Target Pair for ${targetDay}: <span style="color:var(--gold); font-size:16px;">${bestMatch.targetJodi}</span> (Family: ${targetFam.join(",")})</b>
+    let outputHtml = `
+        <div class="alert-box">
+            🎯 <b>[${targetDay} - Row ${rowIdx + 1}] TOP 4 HISTORICAL MATCHES:</b><br>
+            <div style="display: flex; gap: 8px; margin-top: 8px;">
+                ${top4Jodis.map(j => `<span style="background:#0f172a; color:#00ff88; padding:5px 10px; border-radius:5px; font-weight:bold; font-size:14px; border:1px solid #10b981;">${j}</span>`).join('')}
             </div>
-        `;
-    } else {
-        outputHtml = `
-            <div class="explanation-box">
-                ℹ️ <b>[${targetDay} - Row ${rowIdx + 1}]:</b><br>
-                डायरेक्ट 3-Touch क्रॉस मैच नहीं मिला।
-            </div>
-        `;
-    }
+        </div>
+    `;
 
     document.getElementById("scheme-output").innerHTML = outputHtml;
+    document.getElementById("future").innerHTML = `<b>Top 4 Pattern Jodis:</b> ${top4Jodis.join(", ")}`;
     draw();
-    makeDynamicPatternForCell(rowIdx, colIdx);
-}
-
-function makeDynamicPatternForCell(r, c) {
-    targetCol = c;
-    let base = data[r][c] !== "**" ? data[r][c] : null;
-    
-    if(!base) {
-        for(let i = c - 1; i >= 0; i--) {
-            if(data[r][i] !== "**") { base = data[r][i]; break; }
-        }
-    }
-    if(!base && r > 0) {
-        for(let i = 5; i >= 0; i--) {
-            if(data[r-1][i] !== "**") { base = data[r-1][i]; break; }
-        }
-    }
-    if(!base) return;
-
-    let shape = Array(12).fill(0).map(() => Array(6).fill(0));
-    let matchCount = 0;
-    let startRow = Math.max(0, r - 11);
-
-    for(let i = r; i >= startRow; i--) {
-        for(let j = 0; j < 6; j++) {
-            if(data[i][j] !== "**" && smartMatch(data[i][j], base)) {
-                if(matchCount < 3) {
-                    shape[i - startRow][j] = 1;
-                    matchCount++;
-                }
-            }
-        }
-        if(matchCount >= 3) break;
-    }
-    searchPattern(shape, base);
-}
-
-function searchPattern(shape, base){
- let lastMatches=[];
- for(let i=0; i<=data.length-shape.length; i++){
-  let ok=true;
-  for(let k=0; k<shape.length; k++){
-   for(let j=0; j<6; j++){ if(shape[k][j] && !smartMatch(data[i+k][j],base)){ok=false; break;}}
-   if(!ok) break;
-  }
-  if(!ok) continue;
-  lastMatches.push({index:i});
- }
- showChecks(shape, lastMatches);
-}
-
-function showChecks(shape, matches){
- document.getElementById("checks").innerHTML="";
- matches.forEach((m)=>{
-  let d = document.createElement("div");
-  d.style = "background:#2a2a2a; margin:4px 0; padding:6px; cursor:pointer; border-radius:6px; font-size:11px; border-left:3px solid #ec4899;";
-  d.innerText = `🔍 Match at Row ${m.index + 1} (Click to View Popup)`;
-  d.onclick = () => { activeMark={start:m.index, shape:shape}; crossHighlightCells = []; draw(); showOne(shape, m.index); };
-  document.getElementById("checks").appendChild(d);
- });
- updateAI(shape, matches);
-}
-
-function showOne(shape, idx){
- let html="<table id='popTbl' style='color:#000'>";
- for(let i=0; i<shape.length; i++){
-  html+="<tr>";
-  data[idx+i].forEach((v,j)=>{
-   html+=`<td class="${shape[i][j]?'circle':''}">${v}</td>`;
-  });
-  html+="</tr>";
- }
- document.getElementById("popData").innerHTML=html+"</table>";
- document.getElementById("popup").style.display="block";
- document.getElementById("overlay").style.display="block";
- setTimeout(()=>drawLines("popCanvas", document.getElementById("popTbl")), 120);
-}
-
-function updateAI(shape, matches){
- let jc={}, dc={};
- matches.forEach(m=>{
-  for(let i=0; i<shape.length; i++){
-   for(let j=0; j<6; j++){
-    if(shape[i][j]){
-     let v = data[m.index+i][j];
-     jc[v]=(jc[v]||0)+1; dc[v[0]]=(dc[v[0]]||0)+1; dc[v[1]]=(dc[v[1]]||0)+1;
-    }
-   }
-  }
- });
- document.getElementById("ai").innerHTML = `<b>Top Pattern Pairs:</b> ${Object.keys(jc).slice(0,3).join(", ") || "-"}<br><b>Common Digits:</b> ${Object.keys(dc).slice(0,3).join(", ") || "-"}`;
- 
- let pool = [];
- matches.forEach(m => {
-  let nextR = m.index + shape.length;
-  if(nextR < data.length && data[nextR][targetCol] != "**") pool.push(data[nextR][targetCol]);
- });
- document.getElementById("future").innerHTML = pool.length ? `<b>Target Completion Pairs:</b> ${[...new Set(pool)].join(" , ")}` : "Analyzing...";
 }
 
 function calculateDayFrequency() {
@@ -514,61 +369,79 @@ function calculateDayFrequency() {
     document.getElementById("day-freq-analysis").innerHTML = html;
 }
 
-function autoAiSchemeSearch() {
-    let blankFound = null;
-    for(let r = data.length - 1; r >= 0; r--) {
-        for(let c = 0; c < 6; c++) {
-            if(data[r][c] === "**") {
-                blankFound = { r: r, c: c };
-                break;
-            }
-        }
-        if(blankFound) break;
-    }
+function clearActivePattern() {
+    activeMark = null;
+    selectedBlank = null;
+    highlightedFam = null;
+    crossHighlightCells = [];
+    draw();
+}
 
-    if(blankFound) {
-        analyzeBlankCellScheme(blankFound.r, blankFound.c);
+function updateCell(r, c, el) {
+    let val = norm(el.innerText.trim());
+    data[r][c] = val;
+    el.innerText = val;
+    calculateDayFrequency();
+}
+
+function checkEnter(e, el) {
+    if (e.key === "Enter") {
+        e.preventDefault();
+        el.blur();
+    }
+}
+
+function deleteRow(rIndex) {
+    if (confirm(`Row ${rIndex + 1} को डिलीट करें?`)) {
+        data.splice(rIndex, 1);
+        draw();
+    }
+}
+
+function handleCellClick(r, c, val) {
+    if(val !== "**") {
+        highlightedFam = (highlightedFam === fam(val)) ? null : fam(val);
+        draw();
     } else {
-        alert("कोई खाली सेल (**) नहीं मिला!");
+        analyzeBlankCellScheme(r, c);
     }
 }
 
-// ==================== CLOUD DATABASE ACTIONS ====================
-function saveToCloud() {
-    if(!db) return alert("Firebase Config missing!");
-    db.ref("kalyan_records/chartData").set(data)
-    .then(() => { alert("☁️ Data Cloud Par Save ho gaya!"); saveData(); })
-    .catch(err => alert("Error: " + err.message));
+function isPartOfPattern(ri, ci){
+    if(!activeMark) return false;
+    let i = ri - activeMark.start;
+    return (i >= 0 && i < activeMark.shape.length && activeMark.shape[i][ci]);
 }
 
-function loadFromCloud() {
-    if(!db) return;
-    db.ref("kalyan_records/chartData").once("value")
-    .then(snapshot => {
-        if(snapshot.exists()) { data = snapshot.val(); saveData(); draw(); }
-    });
-}
-
-function closePopup(){ document.getElementById("popup").style.display="none"; document.getElementById("overlay").style.display="none"; }
-function clearActivePattern() { activeMark = null; selectedBlank = null; highlightedFam = null; crossHighlightCells = []; draw(); }
-function updateCell(r, c, el) { data[r][c] = norm(el.innerText.trim()); el.innerText = data[r][c]; calculateDayFrequency(); }
-function checkEnter(e, el) { if (e.key === "Enter") { e.preventDefault(); el.blur(); } }
-function deleteRow(rIndex) { if (confirm(`Row ${rIndex + 1} को डिलीट करें?`)) { data.splice(rIndex, 1); draw(); } }
-function handleCellClick(r, c, val) { if(val !== "**") { highlightedFam = (highlightedFam === fam(val)) ? null : fam(val); makeDynamicPatternForCell(r, c); } else { analyzeBlankCellScheme(r, c); } }
-function isPartOfPattern(ri, ci){ if(!activeMark) return false; let i = ri - activeMark.start; return (i >= 0 && i < activeMark.shape.length && activeMark.shape[i][ci]); }
 function addRow(){ data.push(["**","**","**","**","**","**"]); draw(); }
-function saveData(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
-function clearData(){ if(confirm("Clear all data?")){ localStorage.removeItem(STORAGE_KEY); data = defaultData; activeMark = null; selectedBlank = null; crossHighlightCells = []; draw(); } }
+
+function saveData(){ 
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); 
+}
+
+function clearData(){ 
+    if(confirm("Permanently clear all data?")){ 
+        localStorage.removeItem(STORAGE_KEY); 
+        data = defaultData; 
+        activeMark = null;
+        selectedBlank = null;
+        crossHighlightCells = [];
+        draw(); 
+    }
+}
 
 document.getElementById("csv").onchange = e => {
     let fr = new FileReader();
     fr.onload = () => {
-        data = fr.result.split('\n').filter(l=>l.trim()).map(l => {
+        let lines = fr.result.split('\n');
+        data = lines.filter(l=>l.trim()).map(l => {
             let row = l.split(',').map(v => norm(v.trim()));
             while(row.length < 6) row.push("**"); 
             return row.slice(0,6);
         });
-        saveData(); draw(); alert("CSV Loaded!");
+        saveData();
+        draw();
+        alert("CSV Loaded!");
     };
     fr.readAsText(e.target.files[0]);
 };
