@@ -139,7 +139,7 @@
             <div id="blank-4jodi-prediction"><i style="color:#94a3b8; font-size:11px;">किसी भी (**) ब्लैंक सेल पर क्लिक करें...</i></div>
         </div>
         <div class="card">
-            <h3>✔ Check Lines (2-Jodi Matches)</h3>
+            <h3>✔ Check Lines (Strict Relative Matches)</h3>
             <div id="checks" style="font-size:11px;">Click blank cell...</div>
         </div>
         <div class="card">
@@ -274,19 +274,24 @@ function handleCellClick(r, c, val) {
     }
 }
 
-// =========== 2-JODI MULTI-DAY CROSS SYNC PATTERN FORMULA ===========
+// =========== STRICT RELATIVE POSITIONAL PATTERN MATCHING ===========
 function make2JodiCrossPattern(blankR, blankC) {
     targetCol = blankC;
     let pickedNodes = [];
     
-    // Look up to 7 rows above for 2 distinct valid jodies across different days
-    let maxLookback = Math.max(0, blankR - 7);
+    // Pick 2 valid jodies relative to current blank row position
+    let maxLookback = Math.max(0, blankR - 8);
     for (let i = blankR - 1; i >= maxLookback; i--) {
         for (let j = 0; j < 6; j++) {
             if (data[i][j] !== "**") {
-                // Ensure second jodi comes from a different day
                 if (pickedNodes.length === 0 || pickedNodes[0].col !== j) {
-                    pickedNodes.push({ rowRel: blankR - i, col: j, val: data[i][j] });
+                    // dRow and dCol preserve exact positional direction
+                    pickedNodes.push({ 
+                        dRow: blankR - i, 
+                        dCol: blankC - j, 
+                        col: j,
+                        val: data[i][j] 
+                    });
                 }
             }
             if (pickedNodes.length === 2) break;
@@ -295,34 +300,39 @@ function make2JodiCrossPattern(blankR, blankC) {
     }
 
     if (pickedNodes.length < 2) {
-        // Fallback to standard scanner if less than 2 jodies found
         makePattern(blankR, blankC);
         return;
     }
 
-    // Build pattern shape dynamically relative to blank cell
-    let maxRelRow = Math.max(pickedNodes[0].rowRel, pickedNodes[1].rowRel);
-    let shape = Array(maxRelRow + 1).fill(0).map(() => Array(6).fill(0));
+    let maxDRow = Math.max(pickedNodes[0].dRow, pickedNodes[1].dRow);
+    let shape = Array(maxDRow + 1).fill(0).map(() => Array(6).fill(0));
     
-    shape[0][blankC] = 1; // Target Blank Cell Position
+    shape[maxDRow][blankC] = 1; // Target Cell Marker
     pickedNodes.forEach(node => {
-        shape[node.rowRel][node.col] = 1;
+        shape[maxDRow - node.dRow][node.col] = 1;
     });
 
-    search2JodiPatternInHistory(shape, pickedNodes, blankR);
+    search2JodiPatternInHistoryStrict(shape, pickedNodes, blankR, blankC);
 }
 
-function search2JodiPatternInHistory(shape, pickedNodes, currentBlankR) {
+function search2JodiPatternInHistoryStrict(shape, pickedNodes, currentBlankR, currentBlankC) {
     let matches = [];
     let shapeLen = shape.length;
 
+    // Scan backwards through historic records
     for (let r = 0; r <= data.length - shapeLen; r++) {
-        // Skip current blank row context
-        if (r + shapeLen - 1 === currentBlankR) continue;
+        let historicalTargetRow = r + shapeLen - 1;
+        if (historicalTargetRow === currentBlankR) continue; // skip current active target
 
         let isMatch = true;
         for (let node of pickedNodes) {
-            let historicalVal = data[r + (shapeLen - 1 - node.rowRel)][node.col];
+            let histRow = historicalTargetRow - node.dRow;
+            let histCol = node.col;
+
+            if (histRow < 0 || histRow >= data.length) { isMatch = false; break; }
+            let historicalVal = data[histRow][histCol];
+            
+            // Check Exact Value, Palti or Family match in identical position
             if (!smartMatch(historicalVal, node.val)) {
                 isMatch = false;
                 break;
@@ -446,7 +456,7 @@ document.getElementById("importJson").onchange = e => {
             data = JSON.parse(fr.result);
             saveDataSilent();
             draw();
-            alert("मोबाइल पर डेटा सफलतापूर्वक इम्पोर्ट हो गया!");
+            alert("डेटा इम्पोर्ट हो गया!");
         } catch (err) {
             alert("गलत फाइल फॉर्मेट!");
         }
