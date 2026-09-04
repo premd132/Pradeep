@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalyan Pro AI – Sync Engine</title>
+    <title>Kalyan Pro AI – Super Strong Engine</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -90,9 +90,16 @@
         .trend-badge { background: var(--purple); color: #fff; padding: 3px 6px; border-radius: 6px; font-size: 10px; font-weight: bold; }
 
         .strong-jodi-btn {
-            display: inline-block; background: linear-gradient(135deg, #00ff88, #0084ff); color: #000;
-            padding: 5px 10px; margin: 3px; border-radius: 6px; font-weight: 800; font-size: 12px;
-            box-shadow: 0 3px 8px rgba(0,255,136,0.3);
+            display: inline-block; 
+            background: linear-gradient(135deg, #ffd700, #ff8800); 
+            color: #000;
+            padding: 6px 12px; 
+            margin: 4px; 
+            border-radius: 8px; 
+            font-weight: 900; 
+            font-size: 13px;
+            box-shadow: 0 4px 10px rgba(255, 215, 0, 0.4);
+            letter-spacing: 0.5px;
         }
 
         #popup { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 12px; display: none; z-index: 100; padding: 10px; color: #000; width: 95%; max-width: 360px; }
@@ -104,7 +111,7 @@
 
 <div id="home-screen">
     <h1 class="hero-title">Kalyan PRO AI</h1>
-    <p class="hero-sub">VISUAL PATTERN & ANK-GANIT HYBRID ENGINE</p>
+    <p class="hero-sub">SUPER STRONG FULL RECORD SCANNER</p>
     <button class="enter-btn" onclick="startApp()">START ANALYSIS</button>
 </div>
 
@@ -135,8 +142,8 @@
     </div>
 
     <div class="dashboard">
-        <div class="card" style="grid-column: 1 / -1; background: #0f172a; border-top: 3px solid #00ff88;">
-            <h3>🧮 Blank Cell Prediction: Top 4 Strong Jodies</h3>
+        <div class="card" style="grid-column: 1 / -1; background: #0f172a; border-top: 3px solid #ffd700;">
+            <h3>🔥 Full Record AI Power: TOP 4 STRONG JODIES</h3>
             <div id="blank-4jodi-prediction"><i style="color:#94a3b8; font-size:11px;">किसी भी (**) ब्लैंक सेल पर क्लिक करें...</i></div>
         </div>
         <div class="card">
@@ -275,7 +282,7 @@ function handleCellClick(r, c, val) {
     }
 }
 
-// FULL HISTORY RECORD BASED SCANNING FOR TOP 4 STRONG JODIES
+// ULTRA HIGH PRECISION STRENGTH CALCULATOR
 function predictFourStrongJodiesForBlankCell(r, c) {
     const days = ["MON", "TUE", "WED", "THU", "FRI", "SAT"];
     let dayName = days[c];
@@ -286,61 +293,56 @@ function predictFourStrongJodiesForBlankCell(r, c) {
         candidateScores[jodi] = (candidateScores[jodi] || 0) + score;
     }
 
-    // 1. Scan Entire Historical Database from Row 0 to Row (r-1)
+    // 1. Scan 100% History with Heavy Recency Weighting
     let totalAvailableRows = r; 
     for (let rowIdx = 0; rowIdx < r; rowIdx++) {
         let val = data[rowIdx][c];
         if (val !== "**") {
-            // Recency Weight: हाल के डेटा को प्राथमिकता + ऐतिहासिक डेटा का सम्पूर्ण विश्लेषण
-            let recencyFactor = (rowIdx + 1) / (totalAvailableRows || 1);
-            let historicalWeight = 1.5 + (2.5 * recencyFactor);
+            // हाल के हफ्तों (Recent Weeks) को ज्यादा वेटेज (Multiplier upto 5x)
+            let recencyRatio = (rowIdx + 1) / (totalAvailableRows || 1);
+            let baseScore = 2.0 + (3.0 * recencyRatio);
             
-            addScore(val, historicalWeight);              // Direct Jodi
-            addScore(palti(val), historicalWeight * 0.7);  // Palti
+            addScore(val, baseScore * 2.0);            // Direct Historical Jodi
+            addScore(palti(val), baseScore * 1.5);      // Palti Jodi
             
-            // Family Jodi weighting
             let fKey = fam(val);
             if (FAMILY[fKey]) {
                 FAMILY[fKey].forEach(fMember => {
-                    addScore(fMember, historicalWeight * 0.4);
+                    addScore(fMember, baseScore * 0.8); // Family Members
                 });
             }
         }
     }
 
-    // 2. Immediate Direct-Above Row Relation (Row r-1)
+    // 2. Direct Line & Touch Analysis (Upper Row Relation)
     if (r > 0) {
         let aboveVal = data[r - 1][c];
         if (aboveVal !== "**") {
-            addScore(aboveVal, 5.0);        // Repeat Chance
-            addScore(palti(aboveVal), 4.0);  // Palti Chance
+            addScore(aboveVal, 10.0);       // Direct Repeat (Super Strong)
+            addScore(palti(aboveVal), 8.0);  // Palti Repeat
             
             let d1 = parseInt(aboveVal[0]), d2 = parseInt(aboveVal[1]);
             let cut1 = (d1 + 5) % 10;
             let cut2 = (d2 + 5) % 10;
             
-            let fullCut = `${cut1}${cut2}`;
-            let halfCut1 = `${cut1}${d2}`;
-            let halfCut2 = `${d1}${cut2}`;
-
-            addScore(fullCut, 3.5);     // Full Cut
-            addScore(halfCut1, 3.0);    // Half Cut 1
-            addScore(halfCut2, 3.0);    // Half Cut 2
+            addScore(`${cut1}${cut2}`, 7.0);  // Full Cut
+            addScore(`${cut1}${d2}`, 6.0);    // Half Cut 1
+            addScore(`${d1}${cut2}`, 6.0);    // Half Cut 2
         }
 
-        // Cross Day Connection (Previous Day in same Row r-1)
+        // Cross-Day Relation (Previous Day Jodi)
         if (c > 0 && data[r - 1][c - 1] !== "**") {
-            let prevDayVal = data[r - 1][c - 1];
-            addScore(prevDayVal, 2.5);
-            addScore(palti(prevDayVal), 2.0);
+            let prevVal = data[r - 1][c - 1];
+            addScore(prevVal, 5.0);
+            addScore(palti(prevVal), 4.0);
         }
     }
 
-    // 3. Extract Top 4 Highest Scoring Jodies
+    // 3. Extract TOP 4 Absolute Strongest Jodies
     let sortedJodies = Object.keys(candidateScores).sort((a, b) => candidateScores[b] - candidateScores[a]);
     let top4 = sortedJodies.slice(0, 4);
 
-    // Fallback Generator if chart records are very small
+    // Fallback logic if database is very short
     if (top4.length < 4) {
         let fallbackSeed = (r > 0 && data[r-1][c] !== "**") ? data[r-1][c] : "12";
         let f1 = parseInt(fallbackSeed[0]), f2 = parseInt(fallbackSeed[1]);
@@ -355,11 +357,11 @@ function predictFourStrongJodiesForBlankCell(r, c) {
         });
     }
 
-    let buttonsHtml = top4.map((j, i) => `<span class="strong-jodi-btn">#${i + 1} Jodi: ${j}</span>`).join("");
+    let buttonsHtml = top4.map((j, i) => `<span class="strong-jodi-btn">💥 #${i + 1} Strong: ${j}</span>`).join("");
 
     document.getElementById("blank-4jodi-prediction").innerHTML = `
-        <div style="font-size:11px; margin-bottom:4px;">
-            Target: Row <b>${r + 1}</b> | Day: <b style="color:var(--gold);">${dayName}</b> (Analyzed ${r} Rows)
+        <div style="font-size:11px; margin-bottom:6px; color:#cbd5e1;">
+            Target Row: <b>${r + 1}</b> | Day: <b style="color:var(--gold);">${dayName}</b> | Total Scanned: <b>${r} Rows</b>
         </div>
         <div>${buttonsHtml}</div>
     `;
@@ -399,7 +401,7 @@ function addRow(){ data.push(["**","**","**","**","**","**"]); saveDataSilent();
 
 function saveData(){ 
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); 
-    alert("डेटा सेव हो गया!");
+    alert("डेटा सफलतापूर्वक सेव हो गया!");
 }
 
 function saveDataSilent(){
@@ -423,9 +425,9 @@ document.getElementById("importJson").onchange = e => {
             data = JSON.parse(fr.result);
             saveDataSilent();
             draw();
-            alert("मोबाइल पर डेटा सफलतापूर्वक इम्पोर्ट हो गया!");
+            alert("डेटा इम्पोर्ट हो गया!");
         } catch (err) {
-            alert("गलत फाइल फॉर्मेट!");
+            alert("फाइल फॉर्मेट गलत है!");
         }
     };
     fr.readAsText(e.target.files[0]);
@@ -483,7 +485,7 @@ function calculateDayFrequency() {
 
 function autoScanPatterns() {
     let totalRows = data.length;
-    if(totalRows < 3) { alert("और डेटा चाहिए!"); return; }
+    if(totalRows < 3) { alert("कम से कम 3 रो का डेटा चाहिए!"); return; }
     let blankRow = totalRows - 1;
     scanOffsetRow = blankRow - 3;
     makePattern(blankRow, 0);
@@ -589,7 +591,7 @@ document.getElementById("csv").onchange = e => {
         });
         saveDataSilent();
         draw();
-        alert("CSV Loaded!");
+        alert("CSV डेटा इम्पोर्ट हो गया!");
     };
     fr.readAsText(e.target.files[0]);
 };
