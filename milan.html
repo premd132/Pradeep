@@ -41,7 +41,6 @@
             justify-content: center; border: 1px solid rgba(255,255,255,0.1); 
         }
 
-        /* DOB Card Styling */
         .dob-card {
             background: var(--panel);
             padding: 12px;
@@ -198,7 +197,8 @@
     </div>
 
     <div class="toolbar">
-        <input type="file" id="csv" accept=".csv" style="display:none">
+        <!-- FIXED: Accept all text/csv types so android file manager doesn't disable file selection -->
+        <input type="file" id="csv" accept=".csv, .txt, text/csv, text/plain" style="display:none">
         <input type="file" id="importJson" accept=".json" style="display:none">
         
         <button onclick="scrollToBottom()" class="btn-scroll">👇 Bottom</button>
@@ -211,7 +211,6 @@
         <button onclick="clearData()" style="background:#dc3545; color:white;">🗑️ CLEAR</button>
     </div>
 
-    <!-- Date of Birth Calculator Section -->
     <div class="dob-card">
         <h4 style="margin:0; color:var(--astro-orange); font-size:12px;">🎂 Date of Birth Calculator</h4>
         <div class="dob-input-group">
@@ -232,19 +231,16 @@
     </div>
 
     <div class="dashboard" id="dashboard-section">
-        <!-- 2 Strong Jodi & 2 Subh Jodi Section -->
         <div class="card" style="grid-column: 1 / -1; background: #0f172a; border-top: 3px solid #00ff88;">
             <h3>🎯 2 Strong Jodi & 2 Subh Jodi Prediction</h3>
             <div id="blank-4jodi-prediction"><i style="color:#94a3b8; font-size:11px;">किसी भी (**) ब्लैंक सेल पर क्लिक करें...</i></div>
         </div>
 
-        <!-- Open to Close Frequency Ank Panel -->
         <div class="card" style="grid-column: 1 / -1; background: #111827; border-top: 3px solid #0284c7;">
             <h3 style="color: #38bdf8;">📊 Top 4 Open to Close Ank (6-Day Mon-Sat Frequency)</h3>
             <div id="otc-ank-prediction"><i style="color:#94a3b8; font-size:11px;">ब्लैंक सेल पर क्लिक करें...</i></div>
         </div>
 
-        <!-- Astrology Special Panel -->
         <div class="card" style="grid-column: 1 / -1; background: #1a0f2e; border-top: 3px solid var(--astro-orange);">
             <h3 style="color: var(--astro-orange);">🔮 Jyotish Numerology: 2 Subh Ank</h3>
             <div id="astro-prediction"><i style="color:#94a3b8; font-size:11px;">ब्लैंक सेल पर क्लिक करके ज्योतिष गणना देखें...</i></div>
@@ -306,7 +302,6 @@ const FAMILY = {
  "45":["04","09","40","45","54","59","90","95"]
 };
 
-// 6 Days Mapping (0: MON, 1: TUE, 2: WED, 3: THU, 4: FRI, 5: SAT)
 const DAY_PLANETS = {
     0: { name: "सोमवार (चंद्रमा)", ank: [2, 7] },
     1: { name: "मंगलवार (मंगल)", ank: [1, 9] },
@@ -316,7 +311,6 @@ const DAY_PLANETS = {
     5: { name: "शनिवार (शनि)", ank: [8, 9] }
 };
 
-// Default 6-day columns for Milan
 const defaultData = [
     ["10","20","30","40","50","60"],
     ["15","25","35","45","55","65"],
@@ -745,20 +739,36 @@ function updateAI(shape, matches){
 
 function closePopup(){ document.getElementById("popup").style.display="none"; document.getElementById("overlay").style.display="none"; }
 
+// FIXED CSV IMPORT HANDLER
 document.getElementById("csv").onchange = e => {
+    let file = e.target.files[0];
+    if(!file) return;
+
     let fr = new FileReader();
     fr.onload = () => {
-        let lines = fr.result.split('\n');
-        data = lines.filter(l=>l.trim()).map(l => {
-            let row = l.split(',').map(v => norm(v.trim()));
-            while(row.length < 6) row.push("**"); 
-            return row.slice(0,6);
-        });
-        saveDataSilent();
-        draw();
-        alert("Milan 6-Day CSV Imported!");
+        try {
+            // Split by CRLF or LF to handle windows/unix csv formatted files
+            let lines = fr.result.split(/\r?\n/);
+            let parsedData = lines.filter(l => l.trim().length > 0).map(l => {
+                // Split by comma or tab or space
+                let row = l.split(/[,;\t]/).map(v => norm(v.trim()));
+                while(row.length < 6) row.push("**"); 
+                return row.slice(0, 6);
+            });
+            
+            if(parsedData.length > 0) {
+                data = parsedData;
+                saveDataSilent();
+                draw();
+                alert("Milan 6-Day CSV Imported Successfully!");
+            } else {
+                alert("CSV फाइल में डेटा नहीं मिला!");
+            }
+        } catch(err) {
+            alert("CSV फाइल रीड करने में समस्या आई: " + err.message);
+        }
     };
-    fr.readAsText(e.target.files[0]);
+    fr.readAsText(file);
 };
 </script>
 </body>
