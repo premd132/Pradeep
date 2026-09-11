@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Milan Pro AI – Ultimate Pattern Matcher & DOB Tool</title>
+    <title>Milan Pro AI – 6 Days Pattern & Astro Engine</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -113,7 +113,6 @@
         }
         .fam-highlight { background: rgba(255, 215, 0, 0.4) !important; font-weight: 900; }
         .red-jodi { color: #ff0000 !important; font-weight: 900; }
-        .scan-zone { background: rgba(255, 215, 0, 0.15) !important; }
 
         canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 4; }
 
@@ -187,15 +186,15 @@
 
 <div id="home-screen">
     <h1 class="hero-title">Milan PRO AI</h1>
-    <p class="hero-sub">ULTIMATE 90% PATTERN SCANNER & ASTRO ENGINE</p>
+    <p class="hero-sub">6 DAYS (MON-SAT) PATTERN SCANNER & ASTRO ENGINE</p>
     <button class="enter-btn" onclick="startApp()">START ANALYSIS</button>
 </div>
 
 <div id="main-app">
     <div id="top-anchor"></div>
     <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom:5px;">
-        <h3 style="color:var(--gold); margin:0; font-size: 1rem;">Milan Ultra Visual AI</h3>
-        <span id="trend-bar" style="background:var(--purple); color:#fff; padding:3px 6px; border-radius:6px; font-size:10px; font-weight:bold;">Accuracy Mode: 90% + Astro</span>
+        <h3 style="color:var(--gold); margin:0; font-size: 1rem;">Milan 6-Day Visual AI</h3>
+        <span id="trend-bar" style="background:var(--purple); color:#fff; padding:3px 6px; border-radius:6px; font-size:10px; font-weight:bold;">6-Day Mon-Sat Mode</span>
     </div>
 
     <div class="toolbar">
@@ -220,8 +219,8 @@
             <button onclick="calculateUserDOB()" style="background:var(--astro-orange); color:#fff;">Calculate Digit</button>
         </div>
         <div class="dob-res-box" id="dobResDisplay">
-            <div>Mulank (Day): <b id="mulankRes" style="color:var(--gold);">-</b></div>
-            <div>Bhagyank (Total): <b id="bhagyankRes" style="color:var(--gold);">-</b></div>
+            <div>Mulank: <b id="mulankRes" style="color:var(--gold);">-</b></div>
+            <div>Bhagyank: <b id="bhagyankRes" style="color:var(--gold);">-</b></div>
         </div>
     </div>
 
@@ -241,7 +240,7 @@
 
         <!-- Open to Close Frequency Ank Panel -->
         <div class="card" style="grid-column: 1 / -1; background: #111827; border-top: 3px solid #0284c7;">
-            <h3 style="color: #38bdf8;">📊 Top 4 Open to Close Ank (Most Frequent Day Digits)</h3>
+            <h3 style="color: #38bdf8;">📊 Top 4 Open to Close Ank (6-Day Mon-Sat Frequency)</h3>
             <div id="otc-ank-prediction"><i style="color:#94a3b8; font-size:11px;">ब्लैंक सेल पर क्लिक करें...</i></div>
         </div>
 
@@ -284,7 +283,7 @@
 </div>
 
 <script>
-const STORAGE_KEY = "pdata_Milan_v10";
+const STORAGE_KEY = "pdata_Milan_6Day_v10";
 let targetCol = null;
 let activeMark = null;
 let highlightedFam = null;
@@ -307,7 +306,7 @@ const FAMILY = {
  "45":["04","09","40","45","54","59","90","95"]
 };
 
-// Mon to Sat Column Mapping (0: MON, 1: TUE, 2: WED, 3: THU, 4: FRI, 5: SAT)
+// 6 Days Mapping (0: MON, 1: TUE, 2: WED, 3: THU, 4: FRI, 5: SAT)
 const DAY_PLANETS = {
     0: { name: "सोमवार (चंद्रमा)", ank: [2, 7] },
     1: { name: "मंगलवार (मंगल)", ank: [1, 9] },
@@ -317,6 +316,7 @@ const DAY_PLANETS = {
     5: { name: "शनिवार (शनि)", ank: [8, 9] }
 };
 
+// Default 6-day columns for Milan
 const defaultData = [
     ["10","20","30","40","50","60"],
     ["15","25","35","45","55","65"],
@@ -340,7 +340,6 @@ function scrollToBottom() {
     window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 }
 
-// DOB Single Digit Logic
 function reduceToSingleDigit(num) {
     while (num > 9) {
         num = num.toString().split('').reduce((acc, curr) => acc + parseInt(curr), 0);
@@ -354,7 +353,7 @@ function calculateUserDOB() {
         alert("Kripya Date of Birth chunein!");
         return;
     }
-    const parts = dobVal.split('-'); // YYYY-MM-DD
+    const parts = dobVal.split('-');
     const day = parts[2];
     const month = parts[1];
     const year = parts[0];
@@ -421,7 +420,6 @@ function handleCellClick(r, c, val) {
     }
 }
 
-// OPEN TO CLOSE (OTC) 4 ANK FREQUENCY ANALYSIS ENGINE
 function calculateOTCAnkFrequency(targetCol) {
     let days = ["MON", "TUE", "WED", "THU", "FRI", "SAT"];
     let dayName = days[targetCol];
@@ -429,7 +427,6 @@ function calculateOTCAnkFrequency(targetCol) {
 
     for (let i = 0; i < 10; i++) digitCounts[i] = 0;
 
-    // Scan all rows for the selected day column
     data.forEach(row => {
         let val = row[targetCol];
         if (val && val !== "**" && val.length === 2) {
@@ -440,7 +437,6 @@ function calculateOTCAnkFrequency(targetCol) {
         }
     });
 
-    // Sort digits by frequency
     let sortedDigits = Object.keys(digitCounts).sort((a, b) => digitCounts[b] - digitCounts[a]);
     let top4Ank = sortedDigits.slice(0, 4);
 
@@ -456,11 +452,9 @@ function calculateOTCAnkFrequency(targetCol) {
     `;
 }
 
-// 2 STRONG JODI & 2 SUBH JODI COMBINED ANALYSIS ENGINE
 function calculate90PercentStrongJodies(targetRow, targetCol) {
     let days = ["MON", "TUE", "WED", "THU", "FRI", "SAT"];
     let dayName = days[targetCol];
-
     let patternScores = {};
 
     function addJodi(jodi, score, reason) {
@@ -518,7 +512,6 @@ function calculate90PercentStrongJodies(targetRow, targetCol) {
         });
     }
 
-    // 2 Strong Jodi HTML
     let strongJodiHtml = top2Strong.map((j, i) => {
         let info = patternScores[j] || { reason: "Pattern Scan" };
         return `
@@ -529,7 +522,6 @@ function calculate90PercentStrongJodies(targetRow, targetCol) {
         `;
     }).join("");
 
-    // Calculate 2 Subh Jodi (Astro)
     let dayInfo = DAY_PLANETS[targetCol] || { name: "ज्योतिष", ank: [1, 6] };
     let prevSum = prevJodiSameCol !== "**" ? (parseInt(prevJodiSameCol[0]) + parseInt(prevJodiSameCol[1])) % 10 : (targetRow + 1) * 2;
     let sAnk1 = (userMulank !== null) ? (userMulank + dayInfo.ank[0] + targetCol) % 10 : (dayInfo.ank[0] + prevSum) % 10;
@@ -558,7 +550,6 @@ function calculate90PercentStrongJodies(targetRow, targetCol) {
     `;
 }
 
-// DYNAMIC ASTROLOGY & NUMEROLOGY ENGINE (Per Day Calculation)
 function calculateAstroNumerology(targetRow, targetCol) {
     let dayInfo = DAY_PLANETS[targetCol] || { name: "ज्योतिष", ank: [1, 6] };
     let prevJodi = (targetRow > 0) ? data[targetRow - 1][targetCol] : "25";
@@ -637,7 +628,7 @@ function exportData() {
     let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
     let downloadAnchor = document.createElement('a');
     downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", "Milan_data_backup.json");
+    downloadAnchor.setAttribute("download", "milan_6day_backup.json");
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     downloadAnchor.remove();
@@ -765,7 +756,7 @@ document.getElementById("csv").onchange = e => {
         });
         saveDataSilent();
         draw();
-        alert("CSV Imported!");
+        alert("Milan 6-Day CSV Imported!");
     };
     fr.readAsText(e.target.files[0]);
 };
