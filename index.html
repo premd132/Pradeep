@@ -18,22 +18,60 @@
             --card: #1e293b; 
         }
         * { box-sizing: border-box; font-family: 'Poppins', sans-serif; margin: 0; padding: 0; }
-        body { background: var(--bg); color: white; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
-
-        .header { text-align: center; margin-bottom: 30px; margin-top: 20px; }
-        .header h1 { font-size: 2.5rem; color: var(--gold); letter-spacing: 2px; text-shadow: 0 0 20px rgba(255,215,0,0.3); }
-        .header p { color: #8a99af; font-size: 0.9rem; }
-
-        .user-info { background: var(--card); padding: 15px 25px; border-radius: 50px; border: 1px solid #334155; margin-bottom: 30px; display: flex; align-items: center; gap: 15px; }
-        .user-dot { width: 10px; height: 10px; background: var(--green); border-radius: 50%; box-shadow: 0 0 10px var(--green); }
-
-        .menu-grid { display: grid; grid-template-columns: 1fr; gap: 20px; width: 100%; max-width: 400px; }
-        .menu-card { 
-            text-decoration: none; background: var(--card); padding: 25px; border-radius: 20px;
-            display: flex; align-items: center; justify-content: space-between;
-            transition: all 0.3s ease; border-left: 5px solid transparent;
+        
+        body { 
+            background: var(--bg); 
+            color: white; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-height: 100vh; 
+            padding: 15px; 
+            -webkit-tap-highlight-color: transparent;
         }
-        .menu-card:active { transform: scale(0.96); }
+
+        .header { text-align: center; margin-bottom: 20px; margin-top: 10px; }
+        .header h1 { 
+            font-size: clamp(1.8rem, 6vw, 2.5rem); 
+            color: var(--gold); 
+            letter-spacing: 1.5px; 
+            text-shadow: 0 0 15px rgba(255,215,0,0.3); 
+        }
+        .header p { color: #8a99af; font-size: 0.85rem; margin-top: 4px; }
+
+        .user-info { 
+            background: var(--card); 
+            padding: 10px 20px; 
+            border-radius: 50px; 
+            border: 1px solid #334155; 
+            margin-bottom: 20px; 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+        }
+        .user-dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; box-shadow: 0 0 8px var(--green); }
+
+        .menu-grid { 
+            display: flex;
+            flex-direction: column;
+            gap: 12px; 
+            width: 100%; 
+            max-width: 420px; 
+        }
+
+        .menu-card { 
+            text-decoration: none; 
+            background: var(--card); 
+            padding: 16px 20px; 
+            border-radius: 16px;
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between;
+            transition: transform 0.2s ease, background-color 0.2s ease; 
+            border-left: 5px solid transparent;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .menu-card:active { transform: scale(0.97); background: #26334d; }
         
         .kalyan-card { border-left-color: var(--gold); }
         .milan-card { border-left-color: var(--blue); }
@@ -43,11 +81,27 @@
         .prabhatday-card { border-left-color: var(--pink); }
         .prabhatnight-card { border-left-color: var(--purple); }
 
-        .card-info h2 { font-size: 1.3rem; margin-bottom: 5px; color: #fff; }
-        .card-info span { font-size: 0.8rem; color: #8a99af; }
-        .arrow { font-size: 1.5rem; color: #334155; }
+        .card-info h2 { font-size: 1.1rem; margin-bottom: 2px; color: #fff; font-weight: 700; }
+        .card-info span { font-size: 0.75rem; color: #8a99af; display: block; }
+        .arrow { font-size: 1.2rem; color: #64748b; }
 
-        .footer { margin-top: auto; padding: 20px; text-align: center; color: #475569; font-size: 0.8rem; border-top: 1px solid #1e293b; width: 100%; }
+        .footer { 
+            margin-top: 30px; 
+            padding: 15px; 
+            text-align: center; 
+            color: #475569; 
+            font-size: 0.75rem; 
+            border-top: 1px solid #1e293b; 
+            width: 100%; 
+        }
+
+        /* Small Phones Tweaks */
+        @media (max-width: 360px) {
+            body { padding: 10px; }
+            .menu-card { padding: 14px 16px; }
+            .card-info h2 { font-size: 1rem; }
+            .card-info span { font-size: 0.7rem; }
+        }
     </style>
 </head>
 <body>
@@ -59,7 +113,7 @@
 
     <div class="user-info">
         <div class="user-dot"></div>
-        <span style="font-weight: 600; font-size: 0.9rem;">Presenting by Ai </span>
+        <span style="font-weight: 600; font-size: 0.85rem;">Presenting by Ai</span>
     </div>
 
     <div class="menu-grid">
