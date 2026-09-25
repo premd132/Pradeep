@@ -6,7 +6,17 @@
     <title>Kalyan Pro AI - Home</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #ffd700; --blue: #0084ff; --green: #00ff88; --bg: #0f172a; --card: #1e293b; }
+        :root { 
+            --gold: #ffd700; 
+            --blue: #0084ff; 
+            --green: #00ff88; 
+            --orange: #ff7700;
+            --purple: #a855f7;
+            --pink: #ec4899;
+            --cyan: #06b6d4;
+            --bg: #0f172a; 
+            --card: #1e293b; 
+        }
         * { box-sizing: border-box; font-family: 'Poppins', sans-serif; margin: 0; padding: 0; }
         body { background: var(--bg); color: white; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
 
@@ -27,7 +37,11 @@
         
         .kalyan-card { border-left-color: var(--gold); }
         .milan-card { border-left-color: var(--blue); }
+        .milanday-card { border-left-color: var(--cyan); }
         .rajdhani-card { border-left-color: var(--green); }
+        .rajdhaniday-card { border-left-color: var(--orange); }
+        .prabhatday-card { border-left-color: var(--pink); }
+        .prabhatnight-card { border-left-color: var(--purple); }
 
         .card-info h2 { font-size: 1.3rem; margin-bottom: 5px; color: #fff; }
         .card-info span { font-size: 0.8rem; color: #8a99af; }
@@ -49,6 +63,7 @@
     </div>
 
     <div class="menu-grid">
+        <!-- KALYAN -->
         <a href="kalyan.html" class="menu-card kalyan-card">
             <div class="card-info">
                 <h2 style="color: var(--gold);">KALYAN</h2>
@@ -57,18 +72,56 @@
             <div class="arrow">➔</div>
         </a>
 
+        <!-- MILAN NIGHT -->
         <a href="milan.html" class="menu-card milan-card">
             <div class="card-info">
-                <h2 style="color: var(--blue);">MILAN</h2>
+                <h2 style="color: var(--blue);">MILAN NIGHT</h2>
                 <span>Monday - Saturday (6 Days)</span>
             </div>
             <div class="arrow">➔</div>
         </a>
 
+        <!-- MILAN DAY -->
+        <a href="Milanday.html" class="menu-card milanday-card">
+            <div class="card-info">
+                <h2 style="color: var(--cyan);">MILAN DAY</h2>
+                <span>Monday - Saturday (6 Days)</span>
+            </div>
+            <div class="arrow">➔</div>
+        </a>
+
+        <!-- RAJDHANI NIGHT -->
         <a href="rajdhani.html" class="menu-card rajdhani-card">
             <div class="card-info">
-                <h2 style="color: var(--green);">RAJDHANI</h2>
+                <h2 style="color: var(--green);">RAJDHANI NIGHT</h2>
                 <span>Monday - Friday (5 Days)</span>
+            </div>
+            <div class="arrow">➔</div>
+        </a>
+
+        <!-- RAJDHANI DAY -->
+        <a href="rajdhaniday.html" class="menu-card rajdhaniday-card">
+            <div class="card-info">
+                <h2 style="color: var(--orange);">RAJDHANI DAY</h2>
+                <span>Monday - Friday (5 Days)</span>
+            </div>
+            <div class="arrow">➔</div>
+        </a>
+
+        <!-- PRABHAT DAY -->
+        <a href="Prabhatday.html" class="menu-card prabhatday-card">
+            <div class="card-info">
+                <h2 style="color: var(--pink);">PRABHAT DAY</h2>
+                <span>Monday - Saturday (6 Days)</span>
+            </div>
+            <div class="arrow">➔</div>
+        </a>
+
+        <!-- PRABHAT NIGHT -->
+        <a href="Prabhatnight.html" class="menu-card prabhatnight-card">
+            <div class="card-info">
+                <h2 style="color: var(--purple);">PRABHAT NIGHT</h2>
+                <span>Monday - Saturday (6 Days)</span>
             </div>
             <div class="arrow">➔</div>
         </a>
