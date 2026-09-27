@@ -218,8 +218,8 @@
             <button onclick="calculateAdvancedAstro()" style="background:var(--astro-orange); color:#fff;">गणना करें</button>
         </div>
         <div class="dob-res-box">
-            <span>मूलांक: <b id="mulankRes" style="color:var(--gold);">7</b></span> | 
-            <span>भाग्यांक: <b id="bhagyankRes" style="color:var(--gold);">9</b></span> | 
+            <span>मूलांक: <b id="mulankRes" style="color:var(--gold);">3</b></span> | 
+            <span>भाग्यांक: <b id="bhagyankRes" style="color:var(--gold);">2</b></span> | 
             <span>नामांक (Chaldean): <b id="namankRes" style="color:var(--gold);">5</b></span>
         </div>
     </div>
@@ -301,8 +301,8 @@ const STORAGE_KEY = "pdata_Kalyan_v10";
 let targetCol = null;
 let activeMark = null;
 let highlightedFam = null;
-let userMulank = 7;
-let userBhagyank = 9;
+let userMulank = 3;
+let userBhagyank = 2;
 let userNamank = 5;
 
 // Chaldean Numerology Values Matrix
@@ -407,7 +407,7 @@ function draw(){
 
  data.forEach((r,ri)=>{
   h+=`<tr id="table-row-${ri}">`;
-  h+=`<td class="row-num-td">${ri + 1}</td>`; // ROW NUMBER
+  h+=`<td class="row-num-td">${ri + 1}</td>`;
   r.forEach((c,ci)=>{
    let cls = (activeMark && isPartOfPattern(ri, ci)) ? "circle" : "";
    if(highlightedFam && fam(c) === highlightedFam) cls += " fam-highlight";
@@ -451,7 +451,6 @@ function handleCellClick(r, c, val) {
     }
 }
 
-// OTC FREQUENCY ANALYSIS ENGINE
 function calculateOTCAnkFrequency(targetCol) {
     let days = ["MON", "TUE", "WED", "THU", "FRI", "SAT"];
     let dayName = days[targetCol];
@@ -484,7 +483,6 @@ function calculateOTCAnkFrequency(targetCol) {
     `;
 }
 
-// 2 STRONG JODI & 2 SUBH JODI prediction
 function calculate90PercentStrongJodies(targetRow, targetCol) {
     let days = ["MON", "TUE", "WED", "THU", "FRI", "SAT"];
     let dayName = days[targetCol];
@@ -534,7 +532,6 @@ function calculate90PercentStrongJodies(targetRow, targetCol) {
         `;
     }).join("");
 
-    // Advanced Astro Subh Jodi
     let dayInfo = DAY_PLANETS[targetCol] || { name: "ज्योतिष", ank: [1, 6] };
     let tithiVal = parseInt(document.getElementById('panchangTithi').value || 1);
     
@@ -564,7 +561,6 @@ function calculate90PercentStrongJodies(targetRow, targetCol) {
     `;
 }
 
-// 90% ADVANCED ASTRO & NUMEROLOGY ENGINE
 function calculateAstroNumerology(targetRow, targetCol) {
     let dayInfo = DAY_PLANETS[targetCol] || { name: "ज्योतिष", ank: [1, 6] };
     let tithiVal = parseInt(document.getElementById('panchangTithi').value || 1);
@@ -572,7 +568,6 @@ function calculateAstroNumerology(targetRow, targetCol) {
     
     let prevSum = (prevJodi !== "**") ? (parseInt(prevJodi[0]) + parseInt(prevJodi[1])) % 10 : 5;
 
-    // Advanced Formula: Day Planet + Tithi + Mulank + Bhagyank + Chaldean Namank
     let subhAnk1 = (userMulank + userNamank + dayInfo.ank[0] + tithiVal) % 10;
     let subhAnk2 = (userBhagyank + dayInfo.ank[1] + prevSum + targetRow + 1) % 10;
 
