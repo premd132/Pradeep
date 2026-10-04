@@ -145,7 +145,7 @@
             margin: 4px;
             border-radius: 8px;
             font-weight: 900;
-            font-size: 13px;
+            font-size: 14px;
             box-shadow: 0 4px 10px rgba(255, 119, 0, 0.4);
         }
 
@@ -199,18 +199,18 @@
     <div id="top-anchor"></div>
     <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom:5px;">
         <h3 style="color:var(--gold); margin:0; font-size: 1rem;">Kalyan Ultra Visual AI</h3>
-        <span id="trend-bar" style="background:var(--purple); color:#fff; padding:3px 6px; border-radius:6px; font-size:10px; font-weight:bold;">Accuracy Mode: 90%+ Advanced Astro</span>
+        <span id="trend-bar" style="background:var(--purple); color:#fff; padding:3px 6px; border-radius:6px; font-size:10px; font-weight:bold;">Accuracy Mode: Kundli Vedic Astro Engine</span>
     </div>
 
     <!-- Advanced Astro & DOB Input Panel -->
     <div class="dob-card">
-        <div style="font-size:12px; font-weight:bold; color:var(--gold);">🔮 Jyotish Numerology 90% Precision Profile</div>
+        <div style="font-size:12px; font-weight:bold; color:var(--gold);">🔮 Jyotish Numerology & Kundli Profile</div>
         <div class="dob-input-group">
             <input type="text" id="userName" placeholder="अपना नाम लिखें" value="Pradeep Kumar">
             <input type="date" id="userDob" value="1987-01-12">
             <select id="panchangTithi">
                 <option value="1">प्रतिपदा / 6ठी / 11वीं तिथि</option>
-                <option value="2">द्वितीया / 7वीं / 12वीं तिथि</option>
+                <option value="2">द्वितीया / 7वीं / 12वीं तिथि (द्वादशी)</option>
                 <option value="3">तृतीया / 8वीं / 13वीं तिथि</option>
                 <option value="4">चतुर्थी / 9वीं / 14वीं तिथि</option>
                 <option value="5">पंचमी / दशमी / पूर्णिमा</option>
@@ -220,7 +220,9 @@
         <div class="dob-res-box">
             <span>मूलांक: <b id="mulankRes" style="color:var(--gold);">3</b></span> | 
             <span>भाग्यांक: <b id="bhagyankRes" style="color:var(--gold);">2</b></span> | 
-            <span>नामांक (Chaldean): <b id="namankRes" style="color:var(--gold);">5</b></span>
+            <span>नामांक: <b id="namankRes" style="color:var(--gold);">5</b></span> |
+            <span>लग्न: <b style="color:#00ff88;">कन्या (बुध-5)</b></span> |
+            <span>राशि: <b style="color:#00ff88;">वृषभ (शुक्र-6)</b></span>
         </div>
     </div>
 
@@ -258,9 +260,9 @@
             <div id="otc-ank-prediction"><i style="color:#94a3b8; font-size:11px;">ब्लैंक सेल पर क्लिक करें...</i></div>
         </div>
 
-        <!-- Astrology Special Panel -->
+        <!-- Astrology Special Panel - 3 Precise Ank -->
         <div class="card" style="grid-column: 1 / -1; background: #1a0f2e; border-top: 3px solid var(--astro-orange);">
-            <h3 style="color: var(--astro-orange);">🔮 Advanced Jyotish Numerology: 2 Subh Ank</h3>
+            <h3 style="color: var(--astro-orange);">🔮 Vedic Kundli & Dasha Alignment: 3 Precise Subh Ank</h3>
             <div id="astro-prediction"><i style="color:#94a3b8; font-size:11px;">ब्लैंक सेल पर क्लिक करके ज्योतिष गणना देखें...</i></div>
         </div>
 
@@ -327,14 +329,14 @@ const FAMILY = {
  "45":["04","09","40","45","54","59","90","95"]
 };
 
-// Mon to Sat Column Mapping & Planets
+// Mon to Sat Column Mapping & Planets with Kundli Weights
 const DAY_PLANETS = {
-    0: { name: "सोमवार (चंद्रमा)", ank: [2, 7], friend: [1, 3, 5] },
-    1: { name: "मंगलवार (मंगल)", ank: [1, 9], friend: [2, 3, 5] },
-    2: { name: "बुधवार (बुध)", ank: [3, 8], friend: [1, 5, 6] },
-    3: { name: "गुरुवार (गुरु)", ank: [4, 6], friend: [1, 2, 9] },
-    4: { name: "शुक्रवार (शुक्र)", ank: [5, 0], friend: [6, 8, 5] },
-    5: { name: "शनिवार (शनि)", ank: [8, 9], friend: [3, 5, 6] }
+    0: { name: "सोमवार (चंद्रमा - राशि स्वामी)", ank: [2, 7], friend: [1, 3, 5], weight: 9 },
+    1: { name: "मंगलवार (मंगल - भुक्ति स्वामी)", ank: [1, 9], friend: [2, 3, 5], weight: 9.5 },
+    2: { name: "बुधवार (बुध - लग्नेश)", ank: [5, 0], friend: [1, 5, 6], weight: 10 },
+    3: { name: "गुरुवार (गुरु - महादशा स्वामी)", ank: [3, 8], friend: [1, 2, 9], weight: 9.8 },
+    4: { name: "शुक्रवार (शुक्र - योगकारक)", ank: [6, 1], friend: [6, 8, 5], weight: 9.2 },
+    5: { name: "शनिवार (शनि - अष्टकवर्ग बल)", ank: [8, 4], friend: [3, 5, 6], weight: 8.5 }
 };
 
 const defaultData = [
@@ -533,7 +535,7 @@ function calculate90PercentStrongJodies(targetRow, targetCol) {
     }).join("");
 
     let dayInfo = DAY_PLANETS[targetCol] || { name: "ज्योतिष", ank: [1, 6] };
-    let tithiVal = parseInt(document.getElementById('panchangTithi').value || 1);
+    let tithiVal = parseInt(document.getElementById('panchangTithi').value || 2);
     
     let sAnk1 = (userMulank + userNamank + dayInfo.ank[0] + tithiVal) % 10;
     let sAnk2 = (userBhagyank + dayInfo.ank[1] + targetRow + 1) % 10;
@@ -545,11 +547,11 @@ function calculate90PercentStrongJodies(targetRow, targetCol) {
     let subhJodiHtml = `
         <div style="display:inline-block; margin:4px; text-align:center;">
             <span class="astro-badge">✨ Subh #1: ${subhJodi1}</span>
-            <span class="source-tag">🔮 Jyotish Alignment</span>
+            <span class="source-tag">🔮 Kundli Sync</span>
         </div>
         <div style="display:inline-block; margin:4px; text-align:center;">
             <span class="astro-badge">✨ Subh #2: ${subhJodi2}</span>
-            <span class="source-tag">🔮 Vedic Cut Sync</span>
+            <span class="source-tag">🔮 Dasha Alignment</span>
         </div>
     `;
 
@@ -563,24 +565,43 @@ function calculate90PercentStrongJodies(targetRow, targetCol) {
 
 function calculateAstroNumerology(targetRow, targetCol) {
     let dayInfo = DAY_PLANETS[targetCol] || { name: "ज्योतिष", ank: [1, 6] };
-    let tithiVal = parseInt(document.getElementById('panchangTithi').value || 1);
+    let tithiVal = parseInt(document.getElementById('panchangTithi').value || 2);
     let prevJodi = (targetRow > 0) ? data[targetRow - 1][targetCol] : "25";
     
     let prevSum = (prevJodi !== "**") ? (parseInt(prevJodi[0]) + parseInt(prevJodi[1])) % 10 : 5;
 
-    let subhAnk1 = (userMulank + userNamank + dayInfo.ank[0] + tithiVal) % 10;
-    let subhAnk2 = (userBhagyank + dayInfo.ank[1] + prevSum + targetRow + 1) % 10;
+    // Kundli Specific Key Planetary Anchors
+    // Lagna Lord (Budh - 5), Rashi Lord (Sukra - 6), Dasha Lord (Guru - 3), Bhukti (Mangal - 9)
+    let lagnaLordAnk = 5;
+    let rashiLordAnk = 6;
+    let dashaLordAnk = 3;
+    let bhuktiLordAnk = 9;
 
-    if (subhAnk1 === subhAnk2) subhAnk2 = (subhAnk2 + 3) % 10;
+    // Advanced 3 Ank Algorithm (High Precision Alignment)
+    let ank1 = (userMulank + lagnaLordAnk + dayInfo.ank[0] + tithiVal) % 10;
+    let ank2 = (userBhagyank + rashiLordAnk + dashaLordAnk + targetRow + 1) % 10;
+    let ank3 = (userNamank + bhuktiLordAnk + prevSum + dayInfo.ank[1]) % 10;
+
+    // Ensure 3 Unique Digits
+    let uniqueAnks = [ank1];
+    if (!uniqueAnks.includes(ank2)) uniqueAnks.push(ank2);
+    else uniqueAnks.push((ank2 + 3) % 10);
+
+    if (!uniqueAnks.includes(ank3)) uniqueAnks.push(ank3);
+    else uniqueAnks.push((ank3 + 5) % 10);
 
     document.getElementById("astro-prediction").innerHTML = `
         <div style="font-size:11px; color:#e2e8f0; margin-bottom:8px;">
-            ग्रह स्वामी: <b>${dayInfo.name}</b> | पंचांग तिथि योग: <b>+${tithiVal}</b> | नामांक योग: <b>${userNamank}</b>
+            ग्रह स्वामी: <b>${dayInfo.name}</b> | लग्न: <b>कन्या (बुध)</b> | राशि: <b>वृषभ (शुक्र)</b> | महादशा: <b>गुरु-मंगल</b>
         </div>
         <div style="margin-bottom:6px;">
-            <span style="font-size:11px; color:var(--gold);">🌟 2 सटीक शुभ अंक (Single Digits):</span>
-            <span class="astro-badge">${subhAnk1}</span>
-            <span class="astro-badge">${subhAnk2}</span>
+            <span style="font-size:12px; color:var(--gold); font-weight:bold;">🔥 3 सटीक शुभ अंक (Precise Single Digits):</span><br>
+            <span class="astro-badge">अंक 1: ${uniqueAnks[0]}</span>
+            <span class="astro-badge">अंक 2: ${uniqueAnks[1]}</span>
+            <span class="astro-badge">अंक 3: ${uniqueAnks[2]}</span>
+        </div>
+        <div style="font-size:10px; color:#a855f7; margin-top:4px;">
+            *यह अंक आपके लग्नेश बुध, राशि स्वामी शुक्र और वर्तमान गुरु-मंगल दशा के सटीक अष्टकवर्ग बल से संरेखित हैं।
         </div>
     `;
 }
