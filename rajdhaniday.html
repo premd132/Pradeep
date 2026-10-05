@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Rajdhani Day / Night Pro AI – 5-Day Pattern & Kundli Astro Engine</title>
+    <title>rajdhaniday Pro AI – Ultimate Pattern Matcher & Astro Numerology</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -41,6 +41,7 @@
             justify-content: center; border: 1px solid rgba(255,255,255,0.1); 
         }
 
+        /* DOB & Name Card Styling */
         .dob-card {
             background: var(--panel);
             padding: 12px;
@@ -92,13 +93,13 @@
         .table-container { 
             position: relative; background: #fff; border-radius: 10px; 
             padding: 4px; box-shadow: 0 0 20px rgba(0,0,0,0.5); 
-            display: table; margin: 0 auto; min-width: 320px;
+            display: table; margin: 0 auto; min-width: 300px;
         }
         
         table { border-collapse: collapse; color: #000; font-size: 12px; position: relative; z-index: 5; margin: 0 auto; width: 100%; }
         td, th { 
             border: 1px solid #ddd; padding: 2px; text-align: center; 
-            font-weight: bold; width: 38px; height: 38px; cursor: pointer; 
+            font-weight: bold; width: 36px; height: 36px; cursor: pointer; 
             user-select: none; transition: background 0.3s ease;
         }
         td[contenteditable="true"] { outline: none; background: #fff; }
@@ -115,6 +116,8 @@
             z-index: 10;
         }
         .fam-highlight { background: rgba(255, 215, 0, 0.4) !important; font-weight: 900; }
+        .red-jodi { color: #ff0000 !important; font-weight: 900; }
+        .scan-zone { background: rgba(255, 215, 0, 0.15) !important; }
 
         canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 4; }
 
@@ -187,26 +190,27 @@
 <body>
 
 <div id="home-screen">
-    <h1 class="hero-title">RAJDHANI 5-DAY AI</h1>
-    <p class="hero-sub">RAJDHANI DAY / NIGHT PATTERN SCANNER & KUNDLI ENGINE</p>
+    <h1 class="hero-title">rajdhaniday PRO AI</h1>
+    <p class="hero-sub">ULTIMATE PATTERN SCANNER & ADVANCED ASTRO ENGINE (5-DAY MARKET)</p>
     <button class="enter-btn" onclick="startApp()">START ANALYSIS</button>
 </div>
 
 <div id="main-app">
     <div id="top-anchor"></div>
     <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom:5px;">
-        <h3 style="color:var(--gold); margin:0; font-size: 1rem;">Rajdhani 5-Day Visual AI</h3>
-        <span id="trend-bar" style="background:var(--purple); color:#fff; padding:3px 6px; border-radius:6px; font-size:10px; font-weight:bold;">Mode: Mon-Fri Kundli Engine</span>
+        <h3 style="color:var(--gold); margin:0; font-size: 1rem;">rajdhaniday Ultra Visual AI</h3>
+        <span id="trend-bar" style="background:var(--purple); color:#fff; padding:3px 6px; border-radius:6px; font-size:10px; font-weight:bold;">Accuracy Mode: Kundli Vedic Astro Engine</span>
     </div>
 
+    <!-- Advanced Astro & DOB Input Panel -->
     <div class="dob-card">
-        <div style="font-size:12px; font-weight:bold; color:var(--gold);">🔮 Rajdhani Jyotish Profile (5-Day Market)</div>
+        <div style="font-size:12px; font-weight:bold; color:var(--gold);">🔮 Jyotish Numerology & Kundli Profile</div>
         <div class="dob-input-group">
             <input type="text" id="userName" placeholder="अपना नाम लिखें" value="Pradeep Kumar">
             <input type="date" id="userDob" value="1987-01-12">
             <select id="panchangTithi">
                 <option value="1">प्रतिपदा / 6ठी / 11वीं तिथि</option>
-                <option value="2" selected>द्वितीया / 7वीं / 12वीं तिथि (द्वादशी)</option>
+                <option value="2">द्वितीया / 7वीं / 12वीं तिथि (द्वादशी)</option>
                 <option value="3">तृतीया / 8वीं / 13वीं तिथि</option>
                 <option value="4">चतुर्थी / 9वीं / 14वीं तिथि</option>
                 <option value="5">पंचमी / दशमी / पूर्णिमा</option>
@@ -217,8 +221,8 @@
             <span>मूलांक: <b id="mulankRes" style="color:var(--gold);">3</b></span> | 
             <span>भाग्यांक: <b id="bhagyankRes" style="color:var(--gold);">2</b></span> | 
             <span>नामांक: <b id="namankRes" style="color:var(--gold);">5</b></span> |
-            <span>लग्न: <b style="color:#00ff88;">कन्या (बुध)</b></span> |
-            <span>राशि: <b style="color:#00ff88;">वृषभ (शुक्र)</b></span>
+            <span>लग्न: <b style="color:#00ff88;">कन्या (बुध-5)</b></span> |
+            <span>राशि: <b style="color:#00ff88;">वृषभ (शुक्र-6)</b></span>
         </div>
     </div>
 
@@ -233,7 +237,7 @@
         <button onclick="saveData()" style="background:#28a745; color:white;">💾 SAVE</button>
         <button onclick="exportData()" style="background:#eab308; color:#000;">📥 EXPORT</button>
         <button onclick="document.getElementById('importJson').click()" style="background:#06b6d4; color:white;">📤 IMPORT</button>
-        <button onclick="clearData()" style="background:#dc3545; color:white;">🗑️️ CLEAR</button>
+        <button onclick="clearData()" style="background:#dc3545; color:white;">🗑️ CLEAR</button>
     </div>
 
     <div class="chart-wrapper">
@@ -244,18 +248,21 @@
     </div>
 
     <div class="dashboard" id="dashboard-section">
+        <!-- 2 Strong Jodi & 3 Subh Jodi Section -->
         <div class="card" style="grid-column: 1 / -1; background: #0f172a; border-top: 3px solid #00ff88;">
-            <h3>🎯 2 Strong Jodi & 2 Subh Jodi Prediction</h3>
+            <h3>🎯 Strong Pattern Jodies & Astro Aligned Subh Jodies</h3>
             <div id="blank-4jodi-prediction"><i style="color:#94a3b8; font-size:11px;">किसी भी (**) ब्लैंक सेल पर क्लिक करें...</i></div>
         </div>
 
+        <!-- Open to Close Frequency Ank Panel -->
         <div class="card" style="grid-column: 1 / -1; background: #111827; border-top: 3px solid #0284c7;">
             <h3 style="color: #38bdf8;">📊 Top 4 Open to Close Ank (Most Frequent Day Digits)</h3>
             <div id="otc-ank-prediction"><i style="color:#94a3b8; font-size:11px;">ब्लैंक सेल पर क्लिक करें...</i></div>
         </div>
 
+        <!-- Astrology Special Panel - 3 Precise Ank & 3 Subh Jodies -->
         <div class="card" style="grid-column: 1 / -1; background: #1a0f2e; border-top: 3px solid var(--astro-orange);">
-            <h3 style="color: var(--astro-orange);">🔮 Vedic Kundli & Dasha Alignment: 3 Precise Subh Ank</h3>
+            <h3 style="color: var(--astro-orange);">🔮 Vedic Kundli: 3 Precise Subh Ank & Matching Jodies</h3>
             <div id="astro-prediction"><i style="color:#94a3b8; font-size:11px;">ब्लैंक सेल पर क्लिक करके ज्योतिष गणना देखें...</i></div>
         </div>
 
@@ -292,7 +299,7 @@
 </div>
 
 <script>
-const STORAGE_KEY = "pdata_Rajdhani_v5";
+const STORAGE_KEY = "pdata_rajdhaniday_v10";
 let targetCol = null;
 let activeMark = null;
 let highlightedFam = null;
@@ -300,6 +307,7 @@ let userMulank = 3;
 let userBhagyank = 2;
 let userNamank = 5;
 
+// Chaldean Numerology Values Matrix
 const CHALDEAN = {
     A:1, B:2, C:3, D:4, E:5, F:8, G:3, H:5, I:1, J:1, K:2, L:3, M:4,
     N:5, O:7, P:8, Q:1, R:2, S:3, T:4, U:6, V:6, W:6, X:5, Y:1, Z:7
@@ -321,13 +329,13 @@ const FAMILY = {
  "45":["04","09","40","45","54","59","90","95"]
 };
 
-// 5-Day Mapping (Mon-Fri)
+// Mon to Fri Column Mapping & Planets with Kundli Weights (5-Day Scope)
 const DAY_PLANETS = {
-    0: { name: "सोमवार (चंद्रमा - राशि स्वामी)", ank: [2, 7] },
-    1: { name: "मंगलवार (मंगल - भुक्ति स्वामी)", ank: [1, 9] },
-    2: { name: "बुधवार (बुध - लग्नेश)", ank: [5, 0] },
-    3: { name: "गुरुवार (गुरु - महादशा स्वामी)", ank: [3, 8] },
-    4: { name: "शुक्रवार (शुक्र - योगकारक)", ank: [6, 1] }
+    0: { name: "सोमवार (चंद्रमा - राशि स्वामी)", ank: [2, 7], friend: [1, 3, 5], weight: 9 },
+    1: { name: "मंगलवार (मंगल - भुक्ति स्वामी)", ank: [1, 9], friend: [2, 3, 5], weight: 9.5 },
+    2: { name: "बुधवार (बुध - लग्नेश)", ank: [5, 0], friend: [1, 5, 6], weight: 10 },
+    3: { name: "गुरुवार (गुरु - महादशा स्वामी)", ank: [3, 8], friend: [1, 2, 9], weight: 9.8 },
+    4: { name: "शुक्रवार (शुक्र - योगकारक)", ank: [6, 1], friend: [6, 8, 5], weight: 9.2 }
 };
 
 const defaultData = [
@@ -346,8 +354,13 @@ function startApp() {
     draw();
 }
 
-function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
-function scrollToBottom() { window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }); }
+function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function scrollToBottom() {
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+}
 
 function reduceToSingleDigit(num) {
     while (num > 9) {
@@ -362,13 +375,19 @@ function calculateAdvancedAstro() {
 
     if (dobVal) {
         const parts = dobVal.split('-');
-        userMulank = reduceToSingleDigit(parts[2].split('').reduce((a, b) => parseInt(a) + parseInt(b), 0));
-        userBhagyank = reduceToSingleDigit((parts[2] + parts[1] + parts[0]).split('').reduce((a, b) => parseInt(a) + parseInt(b), 0));
+        const day = parts[2];
+        const month = parts[1];
+        const year = parts[0];
+
+        userMulank = reduceToSingleDigit(day.split('').reduce((a, b) => parseInt(a) + parseInt(b), 0));
+        userBhagyank = reduceToSingleDigit((day + month + year).split('').reduce((a, b) => parseInt(a) + parseInt(b), 0));
     }
 
     if (nameVal) {
         let sum = 0;
-        for (let char of nameVal) if (CHALDEAN[char]) sum += CHALDEAN[char];
+        for (let char of nameVal) {
+            if (CHALDEAN[char]) sum += CHALDEAN[char];
+        }
         userNamank = reduceToSingleDigit(sum) || 5;
     }
 
@@ -443,83 +462,25 @@ function calculateOTCAnkFrequency(targetCol) {
     data.forEach(row => {
         let val = row[targetCol];
         if (val && val !== "**" && val.length === 2) {
-            digitCounts[parseInt(val[0])]++;
-            digitCounts[parseInt(val[1])]++;
+            let openDigit = parseInt(val[0]);
+            let closeDigit = parseInt(val[1]);
+            digitCounts[openDigit]++;
+            digitCounts[closeDigit]++;
         }
     });
 
     let sortedDigits = Object.keys(digitCounts).sort((a, b) => digitCounts[b] - digitCounts[a]);
     let top4Ank = sortedDigits.slice(0, 4);
 
-    let ankHtml = top4Ank.map(digit => `<span class="ank-badge">${digit} <small style="opacity:0.8;">(${digitCounts[digit]}x)</small></span>`).join("");
+    let ankHtml = top4Ank.map(digit => {
+        return `<span class="ank-badge">${digit} <small style="opacity:0.8;">(${digitCounts[digit]}x)</small></span>`;
+    }).join("");
 
     document.getElementById("otc-ank-prediction").innerHTML = `
         <div style="font-size:11px; margin-bottom:6px; color:#cbd5e1;">
-            Day: <b style="color:var(--gold);">${dayName}</b> | 5-दिन इतिहास के Top 4 Ank:
+            Day: <b style="color:var(--gold);">${dayName}</b> | इतिहास में सबसे ज़्यादा आने वाले 4 Open-to-Close अंक:
         </div>
         <div>${ankHtml}</div>
-    `;
-}
-
-function calculate90PercentStrongJodies(targetRow, targetCol) {
-    let days = ["MON", "TUE", "WED", "THU", "FRI"];
-    let dayName = days[targetCol];
-    let patternScores = {};
-
-    function addJodi(jodi, score, reason) {
-        if (!jodi || jodi === "**" || jodi.length !== 2) return;
-        if (!patternScores[jodi]) patternScores[jodi] = { score: 0, reason: reason };
-        patternScores[jodi].score += score;
-    }
-
-    let prevJodiSameCol = (targetRow > 0) ? data[targetRow - 1][targetCol] : "**";
-
-    if (prevJodiSameCol !== "**") {
-        addJodi(prevJodiSameCol, 25, "Direct Line Repeat");
-        addJodi(palti(prevJodiSameCol), 20, "Direct Palti Line");
-        let f1 = parseInt(prevJodiSameCol[0]), f2 = parseInt(prevJodiSameCol[1]);
-        addJodi(`${(f1+5)%10}${(f2+5)%10}`, 18, "Full Cut Line");
-    }
-
-    let sortedKeys = Object.keys(patternScores).sort((a, b) => patternScores[b].score - patternScores[a].score);
-    let top2Strong = sortedKeys.slice(0, 2);
-
-    if (top2Strong.length < 2) {
-        let defaultSeed = prevJodiSameCol !== "**" ? prevJodiSameCol : "12";
-        let d1 = parseInt(defaultSeed[0]), d2 = parseInt(defaultSeed[1]);
-        top2Strong = [`${d1}${d2}`, `${(d1+5)%10}${(d2+5)%10}`];
-    }
-
-    let strongJodiHtml = top2Strong.map((j, i) => `
-        <div style="display:inline-block; margin:4px; text-align:center;">
-            <span class="strong-jodi-btn">🔥 Strong #${i + 1}: ${j}</span>
-            <span class="source-tag">📍 ${patternScores[j] ? patternScores[j].reason : 'Pattern'}</span>
-        </div>
-    `).join("");
-
-    let dayInfo = DAY_PLANETS[targetCol] || { ank: [1, 6] };
-    let tithiVal = parseInt(document.getElementById('panchangTithi').value || 2);
-    
-    let sAnk1 = (userMulank + userNamank + dayInfo.ank[0] + tithiVal) % 10;
-    let sAnk2 = (userBhagyank + dayInfo.ank[1] + targetRow + 1) % 10;
-    if (sAnk1 === sAnk2) sAnk2 = (sAnk2 + 5) % 10;
-
-    let subhJodiHtml = `
-        <div style="display:inline-block; margin:4px; text-align:center;">
-            <span class="astro-badge">✨ Subh #1: ${sAnk1}${sAnk2}</span>
-            <span class="source-tag">🔮 Kundli Sync</span>
-        </div>
-        <div style="display:inline-block; margin:4px; text-align:center;">
-            <span class="astro-badge">✨ Subh #2: ${sAnk2}${(sAnk1 + 5) % 10}</span>
-            <span class="source-tag">🔮 Dasha Cut</span>
-        </div>
-    `;
-
-    document.getElementById("blank-4jodi-prediction").innerHTML = `
-        <div style="font-size:11px; margin-bottom:6px; color:#cbd5e1;">
-            Target Row: <b>${targetRow + 1}</b> | Day: <b style="color:var(--gold);">${dayName}</b>
-        </div>
-        <div>${strongJodiHtml} ${subhJodiHtml}</div>
     `;
 }
 
@@ -527,9 +488,13 @@ function calculateAstroNumerology(targetRow, targetCol) {
     let dayInfo = DAY_PLANETS[targetCol] || { name: "ज्योतिष", ank: [1, 6] };
     let tithiVal = parseInt(document.getElementById('panchangTithi').value || 2);
     let prevJodi = (targetRow > 0) ? data[targetRow - 1][targetCol] : "25";
+    
     let prevSum = (prevJodi !== "**") ? (parseInt(prevJodi[0]) + parseInt(prevJodi[1])) % 10 : 5;
 
-    let lagnaLordAnk = 5, rashiLordAnk = 6, dashaLordAnk = 3, bhuktiLordAnk = 9;
+    let lagnaLordAnk = 5;
+    let rashiLordAnk = 6;
+    let dashaLordAnk = 3;
+    let bhuktiLordAnk = 9;
 
     let ank1 = (userMulank + lagnaLordAnk + dayInfo.ank[0] + tithiVal) % 10;
     let ank2 = (userBhagyank + rashiLordAnk + dashaLordAnk + targetRow + 1) % 10;
@@ -542,16 +507,89 @@ function calculateAstroNumerology(targetRow, targetCol) {
     if (!uniqueAnks.includes(ank3)) uniqueAnks.push(ank3);
     else uniqueAnks.push((ank3 + 5) % 10);
 
+    // Dynamic 3 Jodies derived EXACTLY from the 3 Astro Subh Anks [A, B, C]
+    let jodi1 = `${uniqueAnks[0]}${uniqueAnks[1]}`;
+    let jodi2 = `${uniqueAnks[1]}${uniqueAnks[2]}`;
+    let jodi3 = `${uniqueAnks[2]}${uniqueAnks[0]}`;
+
     document.getElementById("astro-prediction").innerHTML = `
         <div style="font-size:11px; color:#e2e8f0; margin-bottom:8px;">
-            ग्रह स्वामी: <b>${dayInfo.name}</b> | कन्या लग्न (बुध) | वृषभ राशि (शुक्र) | गुरु-मंगल दशा
+            ग्रह स्वामी: <b>${dayInfo.name}</b> | लग्न: <b>कन्या (बुध)</b> | राशि: <b>वृषभ (शुक्र)</b> | महादशा: <b>गुरु-मंगल</b>
         </div>
         <div style="margin-bottom:6px;">
-            <span style="font-size:12px; color:var(--gold); font-weight:bold;">🔥 3 सटीक शुभ अंक (Precise Single Digits):</span><br>
+            <span style="font-size:12px; color:var(--gold); font-weight:bold;">🔥 3 सटीक शुभ अंक (3 Astro Digits):</span><br>
             <span class="astro-badge">अंक 1: ${uniqueAnks[0]}</span>
             <span class="astro-badge">अंक 2: ${uniqueAnks[1]}</span>
             <span class="astro-badge">अंक 3: ${uniqueAnks[2]}</span>
         </div>
+        <div style="margin-top:8px;">
+            <span style="font-size:12px; color:#00ff88; font-weight:bold;">✨ इन्हीं 3 अंकों से बनी 3 शुभ जोड़ियाँ (3 Subh Jodies):</span><br>
+            <span class="astro-badge" style="background: linear-gradient(135deg, #0284c7, #0084ff);">Subh Jodi #1: ${jodi1}</span>
+            <span class="astro-badge" style="background: linear-gradient(135deg, #0284c7, #0084ff);">Subh Jodi #2: ${jodi2}</span>
+            <span class="astro-badge" style="background: linear-gradient(135deg, #0284c7, #0084ff);">Subh Jodi #3: ${jodi3}</span>
+        </div>
+        <div style="font-size:10px; color:#a855f7; margin-top:6px;">
+            *ये 3 जोड़ियाँ सटीक रूप से आपके मूलांक, भाग्यांक और ग्रहदशा के 3 शुभ अंकों से निर्मित हैं।
+        </div>
+    `;
+
+    return { jodis: [jodi1, jodi2, jodi3], anks: uniqueAnks };
+}
+
+function calculate90PercentStrongJodies(targetRow, targetCol) {
+    let days = ["MON", "TUE", "WED", "THU", "FRI"];
+    let dayName = days[targetCol];
+
+    let patternScores = {};
+
+    function addJodi(jodi, score, reason) {
+        if (!jodi || jodi === "**" || jodi.length !== 2) return;
+        if (!patternScores[jodi]) {
+            patternScores[jodi] = { score: 0, reason: reason };
+        }
+        patternScores[jodi].score += score;
+    }
+
+    let prevJodiSameCol = (targetRow > 0) ? data[targetRow - 1][targetCol] : "**";
+
+    if (prevJodiSameCol !== "**") {
+        addJodi(prevJodiSameCol, 25, "Direct Line Repeat");
+        addJodi(palti(prevJodiSameCol), 20, "Direct Palti Line");
+
+        let f1 = parseInt(prevJodiSameCol[0]), f2 = parseInt(prevJodiSameCol[1]);
+        let cut1 = (f1 + 5) % 10, cut2 = (f2 + 5) % 10;
+
+        addJodi(`${cut1}${cut2}`, 18, "Full Cut Line");
+        addJodi(`${cut1}${f2}`, 15, "Half Cut Line (C1)");
+    }
+
+    let sortedKeys = Object.keys(patternScores).sort((a, b) => patternScores[b].score - patternScores[a].score);
+    let top2Strong = sortedKeys.slice(0, 2);
+
+    if (top2Strong.length < 2) {
+        let defaultSeed = prevJodiSameCol !== "**" ? prevJodiSameCol : "12";
+        let d1 = parseInt(defaultSeed[0]), d2 = parseInt(defaultSeed[1]);
+        let fallbacks = [`${d1}${d2}`, `${(d1+5)%10}${(d2+5)%10}`];
+        fallbacks.forEach(fb => {
+            if (!top2Strong.includes(fb) && top2Strong.length < 2) top2Strong.push(fb);
+        });
+    }
+
+    let strongJodiHtml = top2Strong.map((j, i) => {
+        let info = patternScores[j] || { reason: "Pattern Scan" };
+        return `
+            <div style="display:inline-block; margin:4px; text-align:center;">
+                <span class="strong-jodi-btn">🔥 Pattern Jodi #${i + 1}: ${j}</span>
+                <span class="source-tag">📍 ${info.reason}</span>
+            </div>
+        `;
+    }).join("");
+
+    document.getElementById("blank-4jodi-prediction").innerHTML = `
+        <div style="font-size:11px; margin-bottom:6px; color:#cbd5e1;">
+            Target Row: <b>${targetRow + 1}</b> | Day: <b style="color:var(--gold);">${dayName}</b>
+        </div>
+        <div>${strongJodiHtml}</div>
     `;
 }
 
@@ -593,7 +631,7 @@ function exportData() {
     let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
     let downloadAnchor = document.createElement('a');
     downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", "rajdhani_5day_backup.json");
+    downloadAnchor.setAttribute("download", "rajdhaniday_data_backup.json");
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     downloadAnchor.remove();
@@ -617,7 +655,8 @@ function clearData(){ if(confirm("क्लियर करें?")){ localStor
 function autoScanPatterns() {
     let totalRows = data.length;
     if(totalRows < 3) { alert("और डेटा चाहिए!"); return; }
-    makePattern(totalRows - 1, 0);
+    let blankRow = totalRows - 1;
+    makePattern(blankRow, 0);
 }
 
 function makePattern(r,c){
@@ -674,7 +713,9 @@ function showOne(shape, idx){
  let html="<table id='popTbl' style='color:#000'>";
  for(let i=0; i<shape.length; i++){
   html+="<tr>";
-  data[idx+i].forEach((v,j)=>{ html+=`<td class="${shape[i][j]?'circle':''}">${v}</td>`; });
+  data[idx+i].forEach((v,j)=>{
+   html+=`<td class="${shape[i][j]?'circle':''}">${v}</td>`;
+  });
   html+="</tr>";
  }
  document.getElementById("popData").innerHTML=html+"</table>";
@@ -684,7 +725,19 @@ function showOne(shape, idx){
 }
 
 function updateAI(shape, matches){
+ let jc={}, dc={};
+ matches.forEach(m=>{
+  for(let i=0; i<shape.length; i++){
+   for(let j=0; j<5; j++){
+    if(shape[i][j]){
+     let v = data[m.index+i][j];
+     jc[v]=(jc[v]||0)+1; dc[v[0]]=(dc[v[0]]||0)+1; dc[v[1]]=(dc[v[1]]||0)+1;
+    }
+   }
+  }
+ });
  document.getElementById("ai").innerHTML = `<b>Matched Rows:</b> ${matches.length}<br><b>High Frequency Origin:</b> Row ${matches[0] ? matches[0].index + 1 : '-'}`;
+ 
  let pool = [];
  matches.forEach(m => {
   let nextR = m.index + shape.length;
