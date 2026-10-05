@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Milan Pro AI – 6 Days Pattern & Astro Engine</title>
+    <title>milannight Pro AI – Ultimate Pattern Matcher & Astro Numerology</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -41,6 +41,7 @@
             justify-content: center; border: 1px solid rgba(255,255,255,0.1); 
         }
 
+        /* DOB & Name Card Styling */
         .dob-card {
             background: var(--panel);
             padding: 12px;
@@ -56,10 +57,11 @@
             display: flex;
             gap: 8px;
             width: 100%;
-            max-width: 400px;
+            max-width: 500px;
             justify-content: center;
+            flex-wrap: wrap;
         }
-        input[type="date"] {
+        input[type="date"], input[type="text"], select {
             padding: 6px 10px;
             border-radius: 6px;
             border: 1px solid #444;
@@ -70,12 +72,14 @@
         }
         .dob-res-box {
             display: flex;
-            gap: 15px;
+            gap: 12px;
             background: rgba(255, 119, 0, 0.1);
             padding: 6px 12px;
             border-radius: 6px;
             font-size: 11px;
             border: 1px dashed var(--astro-orange);
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .chart-wrapper {
@@ -89,7 +93,7 @@
         .table-container { 
             position: relative; background: #fff; border-radius: 10px; 
             padding: 4px; box-shadow: 0 0 20px rgba(0,0,0,0.5); 
-            display: table; margin: 0 auto; min-width: 320px;
+            display: table; margin: 0 auto; min-width: 340px;
         }
         
         table { border-collapse: collapse; color: #000; font-size: 12px; position: relative; z-index: 5; margin: 0 auto; width: 100%; }
@@ -101,6 +105,7 @@
         td[contenteditable="true"] { outline: none; background: #fff; }
         td[contenteditable="true"]:focus { background: #e0f2fe; border: 2px solid var(--blue-circle); }
         th { background: #1e293b; color: white; font-size: 10px; }
+        .row-num-th, .row-num-td { width: 30px; background: #f1f5f9; color: #475569; font-size: 10px; font-weight: 800; cursor: default; }
         .action-th, .action-td { width: 26px; background: #f8fafc; }
         .btn-del-row { background: var(--red); color: white; border: none; border-radius: 3px; padding: 2px 4px; font-size: 9px; cursor: pointer; }
         
@@ -111,6 +116,8 @@
             z-index: 10;
         }
         .fam-highlight { background: rgba(255, 215, 0, 0.4) !important; font-weight: 900; }
+        .red-jodi { color: #ff0000 !important; font-weight: 900; }
+        .scan-zone { background: rgba(255, 215, 0, 0.15) !important; }
 
         canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 4; }
 
@@ -138,7 +145,7 @@
             margin: 4px;
             border-radius: 8px;
             font-weight: 900;
-            font-size: 13px;
+            font-size: 14px;
             box-shadow: 0 4px 10px rgba(255, 119, 0, 0.4);
         }
 
@@ -183,42 +190,54 @@
 <body>
 
 <div id="home-screen">
-    <h1 class="hero-title">Milan PRO AI</h1>
-    <p class="hero-sub">6 DAYS (MON-SAT) PATTERN SCANNER & ASTRO ENGINE</p>
+    <h1 class="hero-title">milannight PRO AI</h1>
+    <p class="hero-sub">ULTIMATE PATTERN SCANNER & ADVANCED ASTRO ENGINE</p>
     <button class="enter-btn" onclick="startApp()">START ANALYSIS</button>
 </div>
 
 <div id="main-app">
     <div id="top-anchor"></div>
     <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom:5px;">
-        <h3 style="color:var(--gold); margin:0; font-size: 1rem;">Milan 6-Day Visual AI</h3>
-        <span id="trend-bar" style="background:var(--purple); color:#fff; padding:3px 6px; border-radius:6px; font-size:10px; font-weight:bold;">6-Day Mon-Sat Mode</span>
+        <h3 style="color:var(--gold); margin:0; font-size: 1rem;">milannight Ultra Visual AI</h3>
+        <span id="trend-bar" style="background:var(--purple); color:#fff; padding:3px 6px; border-radius:6px; font-size:10px; font-weight:bold;">Accuracy Mode: Kundli Vedic Astro Engine</span>
+    </div>
+
+    <!-- Advanced Astro & DOB Input Panel -->
+    <div class="dob-card">
+        <div style="font-size:12px; font-weight:bold; color:var(--gold);">🔮 Jyotish Numerology & Kundli Profile</div>
+        <div class="dob-input-group">
+            <input type="text" id="userName" placeholder="अपना नाम लिखें" value="Pradeep Kumar">
+            <input type="date" id="userDob" value="1987-01-12">
+            <select id="panchangTithi">
+                <option value="1">प्रतिपदा / 6ठी / 11वीं तिथि</option>
+                <option value="2">द्वितीया / 7वीं / 12वीं तिथि (द्वादशी)</option>
+                <option value="3">तृतीया / 8वीं / 13वीं तिथि</option>
+                <option value="4">चतुर्थी / 9वीं / 14वीं तिथि</option>
+                <option value="5">पंचमी / दशमी / पूर्णिमा</option>
+            </select>
+            <button onclick="calculateAdvancedAstro()" style="background:var(--astro-orange); color:#fff;">गणना करें</button>
+        </div>
+        <div class="dob-res-box">
+            <span>मूलांक: <b id="mulankRes" style="color:var(--gold);">3</b></span> | 
+            <span>भाग्यांक: <b id="bhagyankRes" style="color:var(--gold);">2</b></span> | 
+            <span>नामांक: <b id="namankRes" style="color:var(--gold);">5</b></span> |
+            <span>लग्न: <b style="color:#00ff88;">कन्या (बुध-5)</b></span> |
+            <span>राशि: <b style="color:#00ff88;">वृषभ (शुक्र-6)</b></span>
+        </div>
     </div>
 
     <div class="toolbar">
-        <input type="file" id="csv" accept="*/*" style="display:none">
-        <input type="file" id="importJson" accept=".json, */*" style="display:none">
+        <input type="file" id="csv" accept=".csv" style="display:none">
+        <input type="file" id="importJson" accept=".json" style="display:none">
         
         <button onclick="scrollToBottom()" class="btn-scroll">👇 Bottom</button>
-        <button onclick="document.getElementById('csv').click()" style="background:#444; color:white;">📂 CSV Upload</button>
+        <button onclick="document.getElementById('csv').click()" style="background:#444; color:white;">📂 CSV</button>
         <button onclick="addRow()" style="background:#0284c7; color:white;">➕ ADD</button>
         <button onclick="autoScanPatterns()" style="background:var(--purple); color:white;">🔍 SCAN</button>
         <button onclick="saveData()" style="background:#28a745; color:white;">💾 SAVE</button>
         <button onclick="exportData()" style="background:#eab308; color:#000;">📥 EXPORT</button>
         <button onclick="document.getElementById('importJson').click()" style="background:#06b6d4; color:white;">📤 IMPORT</button>
         <button onclick="clearData()" style="background:#dc3545; color:white;">🗑️ CLEAR</button>
-    </div>
-
-    <div class="dob-card">
-        <h4 style="margin:0; color:var(--astro-orange); font-size:12px;">🎂 Date of Birth Calculator</h4>
-        <div class="dob-input-group">
-            <input type="date" id="userDob">
-            <button onclick="calculateUserDOB()" style="background:var(--astro-orange); color:#fff;">Calculate Digit</button>
-        </div>
-        <div class="dob-res-box" id="dobResDisplay">
-            <div>Mulank: <b id="mulankRes" style="color:var(--gold);">-</b></div>
-            <div>Bhagyank: <b id="bhagyankRes" style="color:var(--gold);">-</b></div>
-        </div>
     </div>
 
     <div class="chart-wrapper">
@@ -229,18 +248,21 @@
     </div>
 
     <div class="dashboard" id="dashboard-section">
+        <!-- 2 Strong Jodi & 3 Subh Jodi Section -->
         <div class="card" style="grid-column: 1 / -1; background: #0f172a; border-top: 3px solid #00ff88;">
-            <h3>🎯 2 Strong Jodi & 2 Subh Jodi Prediction</h3>
+            <h3>🎯 Strong Pattern Jodies & Astro Aligned Subh Jodies</h3>
             <div id="blank-4jodi-prediction"><i style="color:#94a3b8; font-size:11px;">किसी भी (**) ब्लैंक सेल पर क्लिक करें...</i></div>
         </div>
 
+        <!-- Open to Close Frequency Ank Panel -->
         <div class="card" style="grid-column: 1 / -1; background: #111827; border-top: 3px solid #0284c7;">
-            <h3 style="color: #38bdf8;">📊 Top 4 Open to Close Ank (6-Day Mon-Sat Frequency)</h3>
+            <h3 style="color: #38bdf8;">📊 Top 4 Open to Close Ank (Most Frequent Day Digits)</h3>
             <div id="otc-ank-prediction"><i style="color:#94a3b8; font-size:11px;">ब्लैंक सेल पर क्लिक करें...</i></div>
         </div>
 
+        <!-- Astrology Special Panel - 3 Precise Ank & 3 Subh Jodies -->
         <div class="card" style="grid-column: 1 / -1; background: #1a0f2e; border-top: 3px solid var(--astro-orange);">
-            <h3 style="color: var(--astro-orange);">🔮 Jyotish Numerology: 2 Subh Ank</h3>
+            <h3 style="color: var(--astro-orange);">🔮 Vedic Kundli: 3 Precise Subh Ank & Matching Jodies</h3>
             <div id="astro-prediction"><i style="color:#94a3b8; font-size:11px;">ब्लैंक सेल पर क्लिक करके ज्योतिष गणना देखें...</i></div>
         </div>
 
@@ -277,12 +299,19 @@
 </div>
 
 <script>
-const STORAGE_KEY = "pdata_Milan_6Day_v10";
+const STORAGE_KEY = "pdata_milannight_v10";
 let targetCol = null;
 let activeMark = null;
 let highlightedFam = null;
-let userMulank = null;
-let userBhagyank = null;
+let userMulank = 3;
+let userBhagyank = 2;
+let userNamank = 5;
+
+// Chaldean Numerology Values Matrix
+const CHALDEAN = {
+    A:1, B:2, C:3, D:4, E:5, F:8, G:3, H:5, I:1, J:1, K:2, L:3, M:4,
+    N:5, O:7, P:8, Q:1, R:2, S:3, T:4, U:6, V:6, W:6, X:5, Y:1, Z:7
+};
 
 function norm(v) {
     if (!v || v.trim() === "" || v === "**") return "**";
@@ -300,13 +329,14 @@ const FAMILY = {
  "45":["04","09","40","45","54","59","90","95"]
 };
 
+// Mon to Sat Column Mapping & Planets with Kundli Weights
 const DAY_PLANETS = {
-    0: { name: "सोमवार (चंद्रमा)", ank: [2, 7] },
-    1: { name: "मंगलवार (मंगल)", ank: [1, 9] },
-    2: { name: "बुधवार (बुध)", ank: [3, 8] },
-    3: { name: "गुरुवार (गुरु)", ank: [4, 6] },
-    4: { name: "शुक्रवार (शुक्र)", ank: [5, 0] },
-    5: { name: "शनिवार (शनि)", ank: [8, 9] }
+    0: { name: "सोमवार (चंद्रमा - राशि स्वामी)", ank: [2, 7], friend: [1, 3, 5], weight: 9 },
+    1: { name: "मंगलवार (मंगल - भुक्ति स्वामी)", ank: [1, 9], friend: [2, 3, 5], weight: 9.5 },
+    2: { name: "बुधवार (बुध - लग्नेश)", ank: [5, 0], friend: [1, 5, 6], weight: 10 },
+    3: { name: "गुरुवार (गुरु - महादशा स्वामी)", ank: [3, 8], friend: [1, 2, 9], weight: 9.8 },
+    4: { name: "शुक्रवार (शुक्र - योगकारक)", ank: [6, 1], friend: [6, 8, 5], weight: 9.2 },
+    5: { name: "शनिवार (शनि - अष्टकवर्ग बल)", ank: [8, 4], friend: [3, 5, 6], weight: 8.5 }
 };
 
 const defaultData = [
@@ -321,30 +351,50 @@ let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || defaultData;
 function startApp() {
     document.getElementById('home-screen').style.display = 'none';
     document.getElementById('main-app').style.display = 'block';
+    calculateAdvancedAstro();
     draw();
 }
 
-function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
-function scrollToBottom() { window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }); }
+function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function scrollToBottom() {
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+}
 
 function reduceToSingleDigit(num) {
     while (num > 9) {
-        num = num.toString().split('').reduce((acc, curr) => acc + parseInt(curr), 0);
+        num = num.toString().split('').reduce((acc, curr) => acc + parseInt(curr || 0), 0);
     }
     return num;
 }
 
-function calculateUserDOB() {
+function calculateAdvancedAstro() {
     const dobVal = document.getElementById('userDob').value;
-    if (!dobVal) { alert("Kripya Date of Birth chunein!"); return; }
-    const parts = dobVal.split('-');
-    const day = parts[2], month = parts[1], year = parts[0];
+    const nameVal = document.getElementById('userName').value.toUpperCase();
 
-    userMulank = reduceToSingleDigit(day.split('').reduce((a, b) => parseInt(a) + parseInt(b), 0));
-    userBhagyank = reduceToSingleDigit((day + month + year).split('').reduce((a, b) => parseInt(a) + parseInt(b), 0));
+    if (dobVal) {
+        const parts = dobVal.split('-');
+        const day = parts[2];
+        const month = parts[1];
+        const year = parts[0];
+
+        userMulank = reduceToSingleDigit(day.split('').reduce((a, b) => parseInt(a) + parseInt(b), 0));
+        userBhagyank = reduceToSingleDigit((day + month + year).split('').reduce((a, b) => parseInt(a) + parseInt(b), 0));
+    }
+
+    if (nameVal) {
+        let sum = 0;
+        for (let char of nameVal) {
+            if (CHALDEAN[char]) sum += CHALDEAN[char];
+        }
+        userNamank = reduceToSingleDigit(sum) || 5;
+    }
 
     document.getElementById('mulankRes').innerText = userMulank;
     document.getElementById('bhagyankRes').innerText = userBhagyank;
+    document.getElementById('namankRes').innerText = userNamank;
 }
 
 function fam(v){for(let k in FAMILY) if(FAMILY[k].includes(v)) return k; return "NA";}
@@ -353,12 +403,13 @@ function smartMatch(a1,b1){ if(a1=="**"||b1=="**") return false; return a1===b1 
 
 function draw(){
  let days = ["MON", "TUE", "WED", "THU", "FRI", "SAT"];
- let h="<tr>";
+ let h="<tr><th class='row-num-th'>R#</th>";
  days.forEach(d => h += `<th>${d}</th>`);
  h += "<th class='action-th'>❌</th></tr>";
 
  data.forEach((r,ri)=>{
   h+=`<tr id="table-row-${ri}">`;
+  h+=`<td class="row-num-td">${ri + 1}</td>`;
   r.forEach((c,ci)=>{
    let cls = (activeMark && isPartOfPattern(ri, ci)) ? "circle" : "";
    if(highlightedFam && fam(c) === highlightedFam) cls += " fam-highlight";
@@ -412,15 +463,19 @@ function calculateOTCAnkFrequency(targetCol) {
     data.forEach(row => {
         let val = row[targetCol];
         if (val && val !== "**" && val.length === 2) {
-            digitCounts[parseInt(val[0])]++;
-            digitCounts[parseInt(val[1])]++;
+            let openDigit = parseInt(val[0]);
+            let closeDigit = parseInt(val[1]);
+            digitCounts[openDigit]++;
+            digitCounts[closeDigit]++;
         }
     });
 
     let sortedDigits = Object.keys(digitCounts).sort((a, b) => digitCounts[b] - digitCounts[a]);
     let top4Ank = sortedDigits.slice(0, 4);
 
-    let ankHtml = top4Ank.map(digit => `<span class="ank-badge">${digit} <small style="opacity:0.8;">(${digitCounts[digit]}x)</small></span>`).join("");
+    let ankHtml = top4Ank.map(digit => {
+        return `<span class="ank-badge">${digit} <small style="opacity:0.8;">(${digitCounts[digit]}x)</small></span>`;
+    }).join("");
 
     document.getElementById("otc-ank-prediction").innerHTML = `
         <div style="font-size:11px; margin-bottom:6px; color:#cbd5e1;">
@@ -430,31 +485,73 @@ function calculateOTCAnkFrequency(targetCol) {
     `;
 }
 
+function calculateAstroNumerology(targetRow, targetCol) {
+    let dayInfo = DAY_PLANETS[targetCol] || { name: "ज्योतिष", ank: [1, 6] };
+    let tithiVal = parseInt(document.getElementById('panchangTithi').value || 2);
+    let prevJodi = (targetRow > 0) ? data[targetRow - 1][targetCol] : "25";
+    
+    let prevSum = (prevJodi !== "**") ? (parseInt(prevJodi[0]) + parseInt(prevJodi[1])) % 10 : 5;
+
+    let lagnaLordAnk = 5;
+    let rashiLordAnk = 6;
+    let dashaLordAnk = 3;
+    let bhuktiLordAnk = 9;
+
+    let ank1 = (userMulank + lagnaLordAnk + dayInfo.ank[0] + tithiVal) % 10;
+    let ank2 = (userBhagyank + rashiLordAnk + dashaLordAnk + targetRow + 1) % 10;
+    let ank3 = (userNamank + bhuktiLordAnk + prevSum + dayInfo.ank[1]) % 10;
+
+    let uniqueAnks = [ank1];
+    if (!uniqueAnks.includes(ank2)) uniqueAnks.push(ank2);
+    else uniqueAnks.push((ank2 + 3) % 10);
+
+    if (!uniqueAnks.includes(ank3)) uniqueAnks.push(ank3);
+    else uniqueAnks.push((ank3 + 5) % 10);
+
+    // Dynamic 3 Jodies derived EXACTLY from the 3 Astro Subh Anks [A, B, C]
+    let jodi1 = `${uniqueAnks[0]}${uniqueAnks[1]}`;
+    let jodi2 = `${uniqueAnks[1]}${uniqueAnks[2]}`;
+    let jodi3 = `${uniqueAnks[2]}${uniqueAnks[0]}`;
+
+    document.getElementById("astro-prediction").innerHTML = `
+        <div style="font-size:11px; color:#e2e8f0; margin-bottom:8px;">
+            ग्रह स्वामी: <b>${dayInfo.name}</b> | लग्न: <b>कन्या (बुध)</b> | राशि: <b>वृषभ (शुक्र)</b> | महादशा: <b>गुरु-मंगल</b>
+        </div>
+        <div style="margin-bottom:6px;">
+            <span style="font-size:12px; color:var(--gold); font-weight:bold;">🔥 3 सटीक शुभ अंक (3 Astro Digits):</span><br>
+            <span class="astro-badge">अंक 1: ${uniqueAnks[0]}</span>
+            <span class="astro-badge">अंक 2: ${uniqueAnks[1]}</span>
+            <span class="astro-badge">अंक 3: ${uniqueAnks[2]}</span>
+        </div>
+        <div style="margin-top:8px;">
+            <span style="font-size:12px; color:#00ff88; font-weight:bold;">✨ इन्हीं 3 अंकों से बनी 3 शुभ जोड़ियाँ (3 Subh Jodies):</span><br>
+            <span class="astro-badge" style="background: linear-gradient(135deg, #0284c7, #0084ff);">Subh Jodi #1: ${jodi1}</span>
+            <span class="astro-badge" style="background: linear-gradient(135deg, #0284c7, #0084ff);">Subh Jodi #2: ${jodi2}</span>
+            <span class="astro-badge" style="background: linear-gradient(135deg, #0284c7, #0084ff);">Subh Jodi #3: ${jodi3}</span>
+        </div>
+        <div style="font-size:10px; color:#a855f7; margin-top:6px;">
+            *ये 3 जोड़ियाँ सटीक रूप से आपके मूलांक, भाग्यांक और ग्रहदशा के 3 शुभ अंकों से निर्मित हैं।
+        </div>
+    `;
+
+    return { jodis: [jodi1, jodi2, jodi3], anks: uniqueAnks };
+}
+
 function calculate90PercentStrongJodies(targetRow, targetCol) {
     let days = ["MON", "TUE", "WED", "THU", "FRI", "SAT"];
     let dayName = days[targetCol];
+
     let patternScores = {};
 
     function addJodi(jodi, score, reason) {
         if (!jodi || jodi === "**" || jodi.length !== 2) return;
-        if (!patternScores[jodi]) patternScores[jodi] = { score: 0, reason: reason };
+        if (!patternScores[jodi]) {
+            patternScores[jodi] = { score: 0, reason: reason };
+        }
         patternScores[jodi].score += score;
     }
 
     let prevJodiSameCol = (targetRow > 0) ? data[targetRow - 1][targetCol] : "**";
-    let prevJodiCrossCol = (targetRow > 0 && targetCol > 0) ? data[targetRow - 1][targetCol - 1] : "**";
-
-    for (let r = 1; r < targetRow; r++) {
-        let histVal = data[r][targetCol];
-        let histAbove = data[r - 1][targetCol];
-
-        if (histVal !== "**" && histAbove !== "**") {
-            if (prevJodiSameCol !== "**" && fam(histAbove) === fam(prevJodiSameCol)) {
-                addJodi(histVal, 15, `Hist Row ${r+1} Direct Repeat`);
-                addJodi(palti(histVal), 12, `Hist Row ${r+1} Palti Match`);
-            }
-        }
-    }
 
     if (prevJodiSameCol !== "**") {
         addJodi(prevJodiSameCol, 25, "Direct Line Repeat");
@@ -465,12 +562,6 @@ function calculate90PercentStrongJodies(targetRow, targetCol) {
 
         addJodi(`${cut1}${cut2}`, 18, "Full Cut Line");
         addJodi(`${cut1}${f2}`, 15, "Half Cut Line (C1)");
-        addJodi(`${f1}${cut2}`, 15, "Half Cut Line (C2)");
-    }
-
-    if (prevJodiCrossCol !== "**") {
-        addJodi(prevJodiCrossCol, 14, "Cross Day Transfer");
-        addJodi(palti(prevJodiCrossCol), 10, "Cross Day Palti");
     }
 
     let sortedKeys = Object.keys(patternScores).sort((a, b) => patternScores[b].score - patternScores[a].score);
@@ -479,12 +570,9 @@ function calculate90PercentStrongJodies(targetRow, targetCol) {
     if (top2Strong.length < 2) {
         let defaultSeed = prevJodiSameCol !== "**" ? prevJodiSameCol : "12";
         let d1 = parseInt(defaultSeed[0]), d2 = parseInt(defaultSeed[1]);
-        let fallbacks = [`${d1}${d2}`, `${(d1+5)%10}${(d2+5)%10}`, `${d2}${d1}`];
+        let fallbacks = [`${d1}${d2}`, `${(d1+5)%10}${(d2+5)%10}`];
         fallbacks.forEach(fb => {
-            if (!top2Strong.includes(fb) && top2Strong.length < 2) {
-                addJodi(fb, 5, "Fallback Structural");
-                top2Strong.push(fb);
-            }
+            if (!top2Strong.includes(fb) && top2Strong.length < 2) top2Strong.push(fb);
         });
     }
 
@@ -492,71 +580,17 @@ function calculate90PercentStrongJodies(targetRow, targetCol) {
         let info = patternScores[j] || { reason: "Pattern Scan" };
         return `
             <div style="display:inline-block; margin:4px; text-align:center;">
-                <span class="strong-jodi-btn">🔥 Strong #${i + 1}: ${j}</span>
+                <span class="strong-jodi-btn">🔥 Pattern Jodi #${i + 1}: ${j}</span>
                 <span class="source-tag">📍 ${info.reason}</span>
             </div>
         `;
     }).join("");
 
-    let dayInfo = DAY_PLANETS[targetCol] || { name: "ज्योतिष", ank: [1, 6] };
-    let prevSum = prevJodiSameCol !== "**" ? (parseInt(prevJodiSameCol[0]) + parseInt(prevJodiSameCol[1])) % 10 : (targetRow + 1) * 2;
-    let sAnk1 = (userMulank !== null) ? (userMulank + dayInfo.ank[0] + targetCol) % 10 : (dayInfo.ank[0] + prevSum) % 10;
-    let sAnk2 = (userBhagyank !== null) ? (userBhagyank + dayInfo.ank[1] + prevSum) % 10 : (dayInfo.ank[1] + targetRow + targetCol) % 10;
-    if (sAnk1 === sAnk2) sAnk2 = (sAnk2 + 3) % 10;
-
-    let subhJodi1 = `${sAnk1}${sAnk2}`;
-    let subhJodi2 = `${sAnk2}${(sAnk1 + 5) % 10}`;
-
-    let subhJodiHtml = `
-        <div style="display:inline-block; margin:4px; text-align:center;">
-            <span class="astro-badge">✨ Subh #1: ${subhJodi1}</span>
-            <span class="source-tag">🔮 Jyotish Sync</span>
-        </div>
-        <div style="display:inline-block; margin:4px; text-align:center;">
-            <span class="astro-badge">✨ Subh #2: ${subhJodi2}</span>
-            <span class="source-tag">🔮 Astro Cut Sync</span>
-        </div>
-    `;
-
     document.getElementById("blank-4jodi-prediction").innerHTML = `
         <div style="font-size:11px; margin-bottom:6px; color:#cbd5e1;">
             Target Row: <b>${targetRow + 1}</b> | Day: <b style="color:var(--gold);">${dayName}</b>
         </div>
-        <div>${strongJodiHtml} ${subhJodiHtml}</div>
-    `;
-}
-
-function calculateAstroNumerology(targetRow, targetCol) {
-    let dayInfo = DAY_PLANETS[targetCol] || { name: "ज्योतिष", ank: [1, 6] };
-    let prevJodi = (targetRow > 0) ? data[targetRow - 1][targetCol] : "25";
-    
-    let prevSum = 0;
-    if (prevJodi !== "**") prevSum = (parseInt(prevJodi[0]) + parseInt(prevJodi[1])) % 10;
-    else prevSum = (targetRow + 1) * 2;
-
-    let dayBase1 = dayInfo.ank[0], dayBase2 = dayInfo.ank[1];
-    let subhAnk1, subhAnk2;
-
-    if (userMulank !== null && userBhagyank !== null) {
-        subhAnk1 = (userMulank + dayBase1 + targetCol) % 10;
-        subhAnk2 = (userBhagyank + dayBase2 + prevSum) % 10;
-    } else {
-        subhAnk1 = (dayBase1 + prevSum) % 10;
-        subhAnk2 = (dayBase2 + targetRow + targetCol) % 10;
-    }
-
-    if (subhAnk1 === subhAnk2) subhAnk2 = (subhAnk2 + 3) % 10;
-    let dobStatusText = userMulank !== null ? ` | DOB Sync: <b>M:${userMulank}, B:${userBhagyank}</b>` : '';
-
-    document.getElementById("astro-prediction").innerHTML = `
-        <div style="font-size:11px; color:#e2e8f0; margin-bottom:8px;">
-            ग्रह स्वामी: <b>${dayInfo.name}</b> | अंक योग: <b>${prevSum}</b>${dobStatusText}
-        </div>
-        <div style="margin-bottom:6px;">
-            <span style="font-size:11px; color:var(--gold);">🌟 2 शुभ अंक (Single Digit):</span>
-            <span class="astro-badge">${subhAnk1}</span>
-            <span class="astro-badge">${subhAnk2}</span>
-        </div>
+        <div>${strongJodiHtml}</div>
     `;
 }
 
@@ -598,7 +632,7 @@ function exportData() {
     let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
     let downloadAnchor = document.createElement('a');
     downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", "milan_6day_backup.json");
+    downloadAnchor.setAttribute("download", "milannight_data_backup.json");
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     downloadAnchor.remove();
@@ -622,7 +656,8 @@ function clearData(){ if(confirm("क्लियर करें?")){ localStor
 function autoScanPatterns() {
     let totalRows = data.length;
     if(totalRows < 3) { alert("और डेटा चाहिए!"); return; }
-    makePattern(totalRows - 1, 0);
+    let blankRow = totalRows - 1;
+    makePattern(blankRow, 0);
 }
 
 function makePattern(r,c){
@@ -714,34 +749,20 @@ function updateAI(shape, matches){
 
 function closePopup(){ document.getElementById("popup").style.display="none"; document.getElementById("overlay").style.display="none"; }
 
-// FIXED CSV IMPORT (ALL FILES HANDLER)
 document.getElementById("csv").onchange = e => {
-    let file = e.target.files[0];
-    if(!file) return;
-
     let fr = new FileReader();
     fr.onload = () => {
-        try {
-            let lines = fr.result.split(/\r?\n/);
-            let parsedData = lines.filter(l => l.trim().length > 0).map(l => {
-                let row = l.split(/[,;\t\s]+/).map(v => norm(v.trim()));
-                while(row.length < 6) row.push("**"); 
-                return row.slice(0, 6);
-            });
-            
-            if(parsedData.length > 0) {
-                data = parsedData;
-                saveDataSilent();
-                draw();
-                alert("Milan 6-Day CSV Imported Successfully!");
-            } else {
-                alert("CSV फाइल में डेटा नहीं मिला!");
-            }
-        } catch(err) {
-            alert("CSV फाइल में समस्या आई: " + err.message);
-        }
+        let lines = fr.result.split('\n');
+        data = lines.filter(l=>l.trim()).map(l => {
+            let row = l.split(',').map(v => norm(v.trim()));
+            while(row.length < 6) row.push("**"); 
+            return row.slice(0,6);
+        });
+        saveDataSilent();
+        draw();
+        alert("CSV Imported!");
     };
-    fr.readAsText(file);
+    fr.readAsText(e.target.files[0]);
 };
 </script>
 </body>
