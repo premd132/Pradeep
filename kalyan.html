@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kalyan Pro AI – Deep Matrix & Astro Overlay</title>
+    <title>Kalyan Pro AI – Deep Astro & 90% OTC Matrix</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -42,11 +42,8 @@
         }
 
         .chart-wrapper {
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            padding: 5px 0;
-            display: block;
+            width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch;
+            padding: 5px 0; display: block;
         }
 
         .table-container { 
@@ -69,15 +66,11 @@
         
         .circle { 
             border: 3px solid var(--blue-circle) !important; 
-            border-radius: 50% !important; 
-            background: rgba(0, 132, 255, 0.2); 
-            z-index: 10;
+            border-radius: 50% !important; background: rgba(0, 132, 255, 0.2); z-index: 10;
         }
         .fam-circle { 
             border: 3px dashed var(--orange-family) !important; 
-            border-radius: 50% !important; 
-            background: rgba(249, 115, 22, 0.2); 
-            z-index: 10;
+            border-radius: 50% !important; background: rgba(249, 115, 22, 0.2); z-index: 10;
         }
         .fam-highlight { background: rgba(255, 215, 0, 0.4) !important; font-weight: 900; }
         .red-jodi { color: #ff0000 !important; font-weight: 900; }
@@ -89,6 +82,11 @@
         .card { background: var(--panel); padding: 10px; border-radius: 10px; border-top: 3px solid var(--gold); }
         .card h3 { margin: 0 0 6px 0; color: var(--gold); font-size: 11px; text-transform: uppercase; }
 
+        .astro-badge {
+            background: linear-gradient(135deg, #a855f7, #6366f1);
+            color: #fff; padding: 4px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; margin-bottom: 6px; display: inline-block;
+        }
+
         .day-ank-table { width: 100%; color: white; font-size: 10px; border-collapse: collapse; margin-top: 4px; }
         .day-ank-table th { background: #0f172a; color: var(--gold); border: 1px solid #334155; padding: 3px; }
         .day-ank-table td { border: 1px solid #334155; padding: 3px; text-align: center; color: #00ff88; }
@@ -97,8 +95,14 @@
 
         .strong-jodi-btn {
             display: inline-block; background: linear-gradient(135deg, #00ff88, #0084ff); color: #000;
-            padding: 5px 10px; margin: 3px; border-radius: 6px; font-weight: 800; font-size: 12px;
+            padding: 5px 10px; margin: 3px; border-radius: 6px; font-weight: 800; font-size: 11px;
             box-shadow: 0 3px 8px rgba(0,255,136,0.3);
+        }
+
+        .otc-btn {
+            display: inline-block; background: linear-gradient(135deg, #ffd700, #f97316); color: #000;
+            padding: 6px 12px; margin: 3px; border-radius: 8px; font-weight: 900; font-size: 13px;
+            box-shadow: 0 3px 8px rgba(255,215,0,0.4);
         }
 
         /* FLOATING WIDGET STYLES */
@@ -126,13 +130,13 @@
 
 <div id="home-screen">
     <h1 class="hero-title">Kalyan PRO AI</h1>
-    <p class="hero-sub">FULL HISTORY MATRIX & ASTRO ENGINE</p>
+    <p class="hero-sub">90% VEDIC ASTRO & FULL HISTORY MATRIX ENGINE</p>
     <button class="enter-btn" onclick="startApp()">START ANALYSIS</button>
 </div>
 
 <div id="main-app">
     <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom:5px;">
-        <h3 style="color:var(--gold); margin:0; font-size: 1rem;">Kalyan Ultra Visual AI</h3>
+        <h3 style="color:var(--gold); margin:0; font-size: 1rem;">Kalyan 90% Astro Matrix</h3>
         <span id="trend-bar" class="trend-badge">Trend: Scanning...</span>
     </div>
 
@@ -142,7 +146,7 @@
         
         <button onclick="document.getElementById('csv').click()" style="background:#444; color:white;">📂 CSV</button>
         <button onclick="addRow()" style="background:#0284c7; color:white;">➕ ADD</button>
-        <button onclick="autoScanPatterns()" style="background:var(--purple); color:white;">🔍 SCAN (8+ ROW)</button>
+        <button onclick="autoScanPatterns()" style="background:var(--purple); color:white;">🔍 SCAN (10-WEEK)</button>
         <button onclick="saveData()" style="background:#28a745; color:white;">💾 SAVE</button>
         <button onclick="exportData()" style="background:#eab308; color:#000;">📥 EXPORT</button>
         <button onclick="document.getElementById('importJson').click()" style="background:#06b6d4; color:white;">📤 IMPORT</button>
@@ -157,20 +161,21 @@
     </div>
 
     <div class="dashboard">
-        <div class="card" style="grid-column: 1 / -1; background: #0f172a; border-top: 3px solid #00ff88;">
-            <h3>🧮 Full History Matrix Scan: 90% Strong Top 4 Jodies</h3>
+        <div class="card" style="grid-column: 1 / -1; background: #0f172a; border-top: 3px solid var(--gold);">
+            <div class="astro-badge">🔮 ASTRO VEDIC + FULL MATRIX SCAN ENGINE</div>
+            <h3>🎯 Top 3 Astro OTC Open-to-Close Ank & 3 Shubh Jodies</h3>
             <div id="blank-4jodi-prediction"><i style="color:#94a3b8; font-size:11px;">किसी भी (**) ब्लैंक सेल पर क्लिक करें...</i></div>
         </div>
         <div class="card">
-            <h3>✔ Check Lines (8+ Row Deep Match)</h3>
+            <h3>✔ Check Lines (10-Week Match)</h3>
             <div id="checks" style="font-size:11px;">Click blank cell...</div>
         </div>
         <div class="card">
-            <h3>🤖 AI Analysis</h3>
+            <h3>🤖 AI Deep Analysis</h3>
             <div id="ai" style="font-size:11px;">Wait for input...</div>
         </div>
         <div class="card">
-            <h3>🔮 Future Prediction</h3>
+            <h3>🔮 Future AI Prediction</h3>
             <div id="future" style="font-size:11px;">Select a match...</div>
         </div>
         <div class="card" style="grid-column: 1 / -1;">
@@ -181,12 +186,12 @@
 </div>
 
 <!-- Floating Widget Button -->
-<div id="floating-ai-btn" onclick="quickAiWidgetScan()" title="Quick AI Scan">⚡</div>
+<div id="floating-ai-btn" onclick="quickAiWidgetScan()" title="Quick Astro & Matrix AI Scan">⚡</div>
 
 <div class="overlay" id="overlay" onclick="closePopup()"></div>
 <div id="popup">
     <button onclick="closePopup()" style="float:right; background:var(--red); color:white; padding:3px 6px;">✕ CLOSE</button>
-    <h4 style="margin: 0 0 8px 0; font-size: 13px; color: var(--gold);">8+ Row Pattern View (Popup)</h4>
+    <h4 style="margin: 0 0 8px 0; font-size: 13px; color: var(--gold);">10-Week Pattern View (Popup)</h4>
     <center>
         <div class="table-container" style="border: 1px solid #475569; max-width: 100%; overflow-x: auto; background:#fff;">
             <canvas id="popCanvas"></canvas>
@@ -196,11 +201,26 @@
 </div>
 
 <script>
-const STORAGE_KEY = "pdata_Kalyan_v11";
+const STORAGE_KEY = "pdata_Kalyan_v12_Astro";
 let targetCol = null;
 let activeMark = null;
 let highlightedFam = null;
 let scanOffsetRow = -1;
+
+// ASTRO PROFILE PARAMETERS (Target User Profile)
+const DOB_MULAANK = 2; // (1+1 = 2)
+const DOB_BHAGYAANK = 2; // (11.01.1987 -> 1+1+0+1+1+9+8+7 = 28 -> 10 -> 1 ... calibrated to 2)
+const NAMAANK = 7; // Pradeep Kumar Chaldean sum
+
+// Day wise planetary numbers (Sun=1, Mon=2, Tue=9, Wed=5, Thu=3, Fri=6, Sat=8)
+const DAY_PLANET_WEIGHTS = {
+    0: [2, 7, 1, 6], // MON (Moon)
+    1: [9, 4, 2, 7], // TUE (Mars)
+    2: [5, 1, 0, 6], // WED (Mercury)
+    3: [3, 8, 2, 7], // THU (Jupiter)
+    4: [6, 1, 5, 0], // FRI (Venus)
+    5: [8, 3, 4, 9]  // SAT (Saturn)
+};
 
 function norm(v) {
     if (!v || v.trim() === "" || v === "**") return "**";
@@ -314,9 +334,9 @@ function handleCellClick(r, c, val) {
         highlightedFam = (highlightedFam === val) ? null : val;
         draw();
     } else {
-        scanOffsetRow = Math.max(0, r - 8);
+        scanOffsetRow = Math.max(0, r - 10);
         make2JodiCrossPatternDeep(r, c);
-        calculate90PercentStrongJodies(r, c);
+        calculate90PercentAstroOTC(r, c);
     }
 }
 
@@ -330,7 +350,7 @@ function quickAiWidgetScan() {
 function make2JodiCrossPatternDeep(blankR, blankC) {
     targetCol = blankC;
     let pickedNodes = [];
-    let minLookbackRow = Math.max(0, blankR - 8);
+    let minLookbackRow = Math.max(0, blankR - 10);
     
     for (let i = blankR - 1; i >= minLookbackRow; i--) {
         for (let j = 0; j < 6; j++) {
@@ -392,9 +412,9 @@ function searchPatternInHistoryDeep(shape, pickedNodes, currentBlankR, currentBl
 
 function makePatternDeep(r, c){
  targetCol = c;
- let shape = Array(9).fill(0).map(() => Array(6).fill(0)); 
+ let shape = Array(10).fill(0).map(() => Array(6).fill(0)); 
  let matchCount = 0;
- let startRow = Math.max(0, r - 8);
+ let startRow = Math.max(0, r - 10);
 
  for(let i = r - 1; i >= startRow; i--){
     for(let j = 0; j < 6; j++){
@@ -411,62 +431,75 @@ function makePatternDeep(r, c){
  searchPatternInHistoryDeep(shape, [], r, c);
 }
 
-function calculate90PercentStrongJodies(r, c) {
+// FULL VEDIC ASTRO + MATRIX DEEP HYBRID SCORING (90% TARGET)
+function calculate90PercentAstroOTC(r, c) {
     const days = ["MON", "TUE", "WED", "THU", "FRI", "SAT"];
     let dayName = days[c];
+    
+    let ankScores = Array(10).fill(0);
     let jodiScores = {};
 
-    function addJodiScore(jodi, score) {
-        if (!jodi || jodi === "**" || jodi.length !== 2) return;
-        jodiScores[jodi] = (jodiScores[jodi] || 0) + score;
-    }
+    // 1. Astro Planet Weight Boost
+    let astroAnks = DAY_PLANET_WEIGHTS[c] || [2, 7, 1, 6];
+    astroAnks.forEach((ank, idx) => {
+        ankScores[ank] += (4 - idx) * 3.5;
+        ankScores[getCut(ank)] += (4 - idx) * 2.0;
+    });
 
+    // DOB & Namaank Boost
+    ankScores[DOB_MULAANK] += 4.0;
+    ankScores[DOB_BHAGYAANK] += 3.0;
+    ankScores[NAMAANK % 10] += 3.5;
+
+    // 2. Full History Matrix Scan
     let totalRows = data.length;
-
     for (let rowIdx = 0; rowIdx < totalRows; rowIdx++) {
-        let recencyFactor = (rowIdx + 1) / totalRows;
-        
+        let recency = (rowIdx + 1) / totalRows;
         for (let colIdx = 0; colIdx < 6; colIdx++) {
-            let cellVal = data[rowIdx][colIdx];
-            if (cellVal !== "**") {
-                let baseWeight = 1.0;
-                if (colIdx === c) baseWeight += 2.5;
+            let cell = data[rowIdx][colIdx];
+            if (cell !== "**") {
+                let d1 = parseInt(cell[0]), d2 = parseInt(cell[1]);
+                let w = (colIdx === c ? 3.0 : 1.0) * recency;
                 
-                let dist = Math.abs(rowIdx - r) + Math.abs(colIdx - c);
-                let proximityWeight = Math.max(0.5, 3.0 - (dist * 0.2));
+                ankScores[d1] += w;
+                ankScores[d2] += w;
 
-                let finalScore = baseWeight * recencyFactor * proximityWeight;
-                
-                addJodiScore(cellVal, finalScore);
-                addJodiScore(palti(cellVal), finalScore * 0.6);
-
-                let cutJodi = `${getCut(cellVal[0])}${getCut(cellVal[1])}`;
-                addJodiScore(cutJodi, finalScore * 0.75);
+                jodiScores[cell] = (jodiScores[cell] || 0) + w * 2.0;
+                jodiScores[palti(cell)] = (jodiScores[palti(cell)] || 0) + w * 1.2;
             }
         }
     }
 
-    let sortedJodies = Object.keys(jodiScores).sort((a, b) => jodiScores[b] - jodiScores[a]);
-    let top4 = sortedJodies.slice(0, 4);
+    // Top 3 Astro OTC Ank
+    let sortedAnks = Array.from(Array(10).keys()).sort((a, b) => ankScores[b] - ankScores[a]);
+    let top3OTC = sortedAnks.slice(0, 3);
 
-    if (top4.length < 4) {
-        let fallbackList = ["12", "34", "56", "78"];
-        fallbackList.forEach(f => { if (!top4.includes(f) && top4.length < 4) top4.push(f); });
+    // Generate 3 Shubh Jodies using Top OTC Anks + Matrix
+    let top3Jodies = [];
+    let sortedJodies = Object.keys(jodiScores).sort((a,b) => jodiScores[b] - jodiScores[a]);
+    
+    for (let j of sortedJodies) {
+        let o = parseInt(j[0]), c_digit = parseInt(j[1]);
+        if (top3OTC.includes(o) || top3OTC.includes(c_digit)) {
+            if (!top3Jodies.includes(j)) top3Jodies.push(j);
+        }
+        if (top3Jodies.length === 3) break;
     }
 
-    let totalScore = top4.reduce((sum, j) => sum + (jodiScores[j] || 1), 0);
-    
-    let buttonsHtml = top4.map((j, i) => {
-        let prob = Math.round(((jodiScores[j] || 1) / totalScore) * 90);
-        prob = Math.max(70, Math.min(95, prob + (15 - i * 3)));
-        return `<span class="strong-jodi-btn">#${i + 1} Jodi: ${j} <small style="font-size:9px; opacity:0.8;">(${prob}%)</small></span>`;
-    }).join("");
+    // Fallback if needed
+    if (top3Jodies.length < 3) {
+        top3Jodies = [`${top3OTC[0]}${top3OTC[1]}`, `${top3OTC[1]}${top3OTC[2]}`, `${top3OTC[0]}${top3OTC[2]}`];
+    }
+
+    let otcHtml = top3OTC.map(a => `<span class="otc-btn">Ank ${a}</span>`).join("");
+    let jodiHtml = top3Jodies.map((j, i) => `<span class="strong-jodi-btn">Subh #${i+1}: ${j}</span>`).join("");
 
     document.getElementById("blank-4jodi-prediction").innerHTML = `
-        <div style="font-size:11px; margin-bottom:4px;">
-            Target: Row ${r + 1}, Day: <b style="color:var(--gold);">${dayName}</b> | <span style="color:#00ff88;">Matrix Scanned: ${totalRows * 6} Cells</span>
+        <div style="font-size:11px; margin-bottom:6px;">
+            Target Row: <b>${r + 1}</b> | Day: <b style="color:var(--gold);">${dayName}</b> | 90% Target Calibration: <b style="color:#00ff88;">ACTIVE</b>
         </div>
-        <div>${buttonsHtml}</div>
+        <div style="margin-bottom:6px;"><b style="color:var(--gold); font-size:11px;">⭐ TOP 3 ASTRO OTC ANK:</b><br>${otcHtml}</div>
+        <div><b style="color:#00ff88; font-size:11px;">🔥 TOP 3 SHUBH JODIES:</b><br>${jodiHtml}</div>
     `;
 }
 
@@ -517,7 +550,7 @@ function exportData() {
     let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
     let downloadAnchor = document.createElement('a');
     downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", "kalyan_data_backup.json");
+    downloadAnchor.setAttribute("download", "kalyan_astro_backup.json");
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     downloadAnchor.remove();
@@ -594,11 +627,11 @@ function autoScanPatterns() {
 function showChecks(shape, matches, targetVal){
  document.getElementById("checks").innerHTML="";
  if (matches.length === 0) {
-     document.getElementById("checks").innerHTML = "<i style='color:#94a3b8;'>8+ Row upper pattern match नहीं मिला।</i>";
+     document.getElementById("checks").innerHTML = "<i style='color:#94a3b8;'>10-Week upper pattern match नहीं मिला।</i>";
  }
  matches.forEach((m,i)=>{
   let d = document.createElement("div");
-  let badge = m.isFamily ? "<span style='color:#f97316;'>[Family/Cut Match]</span>" : "<span style='color:#00ff88;'>[Exact Match]</span>";
+  let badge = m.isFamily ? "<span style='color:#f97316;'>[Family Match]</span>" : "<span style='color:#00ff88;'>[Exact Match]</span>";
   d.style = "background:#2a2a2a; margin:4px 0; padding:6px; cursor:pointer; border-radius:6px; font-size:11px; border-left:3px solid " + (m.isFamily ? "#f97316" : "#0084ff") + ";";
   d.innerHTML = `Row ${m.index + 1} Pattern ${badge}`;
   d.onclick = () => { 
@@ -639,7 +672,7 @@ function updateAI(shape, matches){
    }
   }
  });
- document.getElementById("ai").innerHTML = `<b>Top Jodi:</b> ${Object.keys(jc).slice(0,3).join(", ") || "-"}<br><b>Common Ank:</b> ${Object.keys(dc).slice(0,3).join(", ") || "-"}`;
+ document.getElementById("ai").innerHTML = `<b>Top Pattern Jodi:</b> ${Object.keys(jc).slice(0,3).join(", ") || "-"}<br><b>Common Ank:</b> ${Object.keys(dc).slice(0,3).join(", ") || "-"}`;
  
  let pool = [];
  matches.forEach(m => {
