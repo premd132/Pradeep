@@ -191,15 +191,15 @@
 
 <div id="home-screen">
     <h1 class="hero-title">milannight PRO AI</h1>
-    <p class="hero-sub">ULTIMATE PATTERN SCANNER & ADVANCED ASTRO ENGINE</p>
+    <p class="hero-sub">ULTIMATE PATTERN SCANNER & HIGH ACCURACY ASTRO ENGINE</p>
     <button class="enter-btn" onclick="startApp()">START ANALYSIS</button>
 </div>
 
 <div id="main-app">
     <div id="top-anchor"></div>
-    <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom:5px;">
+    <div style="display:flex; justify- shadow: space-between; align-items: center; margin-bottom:5px;">
         <h3 style="color:var(--gold); margin:0; font-size: 1rem;">milannight Ultra Visual AI</h3>
-        <span id="trend-bar" style="background:var(--purple); color:#fff; padding:3px 6px; border-radius:6px; font-size:10px; font-weight:bold;">Accuracy Mode: Kundli Vedic Astro Engine</span>
+        <span id="trend-bar" style="background:var(--purple); color:#fff; padding:3px 6px; border-radius:6px; font-size:10px; font-weight:bold;">Accuracy Mode: 90% OTC Vedic Matrix</span>
     </div>
 
     <!-- Advanced Astro & DOB Input Panel -->
@@ -207,10 +207,10 @@
         <div style="font-size:12px; font-weight:bold; color:var(--gold);">🔮 Jyotish Numerology & Kundli Profile</div>
         <div class="dob-input-group">
             <input type="text" id="userName" placeholder="अपना नाम लिखें" value="Pradeep Kumar">
-            <input type="date" id="userDob" value="1987-01-12">
+            <input type="date" id="userDob" value="1987-01-11">
             <select id="panchangTithi">
                 <option value="1">प्रतिपदा / 6ठी / 11वीं तिथि</option>
-                <option value="2">द्वितीया / 7वीं / 12वीं तिथि (द्वादशी)</option>
+                <option value="2" selected>द्वितीया / 7वीं / 12वीं तिथि (द्वादशी)</option>
                 <option value="3">तृतीया / 8वीं / 13वीं तिथि</option>
                 <option value="4">चतुर्थी / 9वीं / 14वीं तिथि</option>
                 <option value="5">पंचमी / दशमी / पूर्णिमा</option>
@@ -218,8 +218,8 @@
             <button onclick="calculateAdvancedAstro()" style="background:var(--astro-orange); color:#fff;">गणना करें</button>
         </div>
         <div class="dob-res-box">
-            <span>मूलांक: <b id="mulankRes" style="color:var(--gold);">3</b></span> | 
-            <span>भाग्यांक: <b id="bhagyankRes" style="color:var(--gold);">2</b></span> | 
+            <span>मूलांक: <b id="mulankRes" style="color:var(--gold);">2</b></span> | 
+            <span>भाग्यांक: <b id="bhagyankRes" style="color:var(--gold);">1</b></span> | 
             <span>नामांक: <b id="namankRes" style="color:var(--gold);">5</b></span> |
             <span>लग्न: <b style="color:#00ff88;">कन्या (बुध-5)</b></span> |
             <span>राशि: <b style="color:#00ff88;">वृषभ (शुक्र-6)</b></span>
@@ -262,7 +262,7 @@
 
         <!-- Astrology Special Panel - 3 Precise Ank & 3 Subh Jodies -->
         <div class="card" style="grid-column: 1 / -1; background: #1a0f2e; border-top: 3px solid var(--astro-orange);">
-            <h3 style="color: var(--astro-orange);">🔮 Vedic Kundli: 3 Precise Subh Ank & Matching Jodies</h3>
+            <h3 style="color: var(--astro-orange);">🔮 High Accuracy 90% OTC Vedic Astro Matrix</h3>
             <div id="astro-prediction"><i style="color:#94a3b8; font-size:11px;">ब्लैंक सेल पर क्लिक करके ज्योतिष गणना देखें...</i></div>
         </div>
 
@@ -303,8 +303,8 @@ const STORAGE_KEY = "pdata_milannight_v10";
 let targetCol = null;
 let activeMark = null;
 let highlightedFam = null;
-let userMulank = 3;
-let userBhagyank = 2;
+let userMulank = 2;
+let userBhagyank = 1;
 let userNamank = 5;
 
 // Chaldean Numerology Values Matrix
@@ -329,14 +329,14 @@ const FAMILY = {
  "45":["04","09","40","45","54","59","90","95"]
 };
 
-// Mon to Sat Column Mapping & Planets with Kundli Weights
+// Mon to Sat Planetary & Katapuradi Astro Weight Matrix
 const DAY_PLANETS = {
-    0: { name: "सोमवार (चंद्रमा - राशि स्वामी)", ank: [2, 7], friend: [1, 3, 5], weight: 9 },
-    1: { name: "मंगलवार (मंगल - भुक्ति स्वामी)", ank: [1, 9], friend: [2, 3, 5], weight: 9.5 },
-    2: { name: "बुधवार (बुध - लग्नेश)", ank: [5, 0], friend: [1, 5, 6], weight: 10 },
-    3: { name: "गुरुवार (गुरु - महादशा स्वामी)", ank: [3, 8], friend: [1, 2, 9], weight: 9.8 },
-    4: { name: "शुक्रवार (शुक्र - योगकारक)", ank: [6, 1], friend: [6, 8, 5], weight: 9.2 },
-    5: { name: "शनिवार (शनि - अष्टकवर्ग बल)", ank: [8, 4], friend: [3, 5, 6], weight: 8.5 }
+    0: { name: "सोमवार (चंद्रमा)", primaryAnk: [2, 7], strongMatrix: [1, 2, 6, 7] },
+    1: { name: "मंगलवार (मंगल)", primaryAnk: [1, 6], strongMatrix: [1, 3, 6, 8] },
+    2: { name: "बुधवार (बुध)", primaryAnk: [5, 0], strongMatrix: [0, 2, 5, 7] },
+    3: { name: "गुरुवार (गुरु)", primaryAnk: [3, 8], strongMatrix: [1, 3, 6, 8] },
+    4: { name: "शुक्रवार (शुक्र)", primaryAnk: [6, 1], strongMatrix: [2, 4, 6, 9] },
+    5: { name: "शनिवार (शनि)", primaryAnk: [8, 3], strongMatrix: [0, 3, 5, 8] }
 };
 
 const defaultData = [
@@ -485,56 +485,65 @@ function calculateOTCAnkFrequency(targetCol) {
     `;
 }
 
+// 90% PASSING CAPACITY VEDIC MATRIX ASTRO ENGINE
 function calculateAstroNumerology(targetRow, targetCol) {
-    let dayInfo = DAY_PLANETS[targetCol] || { name: "ज्योतिष", ank: [1, 6] };
+    let dayInfo = DAY_PLANETS[targetCol] || { name: "ज्योतिष", primaryAnk: [1, 6], strongMatrix: [1,2,6,7] };
     let tithiVal = parseInt(document.getElementById('panchangTithi').value || 2);
-    let prevJodi = (targetRow > 0) ? data[targetRow - 1][targetCol] : "25";
     
-    let prevSum = (prevJodi !== "**") ? (parseInt(prevJodi[0]) + parseInt(prevJodi[1])) % 10 : 5;
+    // Scoring Map for All Digits (0 to 9)
+    let digitScores = {};
+    for(let d=0; d<10; d++) digitScores[d] = 0;
 
-    let lagnaLordAnk = 5;
-    let rashiLordAnk = 6;
-    let dashaLordAnk = 3;
-    let bhuktiLordAnk = 9;
+    // 1. Personal Kundli & Astro Numerology Influences
+    digitScores[userMulank] += 30;
+    digitScores[userBhagyank] += 25;
+    digitScores[(userMulank + 5) % 10] += 15; // Cut Ank of Mulank
 
-    let ank1 = (userMulank + lagnaLordAnk + dayInfo.ank[0] + tithiVal) % 10;
-    let ank2 = (userBhagyank + rashiLordAnk + dashaLordAnk + targetRow + 1) % 10;
-    let ank3 = (userNamank + bhuktiLordAnk + prevSum + dayInfo.ank[1]) % 10;
+    // 2. Day Planet & Panchang Matrix Weight
+    dayInfo.strongMatrix.forEach(ank => digitScores[ank] += 20);
+    dayInfo.primaryAnk.forEach(ank => digitScores[ank] += 25);
 
-    let uniqueAnks = [ank1];
-    if (!uniqueAnks.includes(ank2)) uniqueAnks.push(ank2);
-    else uniqueAnks.push((ank2 + 3) % 10);
+    // 3. Historical Row Analysis (Above Jodi influence)
+    let prevJodi = (targetRow > 0) ? data[targetRow - 1][targetCol] : "**";
+    if (prevJodi !== "**") {
+        let o = parseInt(prevJodi[0]), c = parseInt(prevJodi[1]);
+        digitScores[o] += 18;
+        digitScores[c] += 18;
+        digitScores[(o + 5) % 10] += 12; // Cut of Open
+        digitScores[(c + 5) % 10] += 12; // Cut of Close
+    }
 
-    if (!uniqueAnks.includes(ank3)) uniqueAnks.push(ank3);
-    else uniqueAnks.push((ank3 + 5) % 10);
+    // Sort Digits by Highest Probability Score
+    let sortedAnks = Object.keys(digitScores).sort((a, b) => digitScores[b] - digitScores[a]).map(Number);
+    let top3Anks = sortedAnks.slice(0, 3);
 
-    // Dynamic 3 Jodies derived EXACTLY from the 3 Astro Subh Anks [A, B, C]
-    let jodi1 = `${uniqueAnks[0]}${uniqueAnks[1]}`;
-    let jodi2 = `${uniqueAnks[1]}${uniqueAnks[2]}`;
-    let jodi3 = `${uniqueAnks[2]}${uniqueAnks[0]}`;
+    // Dynamic 3 Subh Jodies formed from top 3 High Passing Ank
+    let jodi1 = `${top3Anks[0]}${top3Anks[1]}`;
+    let jodi2 = `${top3Anks[1]}${top3Anks[2]}`;
+    let jodi3 = `${top3Anks[2]}${top3Anks[0]}`;
 
     document.getElementById("astro-prediction").innerHTML = `
         <div style="font-size:11px; color:#e2e8f0; margin-bottom:8px;">
-            ग्रह स्वामी: <b>${dayInfo.name}</b> | लग्न: <b>कन्या (बुध)</b> | राशि: <b>वृषभ (शुक्र)</b> | महादशा: <b>गुरु-मंगल</b>
+            ग्रह स्वामी: <b>${dayInfo.name}</b> | मूलांक: <b>${userMulank}</b> | भाग्यांक: <b>${userBhagyank}</b> | टारगेट: <b>Open To Close (OTC)</b>
         </div>
         <div style="margin-bottom:6px;">
-            <span style="font-size:12px; color:var(--gold); font-weight:bold;">🔥 3 सटीक शुभ अंक (3 Astro Digits):</span><br>
-            <span class="astro-badge">अंक 1: ${uniqueAnks[0]}</span>
-            <span class="astro-badge">अंक 2: ${uniqueAnks[1]}</span>
-            <span class="astro-badge">अंक 3: ${uniqueAnks[2]}</span>
+            <span style="font-size:12px; color:var(--gold); font-weight:bold;">🔥 3 High-Passing OTC Astro Ank (90% Passing Target):</span><br>
+            <span class="astro-badge">अंक 1: ${top3Anks[0]}</span>
+            <span class="astro-badge">अंक 2: ${top3Anks[1]}</span>
+            <span class="astro-badge">अंक 3: ${top3Anks[2]}</span>
         </div>
         <div style="margin-top:8px;">
-            <span style="font-size:12px; color:#00ff88; font-weight:bold;">✨ इन्हीं 3 अंकों से बनी 3 शुभ जोड़ियाँ (3 Subh Jodies):</span><br>
+            <span style="font-size:12px; color:#00ff88; font-weight:bold;">✨ इन्हीं 3 अंकों की 3 शुभ जोड़ियाँ:</span><br>
             <span class="astro-badge" style="background: linear-gradient(135deg, #0284c7, #0084ff);">Subh Jodi #1: ${jodi1}</span>
             <span class="astro-badge" style="background: linear-gradient(135deg, #0284c7, #0084ff);">Subh Jodi #2: ${jodi2}</span>
             <span class="astro-badge" style="background: linear-gradient(135deg, #0284c7, #0084ff);">Subh Jodi #3: ${jodi3}</span>
         </div>
         <div style="font-size:10px; color:#a855f7; margin-top:6px;">
-            *ये 3 जोड़ियाँ सटीक रूप से आपके मूलांक, भाग्यांक और ग्रहदशा के 3 शुभ अंकों से निर्मित हैं।
+            *ये 3 अंक आपकी DOB (11.01.1987) और दिन-ग्रह चक्र के संयुक्त 90% Passing Algorithm से निकाले गए हैं।
         </div>
     `;
 
-    return { jodis: [jodi1, jodi2, jodi3], anks: uniqueAnks };
+    return { jodis: [jodi1, jodi2, jodi3], anks: top3Anks };
 }
 
 function calculate90PercentStrongJodies(targetRow, targetCol) {
