@@ -478,7 +478,7 @@ function get3PreciseAstroAnks(targetRow, targetCol) {
     // Sort Digits by Highest Weight Score
     let sortedAnks = Object.keys(digitScores).sort((a, b) => digitScores[b] - digitScores[a]);
     
-    return sortedAnks.slice(0, 2).map(x => parseInt(x));
+    return sortedAnks.slice(0, 3).map(x => parseInt(x));
 }
 
 function calculateOTCAnkFrequency(targetCol) {
