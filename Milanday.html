@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>milanday Pro AI v12 – High Passing Engine & Astro Numerology</title>
+    <title>Rajdhani Night Pro AI – 5 Days Chart & Unique Row Engine</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -41,59 +41,30 @@
             justify-content: center; border: 1px solid rgba(255,255,255,0.1); 
         }
 
-        /* DOB & Name Card Styling */
         .dob-card {
-            background: var(--panel);
-            padding: 12px;
-            border-radius: 12px;
-            margin-bottom: 12px;
-            border: 1px solid var(--astro-orange);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
+            background: var(--panel); padding: 12px; border-radius: 12px;
+            margin-bottom: 12px; border: 1px solid var(--astro-orange);
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
         }
         .dob-input-group {
-            display: flex;
-            gap: 8px;
-            width: 100%;
-            max-width: 500px;
-            justify-content: center;
-            flex-wrap: wrap;
+            display: flex; gap: 8px; width: 100%; max-width: 500px;
+            justify-content: center; flex-wrap: wrap;
         }
         input[type="date"], input[type="text"], select {
-            padding: 6px 10px;
-            border-radius: 6px;
-            border: 1px solid #444;
-            background: #0f172a;
-            color: #fff;
-            font-size: 12px;
-            outline: none;
+            padding: 6px 10px; border-radius: 6px; border: 1px solid #444;
+            background: #0f172a; color: #fff; font-size: 12px; outline: none;
         }
         .dob-res-box {
-            display: flex;
-            gap: 12px;
-            background: rgba(255, 119, 0, 0.1);
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 11px;
-            border: 1px dashed var(--astro-orange);
-            flex-wrap: wrap;
-            justify-content: center;
+            display: flex; gap: 12px; background: rgba(255, 119, 0, 0.1);
+            padding: 6px 12px; border-radius: 6px; font-size: 11px;
+            border: 1px dashed var(--astro-orange); flex-wrap: wrap; justify-content: center;
         }
 
-        .chart-wrapper {
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            padding: 5px 0;
-            display: block;
-        }
-
+        .chart-wrapper { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; padding: 5px 0; display: block; }
         .table-container { 
             position: relative; background: #fff; border-radius: 10px; 
             padding: 4px; box-shadow: 0 0 20px rgba(0,0,0,0.5); 
-            display: table; margin: 0 auto; min-width: 340px;
+            display: table; margin: 0 auto; min-width: 320px;
         }
         
         table { border-collapse: collapse; color: #000; font-size: 12px; position: relative; z-index: 5; margin: 0 auto; width: 100%; }
@@ -109,16 +80,8 @@
         .action-th, .action-td { width: 26px; background: #f8fafc; }
         .btn-del-row { background: var(--red); color: white; border: none; border-radius: 3px; padding: 2px 4px; font-size: 9px; cursor: pointer; }
         
-        .circle { 
-            border: 3px solid var(--blue-circle) !important; 
-            border-radius: 50% !important; 
-            background: rgba(0, 132, 255, 0.2); 
-            z-index: 10;
-        }
+        .circle { border: 3px solid var(--blue-circle) !important; border-radius: 50% !important; background: rgba(0, 132, 255, 0.2); z-index: 10; }
         .fam-highlight { background: rgba(255, 215, 0, 0.4) !important; font-weight: 900; }
-        .red-jodi { color: #ff0000 !important; font-weight: 900; }
-        .scan-zone { background: rgba(255, 215, 0, 0.15) !important; }
-
         canvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 4; }
 
         .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; margin-top: 12px; }
@@ -126,61 +89,20 @@
         .card h3 { margin: 0 0 6px 0; color: var(--gold); font-size: 11px; text-transform: uppercase; }
 
         .strong-jodi-btn {
-            display: inline-block; 
-            background: linear-gradient(135deg, #00ff88, #0084ff); 
-            color: #000;
-            padding: 6px 12px; 
-            margin: 4px; 
-            border-radius: 8px; 
-            font-weight: 900; 
-            font-size: 13px;
-            box-shadow: 0 4px 10px rgba(0, 255, 136, 0.3);
+            display: inline-block; background: linear-gradient(135deg, #00ff88, #0084ff); 
+            color: #000; padding: 6px 12px; margin: 4px; border-radius: 8px; font-weight: 900; font-size: 13px;
         }
-
         .astro-badge {
-            display: inline-block;
-            background: linear-gradient(135deg, var(--astro-orange), #ff2200);
-            color: #fff;
-            padding: 6px 14px;
-            margin: 4px;
-            border-radius: 8px;
-            font-weight: 900;
-            font-size: 14px;
-            box-shadow: 0 4px 10px rgba(255, 119, 0, 0.4);
+            display: inline-block; background: linear-gradient(135deg, var(--astro-orange), #ff2200);
+            color: #fff; padding: 6px 14px; margin: 4px; border-radius: 8px; font-weight: 900; font-size: 14px;
         }
-
         .ank-badge {
-            display: inline-block;
-            background: #0284c7;
-            color: #fff;
-            padding: 4px 10px;
-            margin: 3px;
-            border-radius: 6px;
-            font-weight: 800;
-            font-size: 12px;
+            display: inline-block; background: #0284c7; color: #fff; padding: 4px 10px; margin: 3px; border-radius: 6px; font-weight: 800; font-size: 12px;
         }
-
-        .source-tag {
-            font-size: 10px;
-            color: #ffd700;
-            background: rgba(255,215,0,0.1);
-            padding: 2px 6px;
-            border-radius: 4px;
-            margin-top: 4px;
-            display: block;
-        }
-
-        .btn-scroll {
-            background: #f59e0b; color: #000; font-weight: bold; border-radius: 6px; border: none; padding: 6px 10px; font-size: 10px; cursor: pointer;
-        }
-        .scroll-bottom-container {
-            display: flex; justify-content: center; margin: 15px 0 25px 0;
-        }
-        .btn-go-top {
-            background: linear-gradient(135deg, #0284c7, #0084ff);
-            color: #fff; padding: 10px 20px; border-radius: 30px; font-size: 12px; font-weight: bold; border: none;
-            box-shadow: 0 4px 12px rgba(0, 132, 255, 0.4); cursor: pointer;
-        }
+        .source-tag { font-size: 10px; color: #ffd700; background: rgba(255,215,0,0.1); padding: 2px 6px; border-radius: 4px; margin-top: 4px; display: block; }
+        .btn-scroll { background: #f59e0b; color: #000; font-weight: bold; border-radius: 6px; border: none; padding: 6px 10px; font-size: 10px; cursor: pointer; }
+        .scroll-bottom-container { display: flex; justify-content: center; margin: 15px 0 25px 0; }
+        .btn-go-top { background: linear-gradient(135deg, #0284c7, #0084ff); color: #fff; padding: 10px 20px; border-radius: 30px; font-size: 12px; font-weight: bold; border: none; cursor: pointer; }
 
         #popup { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: #fff; border-radius: 12px; display: none; z-index: 100; padding: 10px; color: #000; width: 95%; max-width: 360px; }
         .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; z-index: 90; }
@@ -190,21 +112,20 @@
 <body>
 
 <div id="home-screen">
-    <h1 class="hero-title">milanday PRO AI v12</h1>
-    <p class="hero-sub">90% PASSING RATE ENGINE & FULL RECORD SCANNER</p>
+    <h1 class="hero-title">Rajdhani Night PRO AI</h1>
+    <p class="hero-sub">5 DAYS CHART (MON-FRI) & UNIQUE ROW PREDICTIONS</p>
     <button class="enter-btn" onclick="startApp()">START ANALYSIS</button>
 </div>
 
 <div id="main-app">
     <div id="top-anchor"></div>
     <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom:5px;">
-        <h3 style="color:var(--gold); margin:0; font-size: 1rem;">milanday Ultra Visual AI</h3>
-        <span id="trend-bar" style="background:var(--purple); color:#fff; padding:3px 6px; border-radius:6px; font-size:10px; font-weight:bold;">Accuracy: 90% High Passing Logic Active</span>
+        <h3 style="color:var(--gold); margin:0; font-size: 1rem;">Rajdhani Night 5-Days Ultra AI</h3>
+        <span style="background:var(--purple); color:#fff; padding:3px 6px; border-radius:6px; font-size:10px; font-weight:bold;">Market: Rajdhani Night (Mon-Fri)</span>
     </div>
 
-    <!-- Advanced Astro & DOB Input Panel -->
     <div class="dob-card">
-        <div style="font-size:12px; font-weight:bold; color:var(--gold);">🔮 Jyotish Numerology Profile (90% Precision)</div>
+        <div style="font-size:12px; font-weight:bold; color:var(--gold);">🔮 Jyotish Numerology Profile (Row-Specific Engine)</div>
         <div class="dob-input-group">
             <input type="text" id="userName" placeholder="अपना नाम लिखें" value="Pradeep Kumar">
             <input type="date" id="userDob" value="1987-01-11">
@@ -229,7 +150,6 @@
     <div class="toolbar">
         <input type="file" id="csv" accept=".csv" style="display:none">
         <input type="file" id="importJson" accept=".json" style="display:none">
-        
         <button onclick="scrollToBottom()" class="btn-scroll">👇 Bottom</button>
         <button onclick="document.getElementById('csv').click()" style="background:#444; color:white;">📂 CSV</button>
         <button onclick="addRow()" style="background:#0284c7; color:white;">➕ ADD</button>
@@ -248,21 +168,18 @@
     </div>
 
     <div class="dashboard" id="dashboard-section">
-        <!-- 2 Strong Jodi & 3 Subh Jodi Section -->
         <div class="card" style="grid-column: 1 / -1; background: #0f172a; border-top: 3px solid #00ff88;">
-            <h3>🎯 2 Strong Pattern Jodi (Full Scan) & 3 Astro Subh Jodi</h3>
+            <h3>🎯 2 Strong Pattern Jodi (Row Scan) & 3 Astro Subh Jodi</h3>
             <div id="blank-4jodi-prediction"><i style="color:#94a3b8; font-size:11px;">किसी भी (**) ब्लैंक सेल पर क्लिक करें...</i></div>
         </div>
 
-        <!-- Open to Close Frequency Ank Panel -->
         <div class="card" style="grid-column: 1 / -1; background: #111827; border-top: 3px solid #0284c7;">
-            <h3 style="color: #38bdf8;">📊 Top 4 Open to Close Ank (Highest Record Frequency)</h3>
+            <h3 style="color: #38bdf8;">📊 Top 4 Open to Close Ank</h3>
             <div id="otc-ank-prediction"><i style="color:#94a3b8; font-size:11px;">ब्लैंक सेल पर क्लिक करें...</i></div>
         </div>
 
-        <!-- Astrology Special Panel - 3 Precise Ank -->
         <div class="card" style="grid-column: 1 / -1; background: #1a0f2e; border-top: 3px solid var(--astro-orange);">
-            <h3 style="color: var(--astro-orange);">🔮 Vedic Kundli & High Accuracy: 3 Precise Subh Ank (90% Target)</h3>
+            <h3 style="color: var(--astro-orange);">🔮 Vedic Kundli & Unique Row Subh Ank</h3>
             <div id="astro-prediction"><i style="color:#94a3b8; font-size:11px;">ब्लैंक सेल पर क्लिक करके ज्योतिष गणना देखें...</i></div>
         </div>
 
@@ -299,19 +216,15 @@
 </div>
 
 <script>
-const STORAGE_KEY = "pdata_milanday_v12";
+const STORAGE_KEY = "pdata_Rajdhani_Night_v7";
 let targetCol = null;
 let activeMark = null;
 let highlightedFam = null;
-let userMulank = 2; // Derived from DOB 11.01.1987
-let userBhagyank = 2; // Derived from DOB 11.01.1987
+let userMulank = 2;
+let userBhagyank = 2;
 let userNamank = 5;
 
-// Chaldean Numerology Values Matrix
-const CHALDEAN = {
-    A:1, B:2, C:3, D:4, E:5, F:8, G:3, H:5, I:1, J:1, K:2, L:3, M:4,
-    N:5, O:7, P:8, Q:1, R:2, S:3, T:4, U:6, V:6, W:6, X:5, Y:1, Z:7
-};
+const CHALDEAN = { A:1, B:2, C:3, D:4, E:5, F:8, G:3, H:5, I:1, J:1, K:2, L:3, M:4, N:5, O:7, P:8, Q:1, R:2, S:3, T:4, U:6, V:6, W:6, X:5, Y:1, Z:7 };
 
 function norm(v) {
     if (!v || v.trim() === "" || v === "**") return "**";
@@ -329,21 +242,19 @@ const FAMILY = {
  "45":["04","09","40","45","54","59","90","95"]
 };
 
-// Mon to Sat Column Mapping & Planetary Weights
 const DAY_PLANETS = {
     0: { name: "सोमवार (चंद्रमा)", ank: [2, 7], friend: [1, 3, 5] },
     1: { name: "मंगलवार (मंगल)", ank: [1, 9], friend: [2, 3, 5] },
     2: { name: "बुधवार (बुध)", ank: [5, 0], friend: [1, 5, 6] },
     3: { name: "गुरुवार (गुरु)", ank: [3, 8], friend: [1, 2, 9] },
-    4: { name: "शुक्रवार (शुक्र)", ank: [6, 1], friend: [6, 8, 5] },
-    5: { name: "शनिवार (शनि)", ank: [8, 4], friend: [3, 5, 6] }
+    4: { name: "शुक्रवार (शुक्र)", ank: [6, 1], friend: [6, 8, 5] }
 };
 
 const defaultData = [
-    ["10","20","30","40","50","60"],
-    ["15","25","35","45","55","65"],
-    ["12","27","62","77","18","81"],
-    ["**","**","**","**","**","**"]
+    ["10","20","30","40","50"],
+    ["15","25","35","45","55"],
+    ["12","27","62","77","18"],
+    ["**","**","**","**","**"]
 ];
 
 let data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || defaultData;
@@ -371,19 +282,13 @@ function calculateAdvancedAstro() {
 
     if (dobVal) {
         const parts = dobVal.split('-');
-        const day = parts[2];
-        const month = parts[1];
-        const year = parts[0];
-
-        userMulank = reduceToSingleDigit(day.split('').reduce((a, b) => parseInt(a) + parseInt(b), 0));
-        userBhagyank = reduceToSingleDigit((day + month + year).split('').reduce((a, b) => parseInt(a) + parseInt(b), 0));
+        userMulank = reduceToSingleDigit(parts[2].split('').reduce((a, b) => parseInt(a) + parseInt(b), 0));
+        userBhagyank = reduceToSingleDigit((parts[2] + parts[1] + parts[0]).split('').reduce((a, b) => parseInt(a) + parseInt(b), 0));
     }
 
     if (nameVal) {
         let sum = 0;
-        for (let char of nameVal) {
-            if (CHALDEAN[char]) sum += CHALDEAN[char];
-        }
+        for (let char of nameVal) { if (CHALDEAN[char]) sum += CHALDEAN[char]; }
         userNamank = reduceToSingleDigit(sum) || 5;
     }
 
@@ -397,7 +302,7 @@ function palti(v){ return v[1]+v[0]; }
 function smartMatch(a1,b1){ if(a1=="**"||b1=="**") return false; return a1===b1 || palti(a1)===b1 || fam(a1)===fam(b1); }
 
 function draw(){
- let days = ["MON", "TUE", "WED", "THU", "FRI", "SAT"];
+ let days = ["MON", "TUE", "WED", "THU", "FRI"];
  let h="<tr><th class='row-num-th'>R#</th>";
  days.forEach(d => h += `<th>${d}</th>`);
  h += "<th class='action-th'>❌</th></tr>";
@@ -409,7 +314,6 @@ function draw(){
    let cls = (activeMark && isPartOfPattern(ri, ci)) ? "circle" : "";
    if(highlightedFam && fam(c) === highlightedFam) cls += " fam-highlight";
    if(c=="**") cls += " blank";
-   
    h+=`<td class="${cls}" contenteditable="true" onblur="updateCell(${ri},${ci},this)" onkeydown="checkEnter(event, this)" onclick="handleCellClick(${ri},${ci},'${c}')">${c}</td>`;
   });
   h+=`<td class="action-td"><button class="btn-del-row" onclick="deleteRow(${ri})">✕</button></td>`;
@@ -448,138 +352,106 @@ function handleCellClick(r, c, val) {
     }
 }
 
-// 🎯 NEW ALGORITHM: HIGH ACCURACY (90% PASSING RATE) 3 PRECISE SINGLE DIGITS
+// 🎯 ROW-SPECIFIC UNIQUE ANK CALCULATION
 function get3PreciseAstroAnks(targetRow, targetCol) {
     let digitScores = {};
     for (let i = 0; i < 10; i++) digitScores[i] = 0;
 
-    // 1. Astro Base (DOB Mulank & Bhagyank)
-    digitScores[userMulank] += 25;
-    digitScores[userBhagyank] += 25;
-    digitScores[(userMulank + 5) % 10] += 15; // Cut of Mulank
+    digitScores[userMulank] += 15;
+    digitScores[userBhagyank] += 15;
 
-    // 2. Planetary Day Weight
     let dayInfo = DAY_PLANETS[targetCol] || { ank: [1, 6], friend: [2, 5] };
-    dayInfo.ank.forEach(a => digitScores[a] += 20);
-    dayInfo.friend.forEach(f => digitScores[f] += 10);
+    dayInfo.ank.forEach(a => digitScores[a] += 10);
 
-    // 3. Historical Occurrence Scan for target day
-    data.forEach((row, idx) => {
-        let val = row[targetCol];
+    let startSearch = Math.max(0, targetRow - 12);
+    for (let r = startSearch; r < targetRow; r++) {
+        let val = data[r] ? data[r][targetCol] : "**";
         if (val && val !== "**" && val.length === 2) {
             let d1 = parseInt(val[0]), d2 = parseInt(val[1]);
-            // Recent rows carry higher statistical weight
-            let recencyBonus = (idx / data.length) * 15;
-            digitScores[d1] += 10 + recencyBonus;
-            digitScores[d2] += 10 + recencyBonus;
+            let proximityWeight = (r - startSearch + 1) * 4;
+            digitScores[d1] += proximityWeight;
+            digitScores[d2] += proximityWeight;
         }
-    });
+    }
 
-    // Sort Digits by Highest Weight Score
+    if (targetRow > 0) {
+        let prevRowVal = data[targetRow - 1][targetCol];
+        if (prevRowVal && prevRowVal !== "**" && prevRowVal.length === 2) {
+            digitScores[parseInt(prevRowVal[0])] += 35;
+            digitScores[parseInt(prevRowVal[1])] += 35;
+        }
+    }
+
     let sortedAnks = Object.keys(digitScores).sort((a, b) => digitScores[b] - digitScores[a]);
-    
     return sortedAnks.slice(0, 3).map(x => parseInt(x));
 }
 
 function calculateOTCAnkFrequency(targetCol) {
-    let days = ["MON", "TUE", "WED", "THU", "FRI", "SAT"];
+    let days = ["MON", "TUE", "WED", "THU", "FRI"];
     let dayName = days[targetCol];
     let digitCounts = {};
-
     for (let i = 0; i < 10; i++) digitCounts[i] = 0;
 
     data.forEach(row => {
         let val = row[targetCol];
         if (val && val !== "**" && val.length === 2) {
-            let openDigit = parseInt(val[0]);
-            let closeDigit = parseInt(val[1]);
-            digitCounts[openDigit]++;
-            digitCounts[closeDigit]++;
+            digitCounts[parseInt(val[0])]++;
+            digitCounts[parseInt(val[1])]++;
         }
     });
 
     let sortedDigits = Object.keys(digitCounts).sort((a, b) => digitCounts[b] - digitCounts[a]);
     let top4Ank = sortedDigits.slice(0, 4);
 
-    let ankHtml = top4Ank.map(digit => {
-        return `<span class="ank-badge">${digit} <small style="opacity:0.8;">(${digitCounts[digit]}x)</small></span>`;
-    }).join("");
+    let ankHtml = top4Ank.map(digit => `<span class="ank-badge">${digit} <small style="opacity:0.8;">(${digitCounts[digit]}x)</small></span>`).join("");
 
     document.getElementById("otc-ank-prediction").innerHTML = `
-        <div style="font-size:11px; margin-bottom:6px; color:#cbd5e1;">
-            Day: <b style="color:var(--gold);">${dayName}</b> | रिकॉर्ड में सबसे अधिक बार आए 4 Open-to-Close अंक:
-        </div>
+        <div style="font-size:11px; margin-bottom:6px; color:#cbd5e1;">Day: <b style="color:var(--gold);">${dayName}</b> | Top 4 Open-to-Close Ank:</div>
         <div>${ankHtml}</div>
     `;
 }
 
-// 🔍 NEW ALGORITHM: FULL RECORD SCANNER FOR 2 STRONG JODIES
+// 🔍 ROW-SPECIFIC UNIQUE JODI CALCULATION
 function calculateHighAccuracyStrongJodies(targetRow, targetCol) {
-    let days = ["MON", "TUE", "WED", "THU", "FRI", "SAT"];
+    let days = ["MON", "TUE", "WED", "THU", "FRI"];
     let dayName = days[targetCol];
-
     let jodiScores = {};
 
-    // Scan Entire Chart Record History
     data.forEach((row, ri) => {
         row.forEach((jodi, ci) => {
             if (jodi && jodi !== "**" && jodi.length === 2) {
                 if (!jodiScores[jodi]) jodiScores[jodi] = 0;
-                
-                // Base Frequency Point
-                jodiScores[jodi] += 10;
-
-                // Extra Weight if found in same column/day
-                if (ci === targetCol) jodiScores[jodi] += 25;
-
-                // Extra Weight for Family Relationship with nearby rows
-                if (Math.abs(ri - targetRow) <= 4) jodiScores[jodi] += 15;
+                let weight = 5;
+                if (ci === targetCol) weight += 15;
+                let distance = Math.abs(ri - targetRow);
+                if (distance <= 5) weight += (6 - distance) * 10;
+                jodiScores[jodi] += weight;
             }
         });
     });
 
-    // Exclude basic Direct Palti duplicate if it matches directly above
     let sortedJodies = Object.keys(jodiScores).sort((a, b) => jodiScores[b] - jodiScores[a]);
     let top2Strong = sortedJodies.slice(0, 2);
+    if (top2Strong.length < 2) top2Strong = ["27", "72"];
 
-    if (top2Strong.length < 2) top2Strong = ["27", "72"]; // Safe Fallback
+    let strongJodiHtml = top2Strong.map((j, i) => `
+        <div style="display:inline-block; margin:4px; text-align:center;">
+            <span class="strong-jodi-btn">🔥 Row Strong #${i + 1}: ${j}</span>
+            <span class="source-tag">📍 Score: ${jodiScores[j] || 80}%</span>
+        </div>
+    `).join("");
 
-    let strongJodiHtml = top2Strong.map((j, i) => {
-        return `
-            <div style="display:inline-block; margin:4px; text-align:center;">
-                <span class="strong-jodi-btn">🔥 Full Scan Strong #${i + 1}: ${j}</span>
-                <span class="source-tag">📍 Score Weight: ${jodiScores[j] || 85}%</span>
-            </div>
-        `;
-    }).join("");
-
-    // Generate 3 Subh Jodies from 3 High-Passing Astro Single Digits
     let astroAnks = get3PreciseAstroAnks(targetRow, targetCol);
     let a1 = astroAnks[0], a2 = astroAnks[1], a3 = astroAnks[2];
 
-    let subhJodi1= `${a1}${a2}`;
-    let subhJodi2= `${a2}${a3}`;
-    let subhJodi3= `${a3}${a1}`;
-
     let subhJodiHtml = `
-        <div style="display:inline-block; margin:4px; text-align:center;">
-            <span class="astro-badge">✨ Subh #1: ${subhJodi1}</span>
-            <span class="source-tag">🔮 Combined (${a1}-${a2})</span>
-        </div>
-        <div style="display:inline-block; margin:4px; text-align:center;">
-            <span class="astro-badge">✨ Subh #2: ${subhJodi2}</span>
-            <span class="source-tag">🔮 Combined (${a2}-${a3})</span>
-        </div>
-        <div style="display:inline-block; margin:4px; text-align:center;">
-            <span class="astro-badge">✨ Subh #3: ${subhJodi3}</span>
-            <span class="source-tag">🔮 Combined (${a3}-${a1})</span>
-        </div>
+        <div style="display:inline-block; margin:4px; text-align:center;"><span class="astro-badge">✨ Subh #1: ${a1}${a2}</span><span class="source-tag">🔮 Row Astro</span></div>
+        <div style="display:inline-block; margin:4px; text-align:center;"><span class="astro-badge">✨ Subh #2: ${a2}${a3}</span><span class="source-tag">🔮 Row Astro</span></div>
+        <div style="display:inline-block; margin:4px; text-align:center;"><span class="astro-badge">✨ Subh #3: ${a3}${a1}</span><span class="source-tag">🔮 Row Astro</span></div>
     `;
 
     document.getElementById("blank-4jodi-prediction").innerHTML = `
-        <div style="font-size:11px; margin-bottom:6px; color:#cbd5e1;">
-            Target Row: <b>${targetRow + 1}</b> | Day: <b style="color:var(--gold);">${dayName}</b>
-        </div>
+        <div style="font-size:11px; margin-bottom:6px; color:#cbd5e1;">Target Row: <b>${targetRow + 1}</b> | Day: <b style="color:var(--gold);">${dayName}</b></div>
         <div>${strongJodiHtml} ${subhJodiHtml}</div>
     `;
 }
@@ -589,17 +461,12 @@ function calculateAstroNumerologyHighAccuracy(targetRow, targetCol) {
     let uniqueAnks = get3PreciseAstroAnks(targetRow, targetCol);
 
     document.getElementById("astro-prediction").innerHTML = `
-        <div style="font-size:11px; color:#e2e8f0; margin-bottom:8px;">
-            ग्रह स्वामी: <b>${dayInfo.name}</b> | मूलांक: <b>2</b> | भाग्यांक: <b>2</b> (DOB: 11.01.1987)
-        </div>
+        <div style="font-size:11px; color:#e2e8f0; margin-bottom:8px;">ग्रह स्वामी: <b>${dayInfo.name}</b> | मूलांक: <b>2</b> | भाग्यांक: <b>2</b> (DOB: 11.01.1987)</div>
         <div style="margin-bottom:6px;">
-            <span style="font-size:12px; color:var(--gold); font-weight:bold;">🎯 90% Target Accuracy - 3 सटीक शुभ अंक:</span><br>
-            <span class="astro-badge">शुभ अंक 1: ${uniqueAnks[0]}</span>
-            <span class="astro-badge">शुभ अंक 2: ${uniqueAnks[1]}</span>
-            <span class="astro-badge">शुभ अंक 3: ${uniqueAnks[2]}</span>
-        </div>
-        <div style="font-size:10px; color:#00ff88; margin-top:4px;">
-            *यह 3 अंक पूरे रिकॉर्ड डेटाबेस की फ्रीक्वेंसी और आपके ज्योतिषीय मूलांक 2 का एडवांस कट/फैमिली एनालिसिस हैं।
+            <span style="font-size:12px; color:var(--gold); font-weight:bold;">🎯 Target Accuracy - 3 सटीक शुभ अंक (Row Unique):</span><br>
+            <span class="astro-badge">अंक 1: ${uniqueAnks[0]}</span>
+            <span class="astro-badge">अंक 2: ${uniqueAnks[1]}</span>
+            <span class="astro-badge">अंक 3: ${uniqueAnks[2]}</span>
         </div>
     `;
 }
@@ -617,24 +484,19 @@ function drawLines(cvsId, tblEl) {
     ctx.clearRect(0,0,cvs.width,cvs.height);
     const cells = tblEl.querySelectorAll(".circle");
     if(cells.length < 2) return;
-    
     const tRect = tblEl.getBoundingClientRect();
-    ctx.strokeStyle = "#00ff88"; 
-    ctx.lineWidth = 2;
-    ctx.lineCap = "round";
-    
+    ctx.strokeStyle = "#00ff88"; ctx.lineWidth = 2; ctx.lineCap = "round";
     ctx.beginPath();
     cells.forEach((c, idx) => {
         const r = c.getBoundingClientRect();
         const x = r.left - tRect.left + r.width/2;
         const y = r.top - tRect.top + r.height/2;
-        if(idx === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
+        if(idx === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
     });
     ctx.stroke();
 }
 
-function addRow(){ data.push(["**","**","**","**","**","**"]); saveDataSilent(); draw(); }
+function addRow(){ data.push(["**","**","**","**","**"]); saveDataSilent(); draw(); }
 function saveData(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); alert("सेव हो गया!"); }
 function saveDataSilent(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
 
@@ -642,7 +504,7 @@ function exportData() {
     let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
     let downloadAnchor = document.createElement('a');
     downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", "milanday_data_backup.json");
+    downloadAnchor.setAttribute("download", "rajdhani_night_backup.json");
     document.body.appendChild(downloadAnchor);
     downloadAnchor.click();
     downloadAnchor.remove();
@@ -651,12 +513,8 @@ function exportData() {
 document.getElementById("importJson").onchange = e => {
     let fr = new FileReader();
     fr.onload = () => {
-        try {
-            data = JSON.parse(fr.result);
-            saveDataSilent();
-            draw();
-            alert("इम्पोर्ट हो गया!");
-        } catch (err) { alert("गलत फाइल!"); }
+        try { data = JSON.parse(fr.result); saveDataSilent(); draw(); alert("इम्पोर्ट हो गया!"); }
+        catch (err) { alert("गलत फाइल!"); }
     };
     fr.readAsText(e.target.files[0]);
 };
@@ -664,10 +522,8 @@ document.getElementById("importJson").onchange = e => {
 function clearData(){ if(confirm("क्लियर करें?")){ localStorage.removeItem(STORAGE_KEY); data = defaultData; draw(); } }
 
 function autoScanPatterns() {
-    let totalRows = data.length;
-    if(totalRows < 3) { alert("और डेटा चाहिए!"); return; }
-    let blankRow = totalRows - 1;
-    makePattern(blankRow, 0);
+    if(data.length < 3) { alert("और डेटा चाहिए!"); return; }
+    makePattern(data.length - 1, 0);
 }
 
 function makePattern(r,c){
@@ -675,17 +531,14 @@ function makePattern(r,c){
  for(let i=r;i>=0;i--){ if(data[i][c]!="**"){base=data[i][c]; break;}}
  if(base=="**") return;
 
- let shape = Array(9).fill(0).map(() => Array(6).fill(0)); 
+ let shape = Array(9).fill(0).map(() => Array(5).fill(0)); 
  let matchCount = 0;
  let startRow = Math.max(0, r-8);
 
  for(let i = r; i >= startRow; i--){
-    for(let j = 0; j < 6; j++){
+    for(let j = 0; j < 5; j++){
       if(data[i][j] != "**" && smartMatch(data[i][j], base)){
-        if(matchCount < 3){ 
-          shape[i - startRow][j] = 1;
-          matchCount++;
-        }
+        if(matchCount < 3){ shape[i - startRow][j] = 1; matchCount++; }
       }
     }
     if(matchCount >= 3) break; 
@@ -698,7 +551,7 @@ function searchPattern(shape,base){
  for(let i=0; i<=data.length-shape.length; i++){
   let ok=true;
   for(let k=0; k<shape.length; k++){
-   for(let j=0; j<6; j++){ if(shape[k][j] && !smartMatch(data[i+k][j],base)){ok=false; break;}}
+   for(let j=0; j<5; j++){ if(shape[k][j] && !smartMatch(data[i+k][j],base)){ok=false; break;}}
    if(!ok) break;
   }
   if(!ok) continue;
@@ -710,7 +563,7 @@ function searchPattern(shape,base){
 
 function showChecks(shape, matches){
  document.getElementById("checks").innerHTML="";
- matches.forEach((m,i)=>{
+ matches.forEach((m)=>{
   let d = document.createElement("div");
   d.style = "background:#2a2a2a; margin:4px 0; padding:6px; cursor:pointer; border-radius:6px; font-size:11px; border-left:3px solid #0084ff;";
   d.innerText = `Match Found at Row ${m.index + 1}`;
@@ -724,9 +577,7 @@ function showOne(shape, idx){
  let html="<table id='popTbl' style='color:#000'>";
  for(let i=0; i<shape.length; i++){
   html+="<tr>";
-  data[idx+i].forEach((v,j)=>{
-   html+=`<td class="${shape[i][j]?'circle':''}">${v}</td>`;
-  });
+  data[idx+i].forEach((v,j)=>{ html+=`<td class="${shape[i][j]?'circle':''}">${v}</td>`; });
   html+="</tr>";
  }
  document.getElementById("popData").innerHTML=html+"</table>";
@@ -736,19 +587,7 @@ function showOne(shape, idx){
 }
 
 function updateAI(shape, matches){
- let jc={}, dc={};
- matches.forEach(m=>{
-  for(let i=0; i<shape.length; i++){
-   for(let j=0; j<6; j++){
-    if(shape[i][j]){
-     let v = data[m.index+i][j];
-     jc[v]=(jc[v]||0)+1; dc[v[0]]=(dc[v[0]]||0)+1; dc[v[1]]=(dc[v[1]]||0)+1;
-    }
-   }
-  }
- });
  document.getElementById("ai").innerHTML = `<b>Matched Rows:</b> ${matches.length}<br><b>High Frequency Origin:</b> Row ${matches[0] ? matches[0].index + 1 : '-'}`;
- 
  let pool = [];
  matches.forEach(m => {
   let nextR = m.index + shape.length;
@@ -765,8 +604,8 @@ document.getElementById("csv").onchange = e => {
         let lines = fr.result.split('\n');
         data = lines.filter(l=>l.trim()).map(l => {
             let row = l.split(',').map(v => norm(v.trim()));
-            while(row.length < 6) row.push("**"); 
-            return row.slice(0,6);
+            while(row.length < 5) row.push("**"); 
+            return row.slice(0,5);
         });
         saveDataSilent();
         draw();
