@@ -666,3 +666,102 @@ function makePattern(r,c){
  let shape = Array(9).fill(0).map(() => Array(6).fill(0)); 
  let matchCount = 0;
  let startRow = Math.max(0, r-8);
+
+ for(let i = r; i >= startRow; i--){
+    for(let j = 0; j < 6; j++){
+      if(data[i][j] != "**" && smartMatch(data[i][j], base)){
+        if(matchCount < 3){ 
+          shape[i - startRow][j] = 1;
+          matchCount++;
+        }
+      }
+    }
+    if(matchCount >= 3) break; 
+ }
+ searchPattern(shape, base);
+}
+
+function searchPattern(shape,base){
+ let lastMatches=[];
+ for(let i=0; i<=data.length-shape.length; i++){
+  let ok=true;
+  for(let k=0; k<shape.length; k++){
+   for(let j=0; j<6; j++){ if(shape[k][j] && !smartMatch(data[i+k][j],base)){ok=false; break;}}
+   if(!ok) break;
+  }
+  if(!ok) continue;
+  lastMatches.push({index:i});
+ }
+ showChecks(shape, lastMatches);
+ draw();
+}
+
+function showChecks(shape, matches){
+ document.getElementById("checks").innerHTML="";
+ matches.forEach((m,i)=>{
+  let d = document.createElement("div");
+  d.style = "background:#2a2a2a; margin:4px 0; padding:6px; cursor:pointer; border-radius:6px; font-size:11px; border-left:3px solid #0084ff;";
+  d.innerText = `Match Found at Row ${m.index + 1}`;
+  d.onclick = () => { activeMark={start:m.index, shape:shape}; draw(); showOne(shape, m.index); };
+  document.getElementById("checks").appendChild(d);
+ });
+ updateAI(shape, matches);
+}
+
+function showOne(shape, idx){
+ let html="<table id='popTbl' style='color:#000'>";
+ for(let i=0; i<shape.length; i++){
+  html+="<tr>";
+  data[idx+i].forEach((v,j)=>{
+   html+=`<td class="${shape[i][j]?'circle':''}">${v}</td>`;
+  });
+  html+="</tr>";
+ }
+ document.getElementById("popData").innerHTML=html+"</table>";
+ document.getElementById("popup").style.display="block";
+ document.getElementById("overlay").style.display="block";
+ setTimeout(()=>drawLines("popCanvas", document.getElementById("popTbl")), 100);
+}
+
+function updateAI(shape, matches){
+ let jc={}, dc={};
+ matches.forEach(m=>{
+  for(let i=0; i<shape.length; i++){
+   for(let j=0; j<6; j++){
+    if(shape[i][j]){
+     let v = data[m.index+i][j];
+     jc[v]=(jc[v]||0)+1; dc[v[0]]=(dc[v[0]]||0)+1; dc[v[1]]=(dc[v[1]]||0)+1;
+    }
+   }
+  }
+ });
+ document.getElementById("ai").innerHTML = `<b>Matched Rows:</b> ${matches.length}<br><b>High Frequency Origin:</b> Row ${matches[0] ? matches[0].index + 1 : '-'}`;
+ 
+ let pool = [];
+ matches.forEach(m => {
+  let nextR = m.index + shape.length;
+  if(nextR < data.length && data[nextR][targetCol] != "**") pool.pop ? pool.push(data[nextR][targetCol]) : null;
+ });
+ document.getElementById("future").innerHTML = pool.length ? `<b>Historical Pattern Output:</b> ${[...new Set(pool)].join(" , ")}` : "Analyzing Pattern Path...";
+}
+
+function closePopup(){ document.getElementById("popup").style.display="none"; document.getElementById("overlay").style.display="none"; }
+
+document.getElementById("csv").onchange = e => {
+    let fr = new FileReader();
+    fr.onload = () => {
+        let lines = fr.result.split('\n');
+        data = lines.filter(l=>l.trim()).map(l => {
+            let row = l.split(',').map(v => norm(v.trim()));
+            while(row.length < 6) row.push("**"); 
+            return row.slice(0,6);
+        });
+        saveDataSilent();
+        draw();
+        alert("Rajdhani Day CSV Imported!");
+    };
+    fr.readAsText(e.target.files[0]);
+};
+</script>
+</body>
+</html>
