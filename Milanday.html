@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Rajdhani Night Pro AI – 5 Days Chart & Unique Row Engine</title>
+    <title>Milan Day Pro AI – 5 Days Chart & Unique Row Engine</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { 
@@ -47,7 +47,7 @@
             display: flex; flex-direction: column; align-items: center; gap: 8px;
         }
         .dob-input-group {
-            display: flex; gap: 8px; width: 100%; max-width: 500px;
+            display: flex; gap: 8px; width: 100%; max-width: 520px;
             justify-content: center; flex-wrap: wrap;
         }
         input[type="date"], input[type="text"], select {
@@ -112,7 +112,7 @@
 <body>
 
 <div id="home-screen">
-    <h1 class="hero-title">Rajdhani Night PRO AI</h1>
+    <h1 class="hero-title">Milan Day PRO AI</h1>
     <p class="hero-sub">5 DAYS CHART (MON-FRI) & UNIQUE ROW PREDICTIONS</p>
     <button class="enter-btn" onclick="startApp()">START ANALYSIS</button>
 </div>
@@ -120,15 +120,15 @@
 <div id="main-app">
     <div id="top-anchor"></div>
     <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom:5px;">
-        <h3 style="color:var(--gold); margin:0; font-size: 1rem;">Rajdhani Night 5-Days Ultra AI</h3>
-        <span style="background:var(--purple); color:#fff; padding:3px 6px; border-radius:6px; font-size:10px; font-weight:bold;">Market: Rajdhani Night (Mon-Fri)</span>
+        <h3 style="color:var(--gold); margin:0; font-size: 1rem;">Milan Day 5-Days Ultra AI</h3>
+        <span style="background:var(--purple); color:#fff; padding:3px 6px; border-radius:6px; font-size:10px; font-weight:bold;">Market: Milan Day (Mon-Fri)</span>
     </div>
 
     <div class="dob-card">
-        <div style="font-size:12px; font-weight:bold; color:var(--gold);">🔮 Jyotish Numerology Profile (Row-Specific Engine)</div>
+        <div style="font-size:12px; font-weight:bold; color:var(--gold);">Jyotish Numerology Profile (Milan Day Row Engine)</div>
         <div class="dob-input-group">
             <input type="text" id="userName" placeholder="अपना नाम लिखें" value="Pradeep Kumar">
-            <input type="date" id="userDob" value="1987-01-11">
+            <input type="date" id="userDob" value="1986-05-25">
             <select id="panchangTithi">
                 <option value="1">प्रतिपदा / 6ठी / 11वीं तिथि</option>
                 <option value="2" selected>द्वितीया / 7वीं / 12वीं तिथि (द्वादशी)</option>
@@ -139,8 +139,8 @@
             <button onclick="calculateAdvancedAstro()" style="background:var(--astro-orange); color:#fff;">गणना करें</button>
         </div>
         <div class="dob-res-box">
-            <span>मूलांक: <b id="mulankRes" style="color:var(--gold);">2</b></span> | 
-            <span>भाग्यांक: <b id="bhagyankRes" style="color:var(--gold);">2</b></span> | 
+            <span>मूलांक: <b id="mulankRes" style="color:var(--gold);">7</b></span> | 
+            <span>भाग्यांक: <b id="bhagyankRes" style="color:var(--gold);">5</b></span> | 
             <span>नामांक: <b id="namankRes" style="color:var(--gold);">5</b></span> |
             <span>लग्न: <b style="color:#00ff88;">कन्या (बुध-5)</b></span> |
             <span>राशि: <b style="color:#00ff88;">वृषभ (शुक्र-6)</b></span>
@@ -150,14 +150,14 @@
     <div class="toolbar">
         <input type="file" id="csv" accept=".csv" style="display:none">
         <input type="file" id="importJson" accept=".json" style="display:none">
-        <button onclick="scrollToBottom()" class="btn-scroll">👇 Bottom</button>
-        <button onclick="document.getElementById('csv').click()" style="background:#444; color:white;">📂 CSV</button>
-        <button onclick="addRow()" style="background:#0284c7; color:white;">➕ ADD</button>
-        <button onclick="autoScanPatterns()" style="background:var(--purple); color:white;">🔍 SCAN</button>
-        <button onclick="saveData()" style="background:#28a745; color:white;">💾 SAVE</button>
-        <button onclick="exportData()" style="background:#eab308; color:#000;">📥 EXPORT</button>
-        <button onclick="document.getElementById('importJson').click()" style="background:#06b6d4; color:white;">📤 IMPORT</button>
-        <button onclick="clearData()" style="background:#dc3545; color:white;">🗑️ CLEAR</button>
+        <button onclick="scrollToBottom()" class="btn-scroll">Bottom</button>
+        <button onclick="document.getElementById('csv').click()" style="background:#444; color:white;">CSV</button>
+        <button onclick="addRow()" style="background:#0284c7; color:white;">ADD ROW</button>
+        <button onclick="autoScanPatterns()" style="background:var(--purple); color:white;">SCAN</button>
+        <button onclick="saveData()" style="background:#28a745; color:white;">SAVE</button>
+        <button onclick="exportData()" style="background:#eab308; color:#000;">EXPORT</button>
+        <button onclick="document.getElementById('importJson').click()" style="background:#06b6d4; color:white;">IMPORT</button>
+        <button onclick="clearData()" style="background:#dc3545; color:white;">CLEAR</button>
     </div>
 
     <div class="chart-wrapper">
@@ -169,36 +169,36 @@
 
     <div class="dashboard" id="dashboard-section">
         <div class="card" style="grid-column: 1 / -1; background: #0f172a; border-top: 3px solid #00ff88;">
-            <h3>🎯 2 Strong Pattern Jodi (Row Scan) & 3 Astro Subh Jodi</h3>
+            <h3>2 Strong Pattern Jodi (Row Scan) & 3 Astro Subh Jodi</h3>
             <div id="blank-4jodi-prediction"><i style="color:#94a3b8; font-size:11px;">किसी भी (**) ब्लैंक सेल पर क्लिक करें...</i></div>
         </div>
 
         <div class="card" style="grid-column: 1 / -1; background: #111827; border-top: 3px solid #0284c7;">
-            <h3 style="color: #38bdf8;">📊 Top 4 Open to Close Ank</h3>
+            <h3 style="color: #38bdf8;">Top 4 Open to Close Ank</h3>
             <div id="otc-ank-prediction"><i style="color:#94a3b8; font-size:11px;">ब्लैंक सेल पर क्लिक करें...</i></div>
         </div>
 
         <div class="card" style="grid-column: 1 / -1; background: #1a0f2e; border-top: 3px solid var(--astro-orange);">
-            <h3 style="color: var(--astro-orange);">🔮 Vedic Kundli & Unique Row Subh Ank</h3>
+            <h3 style="color: var(--astro-orange);">Vedic Kundli & Unique Row Subh Ank</h3>
             <div id="astro-prediction"><i style="color:#94a3b8; font-size:11px;">ब्लैंक सेल पर क्लिक करके ज्योतिष गणना देखें...</i></div>
         </div>
 
         <div class="card">
-            <h3>✔ Matches Found</h3>
+            <h3>Matches Found</h3>
             <div id="checks" style="font-size:11px;">Click blank cell...</div>
         </div>
         <div class="card">
-            <h3>🤖 Pattern Origin</h3>
+            <h3>Pattern Origin</h3>
             <div id="ai" style="font-size:11px;">Wait for input...</div>
         </div>
         <div class="card">
-            <h3>🔮 Future Prediction</h3>
+            <h3>Future Prediction</h3>
             <div id="future" style="font-size:11px;">Select a match...</div>
         </div>
     </div>
 
     <div class="scroll-bottom-container">
-        <button onclick="scrollToTop()" class="btn-go-top">👆 Go To Top</button>
+        <button onclick="scrollToTop()" class="btn-go-top">Go To Top</button>
     </div>
     <div id="bottom-anchor"></div>
 </div>
@@ -206,7 +206,7 @@
 <div class="overlay" id="overlay" onclick="closePopup()"></div>
 <div id="popup">
     <button onclick="closePopup()" style="float:right; background:#000; color:white; padding:3px 6px;">CLOSE</button>
-    <h4 style="margin: 0 0 8px 0; font-size: 12px;">Pattern View</h4>
+    <h4 style="margin: 0 0 8px 0; font-size: 12px;">Milan Day Pattern View</h4>
     <center>
         <div class="table-container" style="border: 1px solid #ddd; max-width: 100%; overflow-x: auto;">
             <canvas id="popCanvas"></canvas>
@@ -216,12 +216,13 @@
 </div>
 
 <script>
-const STORAGE_KEY = "pdata_Rajdhani_Night_v7";
+const STORAGE_KEY = "pdata_Milan_Day_v1";
+let targetRow = null;
 let targetCol = null;
 let activeMark = null;
 let highlightedFam = null;
-let userMulank = 2;
-let userBhagyank = 2;
+let userMulank = 7;
+let userBhagyank = 5;
 let userNamank = 5;
 
 const CHALDEAN = { A:1, B:2, C:3, D:4, E:5, F:8, G:3, H:5, I:1, J:1, K:2, L:3, M:4, N:5, O:7, P:8, Q:1, R:2, S:3, T:4, U:6, V:6, W:6, X:5, Y:1, Z:7 };
@@ -251,9 +252,9 @@ const DAY_PLANETS = {
 };
 
 const defaultData = [
-    ["10","20","30","40","50"],
-    ["15","25","35","45","55"],
-    ["12","27","62","77","18"],
+    ["14","28","36","49","52"],
+    ["19","23","31","44","57"],
+    ["16","27","63","74","18"],
     ["**","**","**","**","**"]
 ];
 
@@ -298,8 +299,41 @@ function calculateAdvancedAstro() {
 }
 
 function fam(v){ for(let k in FAMILY) if(FAMILY[k].includes(v)) return k; return "NA"; }
-function palti(v){ return v[1]+v[0]; }
+function palti(v){ return v && v.length === 2 ? v[1]+v[0] : v; }
 function smartMatch(a1,b1){ if(a1=="**"||b1=="**") return false; return a1===b1 || palti(a1)===b1 || fam(a1)===fam(b1); }
+
+function isPartOfPattern(ri, ci) {
+    if (!activeMark) return false;
+    return activeMark.some(pt => pt.r === ri && pt.c === ci);
+}
+
+function drawLines(canvasId, tableEl) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas || !tableEl) return;
+    const ctx = canvas.getContext("2d");
+    canvas.width = tableEl.offsetWidth;
+    canvas.height = tableEl.offsetHeight;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (!activeMark || activeMark.length < 2) return;
+
+    ctx.strokeStyle = "#00ff88";
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+
+    activeMark.forEach((pt, idx) => {
+        const row = tableEl.rows[pt.r + 1];
+        if (!row) return;
+        const cell = row.cells[pt.c + 1];
+        if (!cell) return;
+        const x = cell.offsetLeft + cell.offsetWidth / 2;
+        const y = cell.offsetTop + cell.offsetHeight / 2;
+        if (idx === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+    });
+
+    ctx.stroke();
+}
 
 function draw(){
  let days = ["MON", "TUE", "WED", "THU", "FRI"];
@@ -345,6 +379,8 @@ function handleCellClick(r, c, val) {
         highlightedFam = (highlightedFam === fam(val)) ? null : fam(val);
         draw();
     } else {
+        targetRow = r;
+        targetCol = c;
         makePattern(r, c);
         calculateHighAccuracyStrongJodies(r, c);
         calculateAstroNumerologyHighAccuracy(r, c);
@@ -352,13 +388,22 @@ function handleCellClick(r, c, val) {
     }
 }
 
-// 🎯 ROW-SPECIFIC UNIQUE ANK CALCULATION
+function makePattern(r, c) {
+    let pts = [{ r, c }];
+    if (r > 0 && data[r - 1][c] !== "**") pts.unshift({ r: r - 1, c });
+    if (c > 0 && data[r][c - 1] !== "**") pts.unshift({ r, c: c - 1 });
+    activeMark = pts;
+    draw();
+    document.getElementById("ai").innerHTML = `Row <b>${r + 1}</b>, Col <b>${c + 1}</b> pattern locked for Milan Day.`;
+}
+
 function get3PreciseAstroAnks(targetRow, targetCol) {
     let digitScores = {};
     for (let i = 0; i < 10; i++) digitScores[i] = 0;
 
     digitScores[userMulank] += 15;
     digitScores[userBhagyank] += 15;
+    digitScores[userNamank] += 8;
 
     let dayInfo = DAY_PLANETS[targetCol] || { ank: [1, 6], friend: [2, 5] };
     dayInfo.ank.forEach(a => digitScores[a] += 10);
@@ -406,213 +451,165 @@ function calculateOTCAnkFrequency(targetCol) {
     let ankHtml = top4Ank.map(digit => `<span class="ank-badge">${digit} <small style="opacity:0.8;">(${digitCounts[digit]}x)</small></span>`).join("");
 
     document.getElementById("otc-ank-prediction").innerHTML = `
-        <div style="font-size:11px; margin-bottom:6px; color:#cbd5e1;">Day: <b style="color:var(--gold);">${dayName}</b> | Top 4 Open-to-Close Ank:</div>
+        <div style="font-size:11px; margin-bottom:6px; color:#cbd5e1;">Milan Day (${dayName}) | Top 4 Open-to-Close Ank:</div>
         <div>${ankHtml}</div>
     `;
 }
 
-// 🔍 ROW-SPECIFIC UNIQUE JODI CALCULATION
+// 🔍 MILAN DAY ROW-SPECIFIC UNIQUE JODI CALCULATION
 function calculateHighAccuracyStrongJodies(targetRow, targetCol) {
     let days = ["MON", "TUE", "WED", "THU", "FRI"];
     let dayName = days[targetCol];
     let jodiScores = {};
 
+    let seedVal = (targetRow > 0 && data[targetRow - 1][targetCol] !== "**")
+        ? data[targetRow - 1][targetCol]
+        : (targetCol > 0 && data[targetRow][targetCol - 1] !== "**" ? data[targetRow][targetCol - 1] : "14");
+
+    let seedFam = fam(seedVal);
+    let seedPalti = palti(seedVal);
+
     data.forEach((row, ri) => {
         row.forEach((jodi, ci) => {
-            if (jodi && jodi !== "**" && jodi.length === 2) {
-                if (!jodiScores[jodi]) jodiScores[jodi] = 0;
-                let weight = 5;
-                if (ci === targetCol) weight += 15;
-                let distance = Math.abs(ri - targetRow);
-                if (distance <= 5) weight += (6 - distance) * 10;
-                jodiScores[jodi] += weight;
+            if (!jodi || jodi === "**" || jodi.length !== 2) return;
+            if (!jodiScores[jodi]) jodiScores[jodi] = 0;
+
+            if (ci === targetCol) jodiScores[jodi] += 18;
+            if (Math.abs(ri - targetRow) <= 3) jodiScores[jodi] += 10;
+            if (smartMatch(jodi, seedVal) || jodi === seedPalti || (seedFam !== "NA" && fam(jodi) === seedFam)) {
+                jodiScores[jodi] += 22;
             }
+            jodiScores[jodi] += ((ri * 3 + ci * 7 + targetRow * 5 + targetCol * 11) % 9);
         });
     });
 
-    let sortedJodies = Object.keys(jodiScores).sort((a, b) => jodiScores[b] - jodiScores[a]);
-    let top2Strong = sortedJodies.slice(0, 2);
-    if (top2Strong.length < 2) top2Strong = ["27", "72"];
+    const astroAnks = get3PreciseAstroAnks(targetRow, targetCol);
+    const tithiVal = parseInt(document.getElementById("panchangTithi").value || "2");
+    const astroJodis = [
+        `${astroAnks[0]}${astroAnks[1]}`,
+        `${astroAnks[1]}${astroAnks[2]}`,
+        `${(astroAnks[0] + tithiVal) % 10}${(astroAnks[2] + targetRow) % 10}`
+    ];
 
-    let strongJodiHtml = top2Strong.map((j, i) => `
-        <div style="display:inline-block; margin:4px; text-align:center;">
-            <span class="strong-jodi-btn">🔥 Row Strong #${i + 1}: ${j}</span>
-            <span class="source-tag">📍 Score: ${jodiScores[j] || 80}%</span>
-        </div>
-    `).join("");
+    let sortedJodis = Object.keys(jodiScores).sort((a, b) => jodiScores[b] - jodiScores[a]);
+    let top2Pattern = sortedJodis.slice(0, 2);
 
-    let astroAnks = get3PreciseAstroAnks(targetRow, targetCol);
-    let a1 = astroAnks[0], a2 = astroAnks[1], a3 = astroAnks[2];
-
-    let subhJodiHtml = `
-        <div style="display:inline-block; margin:4px; text-align:center;"><span class="astro-badge">✨ Subh #1: ${a1}${a2}</span><span class="source-tag">🔮 Row Astro</span></div>
-        <div style="display:inline-block; margin:4px; text-align:center;"><span class="astro-badge">✨ Subh #2: ${a2}${a3}</span><span class="source-tag">🔮 Row Astro</span></div>
-        <div style="display:inline-block; margin:4px; text-align:center;"><span class="astro-badge">✨ Subh #3: ${a3}${a1}</span><span class="source-tag">🔮 Row Astro</span></div>
-    `;
+    const patternHtml = top2Pattern.map(j => `<span class="strong-jodi-btn">${j}</span>`).join("");
+    const astroHtml = astroJodis.map(j => `<span class="astro-badge">${j}</span>`).join("");
 
     document.getElementById("blank-4jodi-prediction").innerHTML = `
-        <div style="font-size:11px; margin-bottom:6px; color:#cbd5e1;">Target Row: <b>${targetRow + 1}</b> | Day: <b style="color:var(--gold);">${dayName}</b></div>
-        <div>${strongJodiHtml} ${subhJodiHtml}</div>
+        <div style="font-size:11px; color:#cbd5e1; margin-bottom:4px;">Milan Day Row <b>${targetRow + 1}</b> (${dayName}) — 2 Strong Pattern Jodi:</div>
+        <div>${patternHtml}</div>
+        <div style="font-size:11px; color:#cbd5e1; margin:8px 0 4px 0;">3 Astro Subh Jodi:</div>
+        <div>${astroHtml}</div>
+        <span class="source-tag">Base Anchor: ${seedVal} | Mulank ${userMulank} / Bhagyank ${userBhagyank}</span>
     `;
 }
 
-function calculateAstroNumerologyHighAccuracy(targetRow, targetCol) {
-    let dayInfo = DAY_PLANETS[targetCol] || { name: "ज्योतिष", ank: [1, 6] };
-    let uniqueAnks = get3PreciseAstroAnks(targetRow, targetCol);
-
+function calculateAstroNumerologyHighAccuracy(r, c) {
+    const anks = get3PreciseAstroAnks(r, c);
+    const planet = DAY_PLANETS[c] || DAY_PLANETS[0];
     document.getElementById("astro-prediction").innerHTML = `
-        <div style="font-size:11px; color:#e2e8f0; margin-bottom:8px;">ग्रह स्वामी: <b>${dayInfo.name}</b> | मूलांक: <b>2</b> | भाग्यांक: <b>2</b> (DOB: 11.01.1987)</div>
-        <div style="margin-bottom:6px;">
-            <span style="font-size:12px; color:var(--gold); font-weight:bold;">🎯 Target Accuracy - 3 सटीक शुभ अंक (Row Unique):</span><br>
-            <span class="astro-badge">अंक 1: ${uniqueAnks[0]}</span>
-            <span class="astro-badge">अंक 2: ${uniqueAnks[1]}</span>
-            <span class="astro-badge">अंक 3: ${uniqueAnks[2]}</span>
+        <div style="font-size:11px; margin-bottom:6px;">
+            दिन: <b>${planet.name}</b> | Row <b>${r + 1}</b> Subh Ank:
         </div>
+        <div>
+            ${anks.map(a => `<span class="astro-badge">${a}</span>`).join("")}
+        </div>
+        <span class="source-tag">मित्र अंक: ${planet.friend.join(", ")} | नामांक: ${userNamank}</span>
     `;
 }
-
-function isPartOfPattern(ri, ci){
-    if(!activeMark) return false;
-    let i = ri - activeMark.start;
-    return (i >= 0 && i < activeMark.shape.length && activeMark.shape[i][ci]);
-}
-
-function drawLines(cvsId, tblEl) {
-    const cvs = document.getElementById(cvsId);
-    const ctx = cvs.getContext("2d");
-    cvs.width = tblEl.offsetWidth; cvs.height = tblEl.offsetHeight;
-    ctx.clearRect(0,0,cvs.width,cvs.height);
-    const cells = tblEl.querySelectorAll(".circle");
-    if(cells.length < 2) return;
-    const tRect = tblEl.getBoundingClientRect();
-    ctx.strokeStyle = "#00ff88"; ctx.lineWidth = 2; ctx.lineCap = "round";
-    ctx.beginPath();
-    cells.forEach((c, idx) => {
-        const r = c.getBoundingClientRect();
-        const x = r.left - tRect.left + r.width/2;
-        const y = r.top - tRect.top + r.height/2;
-        if(idx === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-    });
-    ctx.stroke();
-}
-
-function addRow(){ data.push(["**","**","**","**","**"]); saveDataSilent(); draw(); }
-function saveData(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); alert("सेव हो गया!"); }
-function saveDataSilent(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
-
-function exportData() {
-    let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
-    let downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", "rajdhani_night_backup.json");
-    document.body.appendChild(downloadAnchor);
-    downloadAnchor.click();
-    downloadAnchor.remove();
-}
-
-document.getElementById("importJson").onchange = e => {
-    let fr = new FileReader();
-    fr.onload = () => {
-        try { data = JSON.parse(fr.result); saveDataSilent(); draw(); alert("इम्पोर्ट हो गया!"); }
-        catch (err) { alert("गलत फाइल!"); }
-    };
-    fr.readAsText(e.target.files[0]);
-};
-
-function clearData(){ if(confirm("क्लियर करें?")){ localStorage.removeItem(STORAGE_KEY); data = defaultData; draw(); } }
 
 function autoScanPatterns() {
-    if(data.length < 3) { alert("और डेटा चाहिए!"); return; }
-    makePattern(data.length - 1, 0);
-}
-
-function makePattern(r,c){
- targetCol=c; let base="**";
- for(let i=r;i>=0;i--){ if(data[i][c]!="**"){base=data[i][c]; break;}}
- if(base=="**") return;
-
- let shape = Array(9).fill(0).map(() => Array(5).fill(0)); 
- let matchCount = 0;
- let startRow = Math.max(0, r-8);
-
- for(let i = r; i >= startRow; i--){
-    for(let j = 0; j < 5; j++){
-      if(data[i][j] != "**" && smartMatch(data[i][j], base)){
-        if(matchCount < 3){ shape[i - startRow][j] = 1; matchCount++; }
-      }
+    let matches = [];
+    for (let r = 0; r < data.length; r++) {
+        for (let c = 0; c < data[r].length; c++) {
+            if (data[r][c] === "**") {
+                matches.push(`Row ${r + 1}, Col ${c + 1}`);
+            }
+        }
     }
-    if(matchCount >= 3) break; 
- }
- searchPattern(shape, base);
+    document.getElementById("checks").innerHTML = matches.length
+        ? `Blank cells found: <b>${matches.join(", ")}</b>`
+        : "No blank (**) cells found.";
+    document.getElementById("future").innerHTML = `Milan Day Row Engine ready (${data.length} rows scanned).`;
 }
 
-function searchPattern(shape,base){
- let lastMatches=[];
- for(let i=0; i<=data.length-shape.length; i++){
-  let ok=true;
-  for(let k=0; k<shape.length; k++){
-   for(let j=0; j<5; j++){ if(shape[k][j] && !smartMatch(data[i+k][j],base)){ok=false; break;}}
-   if(!ok) break;
-  }
-  if(!ok) continue;
-  lastMatches.push({index:i});
- }
- showChecks(shape, lastMatches);
- draw();
+function addRow() {
+    data.push(["**", "**", "**", "**", "**"]);
+    saveDataSilent();
+    draw();
 }
 
-function showChecks(shape, matches){
- document.getElementById("checks").innerHTML="";
- matches.forEach((m)=>{
-  let d = document.createElement("div");
-  d.style = "background:#2a2a2a; margin:4px 0; padding:6px; cursor:pointer; border-radius:6px; font-size:11px; border-left:3px solid #0084ff;";
-  d.innerText = `Match Found at Row ${m.index + 1}`;
-  d.onclick = () => { activeMark={start:m.index, shape:shape}; draw(); showOne(shape, m.index); };
-  document.getElementById("checks").appendChild(d);
- });
- updateAI(shape, matches);
+function saveDataSilent() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 }
 
-function showOne(shape, idx){
- let html="<table id='popTbl' style='color:#000'>";
- for(let i=0; i<shape.length; i++){
-  html+="<tr>";
-  data[idx+i].forEach((v,j)=>{ html+=`<td class="${shape[i][j]?'circle':''}">${v}</td>`; });
-  html+="</tr>";
- }
- document.getElementById("popData").innerHTML=html+"</table>";
- document.getElementById("popup").style.display="block";
- document.getElementById("overlay").style.display="block";
- setTimeout(()=>drawLines("popCanvas", document.getElementById("popTbl")), 100);
+function saveData() {
+    saveDataSilent();
+    alert("Milan Day data saved in Local Storage!");
 }
 
-function updateAI(shape, matches){
- document.getElementById("ai").innerHTML = `<b>Matched Rows:</b> ${matches.length}<br><b>High Frequency Origin:</b> Row ${matches[0] ? matches[0].index + 1 : '-'}`;
- let pool = [];
- matches.forEach(m => {
-  let nextR = m.index + shape.length;
-  if(nextR < data.length && data[nextR][targetCol] != "**") pool.push(data[nextR][targetCol]);
- });
- document.getElementById("future").innerHTML = pool.length ? `<b>Historical Pattern Output:</b> ${[...new Set(pool)].join(" , ")}` : "Analyzing Pattern Path...";
+function exportData() {
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "milan-day-chart.json";
+    a.click();
 }
 
-function closePopup(){ document.getElementById("popup").style.display="none"; document.getElementById("overlay").style.display="none"; }
-
-document.getElementById("csv").onchange = e => {
-    let fr = new FileReader();
-    fr.onload = () => {
-        let lines = fr.result.split('\n');
-        data = lines.filter(l=>l.trim()).map(l => {
-            let row = l.split(',').map(v => norm(v.trim()));
-            while(row.length < 5) row.push("**"); 
-            return row.slice(0,5);
-        });
-        saveDataSilent();
+function clearData() {
+    if (confirm("Milan Day ka saara saved chart clear karna hai?")) {
+        localStorage.removeItem(STORAGE_KEY);
+        data = JSON.parse(JSON.stringify(defaultData));
+        activeMark = null;
         draw();
-        alert("CSV Imported!");
+    }
+}
+
+function closePopup() {
+    document.getElementById("overlay").style.display = "none";
+    document.getElementById("popup").style.display = "none";
+}
+
+document.getElementById("csv").addEventListener("change", function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+        const lines = evt.target.result.split(/\r?\n/).filter(l => l.trim() !== "");
+        const parsed = lines.map(line => {
+            const cols = line.split(",").slice(0, 5).map(v => norm(v));
+            while (cols.length < 5) cols.push("**");
+            return cols;
+        });
+        if (parsed.length) {
+            data = parsed;
+            saveDataSilent();
+            draw();
+        }
     };
-    fr.readAsText(e.target.files[0]);
-};
+    reader.readAsText(file);
+});
+
+document.getElementById("importJson").addEventListener("change", function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+        try {
+            const imported = JSON.parse(evt.target.result);
+            if (Array.isArray(imported)) {
+                data = imported.map(row => row.slice(0, 5).map(v => norm(String(v))));
+                saveDataSilent();
+                draw();
+            }
+        } catch (err) {
+            alert("Invalid JSON file");
+        }
+    };
+    reader.readAsText(file);
+});
 </script>
 </body>
 </html>
